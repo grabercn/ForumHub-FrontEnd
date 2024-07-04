@@ -28,7 +28,7 @@ const ForumDetail = (forum) => {
                   <Grid item xs={12}>
                   {/* Add any details you want to display in the popup*/}
             <div>
-              <p>id:<i>{forumDetail.forumId}</i> Category: <i>{forumDetail.forumCategory}</i></p>
+              <p>Category: <i>{forumDetail.forumCategory}</i></p>
             </div>
             
             {/* Display the posts in the forum */}

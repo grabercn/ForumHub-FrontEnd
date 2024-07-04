@@ -54,9 +54,33 @@ async function getUserById(userId) {
     }
 }
 
+async function UpdateUserById(userId, userObject) {
+    // Construct the URL with the userId variable
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${userId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userObject) // Body expects JSON string
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error updating user:", error);
+    }
+}
+
 
 // Export the functions to be used in other files
-export { createUser, getUserById };
+export { createUser, getUserById, UpdateUserById };
 
 //createUser(userObject);
 //getUserById(1);

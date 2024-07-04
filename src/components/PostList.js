@@ -153,7 +153,8 @@ function PostList(props) {
                     {isLoggedin && admin && <Button style={{color: 'red', fontSize: '12px', float: 'right' }} onClick={() => handleRemovePost(post.postId)}>Delete</Button>}
 
                     <p style={{ fontSize: '12px', fontStyle: 'italic' }}>{post.userId.username || 'Unknown'}</p>
-                    <h4 style={{ fontWeight: 'bold' }}>{post.postSubject}</h4>
+                    <h4 style={{ fontWeight: 'bold' }}>{post.postSubject} </h4>
+                    <p style={{ fontSize: '12px' }}>Posted on: {new Date(post.postDate).toLocaleString()}</p>
                     <hr />
                     <p style={{ fontSize: '14px' }}>{post.postText}</p>
 
