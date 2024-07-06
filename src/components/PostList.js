@@ -2,7 +2,7 @@ import React from 'react';
 import { addPost } from './Helpers/postApiCalls';
 import { useEffect } from 'react';
 import { getUserById } from './Helpers/userApiCalls';
-import { Input, Button, TextField, Grid, Alert } from '@mui/material';
+import { Input, Button, TextField, Grid, Alert, Container, Paper } from '@mui/material';
 import { addComment, getAllCommentsByPostId, removeAllCommentsByPostId } from './Helpers/commentApiCalls';
 import { getPostsByForumId, removePost  } from './Helpers/postApiCalls';
 import { checkAuthLocal, getUserDataCookieValues } from './Objects/userData.object';
@@ -140,12 +140,11 @@ function PostList(props) {
         <div>
             {isLoggedin && <h2>Welcome, {getUserDataCookieValues().userName || 'Unknown'}</h2>}
             <h3>Posts:</h3>
-            <ul>
                 {/* posts render in here via mapping each post to a list item*/}
             {posts && (
                 posts.map((post) => (
-                <li key={post.postId}>
-                    <div style={{ border: '1px solid black', padding: '10px', marginBottom: '10px' }}>
+                <Container key={post.postId} style={{ justifyContent: 'center', display: 'inherit'}}>
+                    <Paper style={{ border: '0.5px solid black', padding: '10px', marginBottom: '15px' }}>
                     
                     {/* display remove post button if user who created post is logged in */}
                     {isLoggedin && (Number(post.userId.userId) === Number(userId)) && <Button style={{color: 'red', fontSize: '12px', float: 'right' }} onClick={() => handleRemovePost(post.postId)}>Delete</Button>}
@@ -183,11 +182,10 @@ function PostList(props) {
                         </form>
                         </div>
                     )}
-                    </div>
-                </li>
+                    </Paper>
+                </Container>
                 ))
             )}
-            </ul>
 
             {/* Add new post */}
             {isLoggedin && <Button onClick={handleOpenForm}>Add Post</Button>}

@@ -7,14 +7,9 @@ const Banner = styled('div')(({ imgUrl }) => ({
     height: '400px',
     backgroundImage: `url(${imgUrl})`,
     backgroundSize: 'cover',
-    filter: 'grayscale(100%)',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    transition: 'filter 0.5s ease-in-out', // Add this line to create a smooth transition for the filter property
-    '&:hover': {
-        filter: 'grayscale(0%)', // Add this line to remove the grayscale effect on hover
-    },
+    alignItems: 'left',
 }));
 
 const Text = styled('h1')(() => ({
@@ -33,11 +28,54 @@ const SubText = styled('p')(() => ({
     textAlign: 'center',
 }));
 
-const PageBanner = ({ text, subtext, imgUrl }) => {
+const Waves = styled('div')(() => ({
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '150px',
+    overflow: 'hidden',
+    lineHeight: 0,
+}));
+
+const Wave = styled('svg')(({ speed }) => ({
+    position: 'absolute',
+    bottom: 0,
+    width: '200%',
+    height: '100%',
+    transform: 'rotate(180deg)',
+    left: 0,
+    '& .wave': {
+        animation: `moveWave ${speed}s linear infinite`,
+    },
+    '@keyframes moveWave': {
+        '0%': {
+            transform: 'transla</Wave>teX(0)',
+        },
+        '100%': {
+            transform: 'translateX(-50%)',
+        },
+    },
+}));
+
+const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {
     return (
-        <Banner style={{display: 'table', alignContent: 'center'}} imgUrl={imgUrl}>
-            <Text>{text}</Text>
-            <SubText>{subtext}</SubText>
+        <Banner imgUrl={imgUrl}>
+            <div>
+                <Text>{text}</Text>
+                <SubText>{subtext}</SubText>
+            </div>
+            
+            <Waves>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={30}>
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.7)`} />
+                </Wave>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={15}>
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.5)`} />
+                </Wave>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={10}>
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.</Wave>5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.3)`} />
+                </Wave>
+            </Waves>
         </Banner>
     );
 };
