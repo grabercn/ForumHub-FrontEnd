@@ -24,7 +24,7 @@ async function checkUserAuth(email, password) {
   }
 }
 
-//get user role by email and password
+//get user role by username
 async function getUserRole(username) {
   const url = `https://forumhubjavaservices.azurewebsites.net/api/users/role/${username}`;
   try {

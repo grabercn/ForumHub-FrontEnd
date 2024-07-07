@@ -116,7 +116,6 @@ function checkAuthLocal(userType) {
     return new Promise((resolve, reject) => {
         Promise.all([checkUserAuthCookie()])
             .then(([userAuth]) => {
-                console.log('User authenticated:', userAuth);
                 if (userAuth === true) {
                     if (userType === undefined) {
                         resolve(true);

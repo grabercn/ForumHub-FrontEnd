@@ -1,10 +1,11 @@
 import React from 'react';
 import { styled } from '@mui/system';
+import { useMediaQuery } from '@mui/material';
 
 const Banner = styled('div')(({ imgUrl }) => ({
     position: 'relative',
     width: '100%',
-    height: '400px',
+    height: '200px',
     backgroundImage: `url(${imgUrl})`,
     backgroundSize: 'cover',
     display: 'flex',
@@ -28,14 +29,18 @@ const SubText = styled('p')(() => ({
     textAlign: 'center',
 }));
 
-const Waves = styled('div')(() => ({
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: '150px',
-    overflow: 'hidden',
-    lineHeight: 0,
-}));
+const Waves = styled('div')(() => {
+    const isMobile = useMediaQuery('(max-width: 600px)');
+
+    return {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        height: isMobile ? '80px' : '150px',
+        overflow: 'hidden',
+        lineHeight: 0,
+    };
+});
 
 const Wave = styled('svg')(({ speed }) => ({
     position: 'absolute',
@@ -49,12 +54,20 @@ const Wave = styled('svg')(({ speed }) => ({
     },
     '@keyframes moveWave': {
         '0%': {
-            transform: 'transla</Wave>teX(0)',
+            transform: 'translateX(0)',
         },
         '100%': {
             transform: 'translateX(-50%)',
         },
     },
+}));
+
+const HorizontalBar = styled('div')(({ waveColor }) => ({
+    position: 'absolute',
+    bottom: '-10px',
+    width: '100%',
+    height: '10px',
+    background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), white)`,
 }));
 
 const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {
@@ -67,15 +80,16 @@ const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {
             
             <Waves>
                 <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={30}>
-                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.7)`} />
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r+50}, ${waveColor.g+50}, ${waveColor.b+50}, 0.9)`} />
                 </Wave>
                 <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={15}>
-                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.5)`} />
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r+25}, ${waveColor.g+25}, ${waveColor.b+25}, 0.7)`} />
                 </Wave>
                 <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={10}>
-                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.</Wave>5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.3)`} />
+                    <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.5)`} />
                 </Wave>
             </Waves>
+            <HorizontalBar waveColor={waveColor} />
         </Banner>
     );
 };

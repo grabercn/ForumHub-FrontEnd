@@ -4,7 +4,10 @@ import ForumDetail from "./ForumDetail";
 import ForumList from "./ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
-import { Alert, Grid } from '@mui/material';
+import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import ForumIcon from '@mui/icons-material/Forum';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { forumsData as forumsData } from "./Objects/forumsData.objects";
 import PageBanner from "./PageBanner";
 import { checkAuthLocal } from "./Objects/userData.object";
@@ -23,6 +26,7 @@ const Home = () => {
   const [settings, setSettings] = useState([]);
   const [pages, setPages] = useState([]);
   const [rgb, setRgb] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0); // For list item selection
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
   const imageProcessed = useRef(false); // Track if the image has been processed
@@ -100,6 +104,10 @@ const Home = () => {
     };
   };
 
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -108,27 +116,84 @@ const Home = () => {
         {rgb && (
           <PageBanner text="Welcome to ForumHub" subtext="Click on a forum to view it." imgUrl={bannerImgUrl.current} waveColor={rgb} />
         )}
-        
-        <br />
-        <br />
-        <Container maxWidth="xl">
-          <Grid container spacing={2}>
-            {Object.values(forums).length === 0 ? (
-              <Alert severity="info"><strong>No forums available.</strong></Alert>
-            ) : (
-              Object.values(forums).map((forum) => (
-                <Grid item xs={12} md={2} key={forum.id}>
-                  <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', fontFamily: 'Roboto, sans-serif' }}>
-                    <ForumList forums={[forum]} onForumClick={handleForumClick} />
-                  </div>
+
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#ffffff' }}>
+            <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center' }}>
+              <ListItem 
+                button 
+                selected={selectedIndex === 0} 
+                onClick={(event) => handleListItemClick(event, 0)}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="HOME" />
+              </ListItem>
+              <ListItem 
+                button 
+                selected={selectedIndex === 1} 
+                onClick={(event) => handleListItemClick(event, 1)}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+              >
+                <ListItemIcon>
+                  <ForumIcon />
+                </ListItemIcon>
+                <ListItemText primary="FORUMS" />
+              </ListItem>
+              <ListItem 
+                button 
+                selected={selectedIndex === 2} 
+                onClick={(event) => handleListItemClick(event, 2)}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+              >
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="SETTINGS" />
+              </ListItem>
+            </List>
+          </Box>
+        </Box>
+
+        <Box sx={{ mt: 4 }}>
+          {selectedIndex === 0 && (
+            <Container maxWidth="xl">
+              <Typography variant="h6" align="center">Feed is not ready yet. Click forums to explore.</Typography>
+              {/* Add content for forums tab here */}
+            </Container>
+          )}
+
+          {selectedIndex === 1 && (
+            <Container maxWidth="xl">
+              <Grid container spacing={2}>
+                {Object.values(forums).length === 0 ? (
+                  <Alert severity="info"><strong>No forums available.</strong></Alert>
+                ) : (
+                  Object.values(forums).map((forum) => (
+                    <Grid item xs={12} md={2} key={forum.id}>
+                      <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', fontFamily: 'Roboto, sans-serif' }}>
+                        <ForumList forums={[forum]} onForumClick={handleForumClick} />
+                      </div>
+                    </Grid>
+                  ))
+                )}
+                <Grid item xs={12} md={6}>
+                  {selectedForum && <ForumDetail forum={selectedForum} />}
                 </Grid>
-              ))
-            )}
-            <Grid item xs={12} md={6}>
-              {selectedForum && <ForumDetail forum={selectedForum} />}
-            </Grid>
-          </Grid>
-        </Container>
+              </Grid>
+            </Container>
+          )}
+
+          {selectedIndex === 2 && (
+            <Container maxWidth="xl">
+              <Typography variant="h6" align="center">Settings</Typography>
+              {/* Add content for settings tab here */}
+            </Container>
+          )}
+        </Box>
+        
       </div>
       <div>
         <GoogleAd />

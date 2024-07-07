@@ -28,31 +28,31 @@ const Login = () => {
   const handleFormSubmit = (event) => {
     event.preventDefault();
 
-  const password = event.target.elements.password.value;
-  const email = event.target.elements.email.value;
-  const userType = isAdmin ? "admin" : "user";
+    const password = event.target.elements.password.value;
+    const email = event.target.elements.email.value;
+    const userType = isAdmin ? "admin" : "user";
 
-  setAuthCookieValues(email, password);
-  checkAuthLocal(userType).then((response) => {
-    if (response === true) {
-      setErrorType("success");
-      setErrorMessage("Login successful!");
-      setIsError(true);
-      
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }else if (response === 'error getting user role') {
-      setErrorType("error");
-      setErrorMessage("Error getting user role! Try again later.");
-      setIsError(true);
-    } else {
-      setErrorType("error");
-      setErrorMessage("Invalid credentials!");
-      setIsError(true);
-    }
-  });
-};
+    setAuthCookieValues(email, password);
+    checkAuthLocal(userType).then((response) => {
+      if (response === true) {
+        setErrorType("success");
+        setErrorMessage("Login successful!");
+        setIsError(true);
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }else if (response === 'error getting user role') {
+        setErrorType("error");
+        setErrorMessage("Error getting user role! Try again later.");
+        setIsError(true);
+      } else {
+        setErrorType("error");
+        setErrorMessage("Invalid credentials!");
+        setIsError(true);
+      }
+    });
+  };
 
   return (
     <Box

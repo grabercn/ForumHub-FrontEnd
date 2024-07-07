@@ -56,7 +56,7 @@ async function getUserById(userId) {
 
 async function UpdateUserById(userId, userObject) {
     // Construct the URL with the userId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${userId}`;
+    const url = `http://localhost:8080/api/users/${userId}`;
     try {
         const response = await fetch(url, {
             method: 'PUT',

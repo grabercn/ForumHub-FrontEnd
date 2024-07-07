@@ -1,10 +1,12 @@
 import React from 'react';
-import { Container, Alert } from '@mui/material';
-import { getAuthCookieValues, getUserDataCookieValues } from '../Objects/userData.object';
+import { Container, Alert, Paper } from '@mui/material';
+import { getAuthCookieValues, getUserDataCookieValues, removeAuthCookieValues, removeUserDataCookieValues } from '../Objects/userData.object';
 import { getUserByEmailAndPassword } from '../Helpers/authApiCalls';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { UpdateUserById } from '../Helpers/userApiCalls';
+import Typography from '@mui/material/Typography';
+import { Email, Phone, SupervisedUserCircle, AlternateEmail } from '@mui/icons-material';
 
 const UserProfile = () => {
     const [userData, setUserData] = React.useState({});
@@ -25,15 +27,28 @@ const UserProfile = () => {
 
     const handleSave = () => {
         setIsEditing(false);
+
+        const updatedUserData = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            phoneNumber: document.getElementById('phone').value,
+        };
         
         UpdateUserById(getUserDataCookieValues().userId, {
-            name: getUserDataCookieValues().username,
-            email: getAuthCookieValues().userEmail,
-            phoneNumber: userData.phoneNumber,
-            password: getAuthCookieValues().userPassword,
+            name: userData.name,
+            email: updatedUserData.email,
+            phoneNumber: updatedUserData.phoneNumber,
+            password: userData.password,
+            username: updatedUserData.username,
         }).then((result) => {
             if (result) {
                 setIsSaved(true);
+                updatedUserData.role = userData.role; // Keep the role the same for when page updates
+                updatedUserData.name = userData.name; // Keep the name the same for when page updates
+                setUserData(updatedUserData);
+                removeAuthCookieValues();
+                removeUserDataCookieValues();
+                window.location.reload();
             } else {
                 setIsError(true);
             }
@@ -47,56 +62,60 @@ const UserProfile = () => {
                 {isSaved && (
                     <Grid item>
                         <Alert severity="success">Saved successfully!</Alert>
+                        <br />
                     </Grid>
                 )}
                 {isError && (
                     <Grid item>
                         <Alert severity="error">Error saving. Try again later.</Alert>
+                        <br />
                     </Grid>
                 )}
                 <Grid container spacing={2} direction="column">
                     <Grid item>
-                        <h1>Hello, {userData.name}</h1>
-                        <h2>Your Profile</h2>
+                        <center><Typography variant="h10">Hello, {userData.name}</Typography></center>
+                        <center><Typography variant="h5">Your Profile</Typography></center>
+                        <br />
+                        <center >Change your account settings below...</center>
+                        <hr />
                     </Grid>
                     <Grid item>
                         {isEditing ? (
                             <>
                                 <Grid item>
-                                    <TextField label="Username" defaultValue={userData.username} style={{ margin: '10px 0' }} />
+                                    <TextField id='username' label="Username" defaultValue={userData.username} style={{ margin: '10px 0' }} />
                                 </Grid>
                                 <Grid item>
-                                    <TextField label="Role" defaultValue={userData.role} style={{ margin: '10px 0' }} />
+                                    <TextField id='email' label="Email" defaultValue={userData.email} style={{ margin: '10px 0' }} />
                                 </Grid>
                                 <Grid item>
-                                    <TextField label="Email" defaultValue={userData.email} style={{ margin: '10px 0' }} />
+                                    <TextField id='phone' label="Phone" defaultValue={userData.phoneNumber} style={{ margin: '10px 0' }} />
                                 </Grid>
                                 <Grid item>
-                                    <TextField label="Phone" defaultValue={userData.phoneNumber} style={{ margin: '10px 0' }} />
-                                </Grid>
-                                <Grid item>
-                                    <Button onClick={handleSave} style={{ margin: '10px 0' }}>Save</Button>
+                                    <center><Button onClick={handleSave} style={{ margin: '10px 0' }}>Save</Button></center>
                                 </Grid>
                             </>
                         ) : (
                             <>
+                                 <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <AlternateEmail style={{ marginRight: '5px' }} />
+                                    {userData.username}
+                                </Typography>
+                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <Email style={{ marginRight: '5px' }} />
+                                    {userData.email}
+                                </Typography>
+                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <SupervisedUserCircle style={{ marginRight: '5px' }} />
+                                    {userData.role}
+                                </Typography>
+                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <Phone style={{ marginRight: '5px' }} />
+                                    {userData.phoneNumber}
+                                </Typography>
                                 <Grid item>
-                                    <h2>Username: {getUserDataCookieValues().username}</h2>
-                                </Grid>
-                                <Grid item>
-                                    <h2>Email: {getAuthCookieValues().userEmail}</h2>
-                                </Grid>
-                                <Grid item>
-                                    <h2>Role: {getUserDataCookieValues().userType}</h2>
-                                </Grid>
-                                <Grid item>
-                                    <h2>Email: {userData.email}</h2>
-                                </Grid>
-                                <Grid item>
-                                    <h2>Phone: {userData.phoneNumber}</h2>
-                                </Grid>
-                                <Grid item>
-                                    <Button onClick={handleEdit}>Edit</Button>
+                                    <br />
+                                    <center><Button onClick={handleEdit}>Edit</Button></center>
                                 </Grid>
                             </>
                         )}
