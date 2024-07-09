@@ -58,11 +58,14 @@ const removePost = async (postId) => {
     }
 }
 
-const getPopularPosts = async () => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/popular`;
+async function getPopularPosts () {
+    const url = 'https://forumhubjavaservices.azurewebsites.net/api/posts/popular';
     try {
         const response = await fetch(url, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         if (!response.ok) {
