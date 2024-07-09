@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PageRoutes from './PageRoutes';
 import Home from './components/Home';
 import { LoadingProvider } from './components/LoadingContext';

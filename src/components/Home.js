@@ -12,6 +12,9 @@ import { forumsData as forumsData } from "./Objects/forumsData.objects";
 import PageBanner from "./PageBanner";
 import { checkAuthLocal } from "./Objects/userData.object";
 import GoogleAd from "./GoogleAd";
+import { useMediaQuery } from '@mui/material';
+import HomeSettings from "./HomeSettings";
+import HomeFeed from "./HomeFeed";
 
 const theme = createTheme({
   typography: {
@@ -30,6 +33,7 @@ const Home = () => {
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
   const imageProcessed = useRef(false); // Track if the image has been processed
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   function handleForumClick(forum) {
     setSelectedForum(forum);
@@ -119,17 +123,23 @@ const Home = () => {
 
         <Box sx={{ mt: 2, mb: 2 }}>
           <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#ffffff' }}>
-            <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center' }}>
+            <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
               <ListItem 
                 button 
                 selected={selectedIndex === 0} 
                 onClick={(event) => handleListItemClick(event, 0)}
                 sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
               >
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="HOME" />
+                <Grid container alignItems="center" justifyContent="center">
+                  <Grid item>
+                    <ListItemIcon sx={{ minWidth: 'auto' }}>
+                      <HomeIcon />
+                    </ListItemIcon>
+                  </Grid>
+                  <Grid item>
+                    <ListItemText primary="HOME" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                  </Grid>
+                </Grid>
               </ListItem>
               <ListItem 
                 button 
@@ -137,10 +147,16 @@ const Home = () => {
                 onClick={(event) => handleListItemClick(event, 1)}
                 sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
               >
-                <ListItemIcon>
-                  <ForumIcon />
-                </ListItemIcon>
-                <ListItemText primary="FORUMS" />
+                <Grid container alignItems="center" justifyContent="center">
+                  <Grid item>
+                    <ListItemIcon sx={{ minWidth: 'auto' }}>
+                      <ForumIcon />
+                    </ListItemIcon>
+                  </Grid>
+                  <Grid item>
+                    <ListItemText primary="FORUMS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                  </Grid>
+                </Grid>
               </ListItem>
               <ListItem 
                 button 
@@ -148,10 +164,16 @@ const Home = () => {
                 onClick={(event) => handleListItemClick(event, 2)}
                 sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
               >
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="SETTINGS" />
+                <Grid container alignItems="center" justifyContent="center">
+                  <Grid item>
+                    <ListItemIcon sx={{ minWidth: 'auto' }}>
+                      <SettingsIcon />
+                    </ListItemIcon>
+                  </Grid>
+                  <Grid item>
+                    <ListItemText primary="SETTINGS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                  </Grid>
+                </Grid>
               </ListItem>
             </List>
           </Box>
@@ -160,8 +182,8 @@ const Home = () => {
         <Box sx={{ mt: 4 }}>
           {selectedIndex === 0 && (
             <Container maxWidth="xl">
-              <Typography variant="h6" align="center">Feed is not ready yet. Click forums to explore.</Typography>
-              {/* Add content for forums tab here */}
+              { /* Display the HomeFeed component */}
+              <HomeFeed />
             </Container>
           )}
 
@@ -188,8 +210,8 @@ const Home = () => {
 
           {selectedIndex === 2 && (
             <Container maxWidth="xl">
-              <Typography variant="h6" align="center">Settings</Typography>
-              {/* Add content for settings tab here */}
+              { /* Display the HomeSettings component */}
+              <HomeSettings />
             </Container>
           )}
         </Box>

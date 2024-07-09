@@ -1,27 +1,38 @@
+// File: Searchbar.js
 import * as React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
 import { getAllForums } from './Helpers/forumApiCalls';
-
-// Searchbar.js
-
-
+import Box from '@mui/material/Box';
 
 function Searchbar() {
   const [searchResult, setSearchResult] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null); // State for search popover
 
   // Function to handle search query
   const searchQuery = (query) => {
     getAllForums().then((response) => {
       response.forEach((forum) => {
-        if (query !== (undefined || null || '') && forum.forumName.toLowerCase().includes(query.toLowerCase())) {
-          (forum)
-          (setSearchResult(forum));
+        if (query && forum.forumName.toLowerCase().includes(query.toLowerCase())) {
+          setSearchResult(forum);
         }
       });
     });
-  }
+  };
+
+  // Function to handle opening the search popover
+  const handleOpenSearchPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Function to handle closing the search popover
+  const handleCloseSearchPopover = () => {
+    setAnchorEl(null);
+    setSearchResult(null); // Clear search results when closing
+  };
 
   // Search bar styling
   const Search = styled('div')(({ theme }) => ({
@@ -68,25 +79,72 @@ function Searchbar() {
     },
   }));
 
-  // Return the search bar component
   return (
-    <div style={{zIndex: '1000'}}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ 'aria-label': 'search' }}
-          onChange={(event) => searchQuery(event.target.value)}
-        />
-      </Search>
-      {searchResult && (
-              <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', position: 'absolute' }}>
-                {searchResult.forumName}
+    <div style={{ zIndex: '1000' }}>
+      <IconButton
+        size="large"
+        aria-label="search"
+        aria-controls="search-appbar"
+        aria-haspopup="true"
+        onClick={handleOpenSearchPopover}
+        color="inherit"
+        sx={{ display: { xs: 'block', md: 'none' } }} // Show only on mobile
+      >
+        <SearchIcon />
+      </IconButton>
+      <Popover
+        id="search-appbar"
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleCloseSearchPopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={(event) => searchQuery(event.target.value)}
+            />
+          </Search>
+          {searchResult && (
+            <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', position: 'absolute' }}>
+              {searchResult.forumName}
               <br />
-              </div>
-      )}
+            </div>
+          )}
+        </Box>
+      </Popover>
+
+      {/* Original search bar for larger screens */}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            onChange={(event) => searchQuery(event.target.value)}
+          />
+        </Search>
+        {searchResult && (
+          <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', position: 'absolute' }}>
+            {searchResult.forumName}
+            <br />
+          </div>
+        )}
+      </Box>
     </div>
   );
 }

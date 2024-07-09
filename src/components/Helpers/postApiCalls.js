@@ -58,6 +58,25 @@ const removePost = async (postId) => {
     }
 }
 
+const getPopularPosts = async () => {
+    const url = `http://localhost:8080/api/posts/popular`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error retrieving popular posts:", error);
+    }
+}
+
 // delete posts by forum id
 const removeAllPostsByForumId = async (forumId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/forum/${forumId}`;
@@ -100,4 +119,4 @@ const getPostById = async (postId) => {
 //getPostsByForumId(1);
 //removePost(1);
 
-export {removeAllPostsByForumId, addPost, removePost, getPostById, getPostsByForumId };
+export {removeAllPostsByForumId, addPost, removePost, getPostById, getPostsByForumId, getPopularPosts };

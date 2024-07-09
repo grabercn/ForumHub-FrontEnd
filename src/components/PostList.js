@@ -2,7 +2,7 @@ import React from 'react';
 import { addPost } from './Helpers/postApiCalls';
 import { useEffect } from 'react';
 import { getUserById } from './Helpers/userApiCalls';
-import { Input, Button, TextField, Grid, Alert, Container, Paper } from '@mui/material';
+import { Input, Button, TextField, Grid, Container, Paper, Typography, Box } from '@mui/material';
 import { addComment, getAllCommentsByPostId, removeAllCommentsByPostId } from './Helpers/commentApiCalls';
 import { getPostsByForumId, removePost  } from './Helpers/postApiCalls';
 import { checkAuthLocal, getUserDataCookieValues } from './Objects/userData.object';
@@ -58,15 +58,15 @@ function PostList(props) {
             userId: userId,
         };
 
-        addComment(newComment);
-        try{
-            comments.push(newComment);
-        }catch(e){
-            setComments([newComment]);
-        }
-        
+        addComment(newComment).then(() => {
+            // Update comments state after adding new comment
+            setComments((prevComments) => ({
+                ...prevComments,
+                [postId]: [...(prevComments[postId] || []), newComment],
+            }));
+        });
+
         setComment('');
-        setComments(comments);
     };
 
     const handleSubmit = (event) => {
@@ -80,127 +80,157 @@ function PostList(props) {
             postDate: new Date().toISOString(), // generated in backend so value here does not matter
         };
 
-        // Call the addPost function from postApiCalls.js
-        addPost(newPost);
+        addPost(newPost).then((response) => {
+            // Update posts state after adding new post
+            setPosts([...posts, response]);
+        });
 
-        //set the posts state to include the new post
-        setPosts([...posts, newPost]);
         setTitle('');
         setContent('');
     };
 
-    //check auth status on load
+    // Check auth status on load
     useEffect(() => {
         checkAuthLocal().then((response) => {
-            if (response === true){
-                setIsLoggedin(true);
-            }else{
-                setIsLoggedin(false);
-            }
+            setIsLoggedin(response);
         });
         checkAuthLocal('admin').then((response) => {
-            if (response === true){
-                setAdmin(true);
-            }else{
-                setAdmin(false);
-            }
+            setAdmin(response);
         });
     }, []);
 
     // Get posts, comments, and user name on load
     useEffect(() => {
         getUserById(userId).then((data) => {
-            if (!data) return;
-            setUserName(data.username);
-        });
-        getPostsByForumId(forumId).then((data) => { // Get posts by forumId
-            
-            if (!data) {
-                return alert("No posts found");
+            if (data) {
+                setUserName(data.username);
             }
-
-            setPosts(data); // Set posts state
-           
-            data.forEach((post) => { // For each post
-                
-                // Get comments for each post
-                getAllCommentsByPostId(post.postId).then((comments) => { // Get comments by postId
-                    setComments((prevComments) => { // Set comments state
-                        return { // Return the previous comments and add the new comments
+        });
+        getPostsByForumId(forumId).then((data) => {
+            if (data) {
+                setPosts(data);
+                data.forEach((post) => {
+                    getAllCommentsByPostId(post.postId).then((comments) => {
+                        setComments((prevComments) => ({
                             ...prevComments,
                             [post.postId]: comments,
-                        };
-                    }); 
+                        }));
+                    });
                 });
-            });
+            } else {
+                console.log('No posts found');
+            }
         });
-    }, [comment, forumId, userId]);
-    
+    }, [forumId, userId]);
+
     return (
         <div>
-            {isLoggedin && <h2>Welcome, {getUserDataCookieValues().userName || 'Unknown'}</h2>}
-            <h3>Posts:</h3>
-                {/* posts render in here via mapping each post to a list item*/}
-            {posts && (
-                posts.map((post) => (
-                <Container key={post.postId} style={{ justifyContent: 'center', display: 'inherit'}}>
-                    <Paper style={{ border: '0.5px solid black', padding: '10px', marginBottom: '15px' }}>
-                    
-                    {/* display remove post button if user who created post is logged in */}
-                    {isLoggedin && (Number(post.userId.userId) === Number(userId)) && <Button style={{color: 'red', fontSize: '12px', float: 'right' }} onClick={() => handleRemovePost(post.postId)}>Delete</Button>}
-                    {/* display remove post button if user is admin using checkAuthLocal */}
-                    {isLoggedin && admin && <Button style={{color: 'red', fontSize: '12px', float: 'right' }} onClick={() => handleRemovePost(post.postId)}>Delete</Button>}
-
-                    <p style={{ fontSize: '12px', fontStyle: 'italic' }}>{post.userId.username || 'Unknown'}</p>
-                    <h4 style={{ fontWeight: 'bold' }}>{post.postSubject} </h4>
-                    <p style={{ fontSize: '12px' }}>Posted on: {new Date(post.postDate).toLocaleString()}</p>
-                    <hr />
-                    <p style={{ fontSize: '14px' }}>{post.postText}</p>
-
-                    {/* Comments */}
-                    <h5>Comments:</h5>
-                    <ul>
-                        {comments && comments[post.postId] && comments[post.postId].map((comment) => (
-                            <li key={comment.commentId}>
-                                {/* comments render in here via mapping each comment to a post*/ }
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <p>{comment.userId.username} : <i>{comment.commentText}</i></p>
-                                    </Grid>
-                                </Grid>
-                            </li>
-                        ))}
-                    </ul>
-                    
-                    {/* Add comment form */}
-                    {isLoggedin && <Button onClick={() => handleOpenCommentForm(post.postId)}>Add Comment</Button>}
-                    {isCommentFormOpen === post.postId && (
-                        <div>
-                        <form onSubmit={(event) => handleSubmitComment(event, post.postId)}>
-                            <Input type="text" value={comment} onChange={(event) => handleCommentChange(event, post.postId)} placeholder="Comment" />
-                            <Button type="submit">Submit</Button>
-                        </form>
-                        </div>
-                    )}
+            {isLoggedin && (
+                <Typography variant="h3">Welcome, {getUserDataCookieValues().userName || 'Unknown'}</Typography>
+            )}
+            <Typography variant="h4">Posts:</Typography>
+            <br />
+            {posts && posts.map((post) => (
+                <Container key={post.postId} style={{ marginBottom: '20px' }}>
+                    <Paper elevation={3} style={{ padding: '15px', borderRadius: '15px' }}>
+                        {isLoggedin && (Number(post.userId.userId) === Number(userId) || admin) && (
+                            <Button
+                                style={{ color: 'red', fontSize: '12px', float: 'right' }}
+                                onClick={() => handleRemovePost(post.postId)}
+                            >
+                                Delete
+                            </Button>
+                        )}
+                        <Typography variant="h5" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
+                            {post.postSubject}
+                        </Typography>
+                        <Typography variant="h12" style={{ fontStyle: 'italic' }}>
+                            Posted by: {post.userId.username || 'Unknown'} {'('+new Date(post.postDate).toLocaleString()+')'}
+                        </Typography>
+                        <Typography variant="body1" style={{ marginTop: '10px' }}>
+                            {post.postText}
+                        </Typography>
+                        {/* Comments section */}
+                        <Box mt={2}>
+                            <Typography variant="h8">Comments:</Typography>
+                            {comments && comments[post.postId] && comments[post.postId].length > 0 ? (
+                                <ul style={{ paddingLeft: '20px', listStyleType: 'none', marginTop: '10px' }}>
+                                    {comments[post.postId].map((comment) => (
+                                        <li key={comment.commentId}>
+                                            <Typography variant="body1">
+                                                <strong>{comment.userId.username}:</strong> {comment.commentText}
+                                            </Typography>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <Typography variant="body5" style={{ fontStyle: 'italic', paddingLeft: '20px' }}>
+                                    No comments yet
+                                </Typography>
+                            )}
+                            {isLoggedin && (
+                                <div style={{ marginTop: '10px' }}>
+                                <Button
+                                    onClick={() => handleOpenCommentForm(post.postId)}
+                                    variant="outlined"
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    Add Comment
+                                </Button>
+                                </div>
+                            )}
+                            {isCommentFormOpen === post.postId && (
+                                <form onSubmit={(event) => handleSubmitComment(event, post.postId)}>
+                                    <Input
+                                        type="text"
+                                        value={comment}
+                                        onChange={(event) => handleCommentChange(event, post.postId)}
+                                        placeholder="Write a comment..."
+                                        style={{ marginTop: '10px' }}
+                                        fullWidth
+                                    />
+                                    <Button type="submit" variant="contained" color="primary" style={{ marginTop: '10px' }}>
+                                        Submit
+                                    </Button>
+                                </form>
+                            )}
+                        </Box>
                     </Paper>
                 </Container>
-                ))
+            ))}
+            {isLoggedin && (
+                <Button onClick={handleOpenForm} variant="contained" color="primary" style={{ marginTop: '20px' }}>
+                    Add Post
+                </Button>
             )}
-
-            {/* Add new post */}
-            {isLoggedin && <Button onClick={handleOpenForm}>Add Post</Button>}
-
-            {/* Popup form */}
             {isFormOpen && (
-                <div>
-                    <form onSubmit={handleSubmit}>
-                        <Input type="text" value={title} onChange={handleTitleChange} placeholder="Title" />
-                        <TextField value={content} onChange={handleContentChange} placeholder="Content" />
-                        <Button type="submit">Submit</Button>
-                    </form>
-                </div>
+                <Container style={{ marginTop: '20px' }}>
+                    <Paper elevation={3} style={{ padding: '15px', borderRadius: '15px' }}>
+                        <form onSubmit={handleSubmit}>
+                            <Input
+                                type="text"
+                                value={title}
+                                onChange={handleTitleChange}
+                                placeholder="Title"
+                                fullWidth
+                                style={{ marginBottom: '10px' }}
+                            />
+                            <TextField
+                                value={content}
+                                onChange={handleContentChange}
+                                placeholder="Content"
+                                multiline
+                                rows={4}
+                                fullWidth
+                                variant="outlined"
+                            />
+                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '10px' }}>
+                                Submit
+                            </Button>
+                        </form>
+                    </Paper>
+                </Container>
             )}
-            
         </div>
     );
 }

@@ -52,6 +52,28 @@ async function getAllForums() {
     }
 }
 
+async function getPopularForums () {
+    const url = 'http://localhost:8080/api/forums/popular';
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error retrieving popular forums:", error);
+    }
+}
+
 async function getForumById(forumId) {
     // Construct the URL with the forumId variable
     const url = `http://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
@@ -146,7 +168,7 @@ async function deleteForumById(forumId) {
 }
 
 // Export the functions to be used in other files
-export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById};
+export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums};
 
 
 // Usage examples

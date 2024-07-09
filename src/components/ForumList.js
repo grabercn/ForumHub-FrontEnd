@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import AppCard from './AppCard';
+import ForumCard from './ForumCard';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import ForumDetail from './ForumDetail';
@@ -22,7 +22,7 @@ const ForumList = ({ forums, onForumClick }) => {
     <div>
       <Stack spacing={2} direction="row">
         {forums.map((forum) => (
-          <AppCard
+          <ForumCard
             key={forum.id} // Use a unique identifier as the key (assuming 'id' exists on forum)
             forum={forum}
             onClick={() => handleOpen(forum)}
