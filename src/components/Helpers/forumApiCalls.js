@@ -53,7 +53,7 @@ async function getAllForums() {
 }
 
 async function getPopularForums () {
-    const url = 'http://forumhubjavaservices.azurewebsites.net/api/forums/popular';
+    const url = 'https://forumhubjavaservices.azurewebsites.net/api/forums/popular';
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -76,7 +76,7 @@ async function getPopularForums () {
 
 async function getForumById(forumId) {
     // Construct the URL with the forumId variable
-    const url = `http://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
