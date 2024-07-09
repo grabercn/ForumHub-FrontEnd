@@ -59,7 +59,7 @@ const removePost = async (postId) => {
 }
 
 const getPopularPosts = async () => {
-    const url = `http://localhost:8080/api/posts/popular`;
+    const url = `http://forumhubjavaservices.azurewebsites.net/api/posts/popular`;
     try {
         const response = await fetch(url, {
             method: 'GET'

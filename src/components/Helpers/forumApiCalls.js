@@ -53,7 +53,7 @@ async function getAllForums() {
 }
 
 async function getPopularForums () {
-    const url = 'http://localhost:8080/api/forums/popular';
+    const url = 'http://forumhubjavaservices.azurewebsites.net/api/forums/popular';
     try {
         const response = await fetch(url, {
             method: 'GET',
