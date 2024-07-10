@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Typography, Box, Card, CardContent, Grid, CircularProgress } from '@mui/material';
-import { getPopularForums } from './Helpers/forumApiCalls';
+import { getPopularForums } from '../ApiCalls/forumApiCalls';
 import ForumList from './ForumList';
-import PostList from './PostList';
-import { getPopularPosts } from './Helpers/postApiCalls';
+import { getPopularPosts } from '../ApiCalls/postApiCalls';
 
 const HomeFeed = () => {
     const [popularForums, setPopularForums] = useState([]);

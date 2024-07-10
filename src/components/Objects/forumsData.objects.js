@@ -1,4 +1,4 @@
-import { getAllForums } from "../Helpers/forumApiCalls";
+import { getAllForums } from "../ApiCalls/forumApiCalls";
 
 
 // Get all forums as forumsData

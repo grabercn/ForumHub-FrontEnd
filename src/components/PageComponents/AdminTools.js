@@ -7,8 +7,8 @@ import ForumDetail from './ForumDetail';
 import ForumList from './ForumList';
 import Container from '@mui/material/Container';
 import Dialog from '@mui/material/Dialog';
-import { forumsData } from './Objects/forumsData.objects';
-import { createForum, getAllForums, deleteForumById } from './Helpers/forumApiCalls';
+import { forumsData } from '../Objects/forumsData.objects';
+import { createForum, getAllForums, deleteForumById } from '../ApiCalls/forumApiCalls';
 
 const AdminTools = () => {
 

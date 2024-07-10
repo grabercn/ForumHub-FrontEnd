@@ -5,7 +5,7 @@ import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import { getAllForums } from './Helpers/forumApiCalls';
+import { getAllForums } from '../ApiCalls/forumApiCalls';
 import Box from '@mui/material/Box';
 
 function Searchbar() {

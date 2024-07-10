@@ -4,23 +4,27 @@ import ForumDetail from "./ForumDetail";
 import ForumList from "./ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
-import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ForumIcon from '@mui/icons-material/Forum';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { forumsData as forumsData } from "./Objects/forumsData.objects";
+import { forumsData as forumsData } from "../Objects/forumsData.objects";
 import PageBanner from "./PageBanner";
-import { checkAuthLocal } from "./Objects/userData.object";
-import GoogleAd from "./GoogleAd";
+import { checkAuthLocal } from "../Objects/userData.object";
+import GoogleAd from "../GoogleAd";
 import { useMediaQuery } from '@mui/material';
 import HomeSettings from "./HomeSettings";
 import HomeFeed from "./HomeFeed";
+import { setPrimaryColor } from "../Objects/theme";
 
+// Create the theme instance (not in use here but need for breakpoints)
 const theme = createTheme({
   typography: {
     fontFamily: 'Roboto, sans-serif',
   },
 });
+
+var PRIMARY_COLOR = null; // Variable to store the primary color';
 
 const Home = () => {
   const [selectedForum, setSelectedForum] = useState(null);
@@ -46,7 +50,7 @@ const Home = () => {
   useEffect(() => {
     checkAuthLocal().then((response) => {
       if (response === true){
-        setSettings(['User Profile', 'Logout']);
+        setSettings(['Profile', 'User Settings', 'Logout']);
         checkAuthLocal("admin").then((response) => {
           if (response){
             setPages(['Admin Tools', 'About']);
@@ -105,6 +109,7 @@ const Home = () => {
       rgb.b = ~~(rgb.b / count);
 
       setRgb(rgb);
+      setPrimaryColor(rgb);
     };
   };
 
@@ -113,7 +118,7 @@ const Home = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <div>
         {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
         
@@ -220,7 +225,7 @@ const Home = () => {
       <div>
         <GoogleAd />
       </div>
-    </ThemeProvider>
+      </>
   );
 };
 

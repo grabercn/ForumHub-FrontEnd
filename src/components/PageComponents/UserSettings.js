@@ -1,14 +1,14 @@
 import React from 'react';
 import { Container, Alert, Paper } from '@mui/material';
 import { getAuthCookieValues, getUserDataCookieValues, removeAuthCookieValues, removeUserDataCookieValues } from '../Objects/userData.object';
-import { getUserByEmailAndPassword } from '../Helpers/authApiCalls';
+import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { UpdateUserById } from '../Helpers/userApiCalls';
+import { UpdateUserById } from '../ApiCalls/userApiCalls';
 import Typography from '@mui/material/Typography';
 import { Email, Phone, SupervisedUserCircle, AlternateEmail } from '@mui/icons-material';
 
-const UserProfile = () => {
+const UserSettings = () => {
     const [userData, setUserData] = React.useState({});
     const [isEditing, setIsEditing] = React.useState(false);
     const [isSaved, setIsSaved] = React.useState(false);
@@ -74,7 +74,7 @@ const UserProfile = () => {
                 <Grid container spacing={2} direction="column">
                     <Grid item>
                         <center><Typography variant="h10">Hello, {userData.name}</Typography></center>
-                        <center><Typography variant="h5">Your Profile</Typography></center>
+                        <center><Typography variant="h5">Your User Settings</Typography></center>
                         <br />
                         <center >Change your account settings below...</center>
                         <hr />
@@ -127,4 +127,4 @@ const UserProfile = () => {
     );
 };
 
-export default UserProfile;
+export default UserSettings;

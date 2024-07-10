@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
-import { createUser, createStaff } from '../Helpers/userApiCalls';
-import { checkUniqueUser } from '../Helpers/userApiCalls';
+import { createUser, createStaff } from '../ApiCalls/userApiCalls';
+import { checkUniqueUser } from '../ApiCalls/userApiCalls';
 const { isEmail, isStrongPassword, isMobilePhone } = require('validator');
 
 const Signup = () => {

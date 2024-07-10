@@ -1,12 +1,11 @@
 // Routes.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import ProductDetail from './components/ForumList';
+import Home from './components/PageComponents/Home';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
-import HomeFeed from './components/HomeFeed';
-import ForumDetail from './components/ForumDetail';
+import HomeFeed from './components/PageComponents/HomeFeed';
+import ForumDetail from './components/PageComponents/ForumDetail';
 import { Dialog } from '@mui/material';
 
 const PageRoutes = () => {
@@ -14,7 +13,14 @@ const PageRoutes = () => {
     <Router>
       <Routes>
         <Route exact path="/" component={Home} />
-        <Route path="/product/" component={ProductDetail} />
+        <Route
+          path="/forums/:forumIdUrl"
+          element={
+            <Dialog open={true}>
+              <ForumDetail />
+            </Dialog>
+          }
+        />
         <Route path="/login" element={Login} />
         <Route path="/signup" element={Signup} />
         <Route path="*" element={<h1>404 Not Found</h1>} />

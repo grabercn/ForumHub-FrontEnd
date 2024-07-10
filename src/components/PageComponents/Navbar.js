@@ -19,13 +19,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
-import Login from './Auth/Login';
-import Logout from './Auth/Logout';
+import Login from '../Auth/Login';
+import Logout from '../Auth/Logout';
 import { Dialog } from '@mui/material';
 import Searchbar from './Searchbar';
 import AdminTools from './AdminTools';
-import UserProfile from './Auth/UserProfile';
-import { checkAuthLocal, getUserDataCookieValues } from './Objects/userData.object'
+import UserSettings from './UserSettings';
+import UserProfile from './UserProfile';
+import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object'
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -34,6 +35,7 @@ function ResponsiveAppBar(props) {
   const [showAuth, setShowAuth] = React.useState(false);
   const [showAbout, setShowAbout] = React.useState(false);
   const [showUserProfile, setShowUserProfile] = React.useState(false);
+  const [showSettings, setShowSettings] = React.useState(false);
   const [isLoggedin, setIsLoggedin] = React.useState(false);
 
   const handleOpenNavMenu = (event) => {
@@ -76,9 +78,12 @@ function ResponsiveAppBar(props) {
     } else if (selectedButton === 'Logout') {
       // Show the logout component
       setShowLogin(true);
-    } else if (selectedButton === 'User Profile') {
-      setShowUserProfile(true);
+    }else if (selectedButton === 'Profile') {
+        setShowUserProfile(true);
+    } else if (selectedButton === 'User Settings') {
+      setShowSettings(true);
     }
+    
   };
 
   // Check if the user is logged in, and set the state accordingly
@@ -272,6 +277,11 @@ function ResponsiveAppBar(props) {
             Version 1.0
           </Typography>
           </Container>
+        </Dialog>
+      )}
+      {showSettings && (
+        <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
+          <UserSettings />
         </Dialog>
       )}
       {showUserProfile && (
