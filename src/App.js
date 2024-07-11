@@ -1,11 +1,9 @@
 import React from 'react';
-import PageRoutes from './PageRoutes';
-import Home from './components/PageComponents/Home';
 import { Helmet } from 'react-helmet';
 import { createCustomTheme } from './components/Objects/theme'; // Correct import statement
 import { ThemeProvider } from '@mui/material/styles';
+import PageRoutes from './PageRoutes';
 
-// Create the theme instance
 const themeInstance = createCustomTheme();
 
 const App = () => {
@@ -19,7 +17,6 @@ const App = () => {
       {/* Use the ThemeProvider from Material-UI to apply the theme */}
       <ThemeProvider theme={themeInstance}>
         <PageRoutes />
-        <Home />
       </ThemeProvider>
     </div>
   );

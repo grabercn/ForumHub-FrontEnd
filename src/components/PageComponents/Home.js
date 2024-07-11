@@ -15,7 +15,7 @@ import GoogleAd from "../GoogleAd";
 import { useMediaQuery } from '@mui/material';
 import HomeSettings from "./HomeSettings";
 import HomeFeed from "./HomeFeed";
-import { setPrimaryColor } from "../Objects/theme";
+import { isNightMode, setPrimaryColor } from "../Objects/theme";
 
 // Create the theme instance (not in use here but need for breakpoints)
 const theme = createTheme({
@@ -26,6 +26,12 @@ const theme = createTheme({
 
 var PRIMARY_COLOR = null; // Variable to store the primary color';
 
+/**
+ * Represents the Home component.
+ * 
+ * @component
+ * @returns {JSX.Element} The Home component.
+ */
 const Home = () => {
   const [selectedForum, setSelectedForum] = useState(null);
   const [forums, setForums] = useState(forumsData);
@@ -45,7 +51,7 @@ const Home = () => {
 
   useEffect(() => {
     setForums(forumsData);
-  }, [forumsData]);
+  } , []);
 
   useEffect(() => {
     checkAuthLocal().then((response) => {
@@ -116,6 +122,12 @@ const Home = () => {
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+  
+  // if nightmode is enabled, set the primary color to the rgb value and background color to black
+  if (isNightMode()) {
+    PRIMARY_COLOR = rgb;
+    document.body.style.backgroundColor = 'black';
+  }
 
   return (
     <>
@@ -127,13 +139,13 @@ const Home = () => {
         )}
 
         <Box sx={{ mt: 2, mb: 2 }}>
-          <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#ffffff' }}>
+          <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isNightMode() ? 'black' : 'white' }}>
             <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
               <ListItem 
                 button 
                 selected={selectedIndex === 0} 
                 onClick={(event) => handleListItemClick(event, 0)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
               >
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
@@ -150,7 +162,7 @@ const Home = () => {
                 button 
                 selected={selectedIndex === 1} 
                 onClick={(event) => handleListItemClick(event, 1)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
               >
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>
@@ -167,7 +179,7 @@ const Home = () => {
                 button 
                 selected={selectedIndex === 2} 
                 onClick={(event) => handleListItemClick(event, 2)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px' }}
+                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
               >
                 <Grid container alignItems="center" justifyContent="center">
                   <Grid item>

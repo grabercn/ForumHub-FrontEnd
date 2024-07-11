@@ -61,6 +61,7 @@ function ResponsiveAppBar(props) {
 
   const userData = getUserDataCookieValues();
   const userName = userData ? userData.userName : 'User';
+  const userId = userData ? userData.userId : null;
 
   // Add the pages and settings to the navbar, force them to be arrays
   var pages = props.pages || [];
@@ -286,7 +287,7 @@ function ResponsiveAppBar(props) {
       )}
       {showUserProfile && (
         <Dialog open={showUserProfile} onClose={() => setShowUserProfile(false)}>
-          <UserProfile />
+          <UserProfile userId={userId}/>
         </Dialog>
       )}
     </AppBar>

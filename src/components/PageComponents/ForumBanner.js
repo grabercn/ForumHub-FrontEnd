@@ -1,4 +1,13 @@
+/**
+ * Renders a forum banner component.
+ * @param {Object} props - The component props.
+ * @param {string} props.imgUrl - The URL of the banner image.
+ * @param {string} props.heading - The heading text for the banner.
+ * @param {string} props.subheading - The subheading text for the banner.
+ * @returns {JSX.Element} The rendered forum banner component.
+ */
 import React from 'react';
+
 
 const ForumBanner = ({ imgUrl, heading, subheading }) => {
     return (

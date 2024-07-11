@@ -1,5 +1,9 @@
 // Fetch all comments from the API
 
+/**
+ * Adds a comment to the API.
+ * @param {Object} postObject - The comment object to be added.
+ */
 const addComment = async (postObject) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/comments`;
     try {
@@ -22,6 +26,11 @@ const addComment = async (postObject) => {
     }
 }
 
+/**
+ * Retrieves all comments for a specific post from the API.
+ * @param {number} postId - The ID of the post.
+ * @returns {Array} - An array of comments.
+ */
 const getAllCommentsByPostId = async (postId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/post/${postId}`;
     try {
@@ -41,6 +50,10 @@ const getAllCommentsByPostId = async (postId) => {
     }
 }
 
+/**
+ * Removes a comment from the API.
+ * @param {number} postId - The ID of the comment to be removed.
+ */
 const removeComment = async (postId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/${postId}`;
     try {
@@ -57,7 +70,11 @@ const removeComment = async (postId) => {
     }
 }
 
-// remove all commenets by post id
+/**
+ * Removes all comments for a specific post from the API.
+ * @param {number} postId - The ID of the post.
+ * @returns {Array} - An array of deleted comments.
+ */
 const removeAllCommentsByPostId = async (postId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/post/${postId}`;
     try {
@@ -76,8 +93,4 @@ const removeAllCommentsByPostId = async (postId) => {
     }
 }
 
-//addComment(commentObject);
-//getAllComments();
-//removeComment(1);
-
-export { getAllCommentsByPostId, removeAllCommentsByPostId,addComment, removeComment };
+export { getAllCommentsByPostId, removeAllCommentsByPostId, addComment, removeComment };

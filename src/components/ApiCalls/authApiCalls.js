@@ -2,6 +2,12 @@
 // File: auth.js
 // This file contains helper functions for authentication API calls
 
+/**
+ * Checks user authentication by making an API call to the server.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ * @returns {Promise<Object|null>} - A promise that resolves to the authentication data or null if there was an error.
+ */
 async function checkUserAuth(email, password) {
   const url = `https://forumhubjavaservices.azurewebsites.net/api/users/auth/${email},${password}`;
   try {
@@ -24,7 +30,11 @@ async function checkUserAuth(email, password) {
   }
 }
 
-//get user role by username
+/**
+ * Gets the user role by making an API call to the server.
+ * @param {string} username - The username of the user.
+ * @returns {Promise<string|null>} - A promise that resolves to the user role or null if there was an error.
+ */
 async function getUserRole(username) {
   const url = `https://forumhubjavaservices.azurewebsites.net/api/users/role/${username}`;
   try {
@@ -47,7 +57,12 @@ async function getUserRole(username) {
   }
 }
 
-// get user id by email and password
+/**
+ * Gets the user by email and password by making an API call to the server.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ * @returns {Promise<Object|null>} - A promise that resolves to the user data or null if there was an error.
+ */
 async function getUserByEmailAndPassword(email, password) {
   const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${email}/${password}`;
   try {

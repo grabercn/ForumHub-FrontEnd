@@ -2,9 +2,17 @@ import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-const LoadingSpinner = ({ isLoading }) => {
+/**
+ * A loading spinner component that displays a circular progress indicator
+ * while waiting for data to load.
+ *
+ * @param {boolean} [isLoading=false] - Indicates whether the data is currently loading.
+ * @param {React.Component} [component=null] - The component to render when the data is not loading.
+ * @returns {React.Component} - The loading spinner component.
+ */
+const LoadingSpinner = ({ isLoading = false, component = null }) => {
   return (
-    isLoading && (
+    isLoading ? (
       <Box
         sx={{
           position: 'fixed',
@@ -21,6 +29,8 @@ const LoadingSpinner = ({ isLoading }) => {
       >
         <CircularProgress />
       </Box>
+    ) : (
+      component
     )
   );
 };

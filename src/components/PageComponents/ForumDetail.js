@@ -6,9 +6,17 @@ import Paper from '@mui/material/Paper';
 import { getUserDataCookieValues } from '../Objects/userData.object';
 import { getForumById } from '../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close';
+import { Link } from 'react-router-dom';
 
-// ForumDetail Component
+/**
+ * Renders the details of a forum, including the forum banner, category, and posts.
+ * 
+ * @param {Object} props - The component props.
+ * @param {Object} props.forum - The forum object.
+ * @param {string} props.postId - The ID of the post.
+ * @returns {JSX.Element} The rendered ForumDetail component.
+ */
 const ForumDetail = ({ forum, postId }) => {
   
   const [forumDataFromUrl, setForumDataFromUrl] = React.useState({});
@@ -30,28 +38,27 @@ const ForumDetail = ({ forum, postId }) => {
 
     // Return the forum details component
     return (
-        <Grid container spacing={2} id='forumDetails'>
+        <Grid container spacing={2} id='forumDetails'  >
           <Grid item xs={12}>
             {/* Display the alert button if forumIdUrl is defined */}
-            {forumIdUrl && (
-              <a href="/">
-                <center>
-                  <Alert
-                    style={{
-                      width: '20%',
-                      float: 'right',
-                      position: 'fixed',
-                      zIndex: '999',
-                      textAlign: 'center',
-                      borderRadius: '10px', // Add rounded corners
-                    }}
-                    severity="info"
-                  >
-                    Viewing a post from homepage. Click to exit.
-                  </Alert>
-                </center>
-              </a>
-            )}
+              {forumIdUrl && (
+              <Link to='/'>
+                <div
+                style={{
+                  position: 'fixed',
+                  top: '10px',
+                  right: '10px',
+                  zIndex: '1000',
+                  color: 'black', // Change the color of the close button
+                  borderRadius: '50%', // Add a circle around the close button
+                  backgroundColor: 'white', // Add a background color
+                  padding: '5px' // Add padding to the close button
+                }}
+                >
+                <CloseIcon />
+                </div>
+              </Link>
+              )}
                 <Paper elevation={3} style={{ padding: '10px' }}>
                     <ForumBanner
                         heading={forumDetail.forumName}

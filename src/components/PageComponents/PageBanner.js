@@ -1,6 +1,7 @@
 import React from 'react';
 import { styled } from '@mui/system';
 import { useMediaQuery } from '@mui/material';
+import { isNightMode } from '../Objects/theme';
 
 const Banner = styled('div')(({ imgUrl }) => ({
     position: 'relative',
@@ -67,7 +68,7 @@ const HorizontalBar = styled('div')(({ waveColor }) => ({
     bottom: '-10px',
     width: '100%',
     height: '10px',
-    background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), white)`,
+    background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), ${isNightMode ? 'black' : 'white'})`,
 }));
 
 const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {

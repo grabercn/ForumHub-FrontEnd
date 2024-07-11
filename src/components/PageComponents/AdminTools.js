@@ -10,6 +10,10 @@ import Dialog from '@mui/material/Dialog';
 import { forumsData } from '../Objects/forumsData.objects';
 import { createForum, getAllForums, deleteForumById } from '../ApiCalls/forumApiCalls';
 
+/**
+ * AdminTools component for managing forums.
+ * @component
+ */
 const AdminTools = () => {
 
     var forums = forumsData;

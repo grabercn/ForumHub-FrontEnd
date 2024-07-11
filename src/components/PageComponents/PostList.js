@@ -5,9 +5,8 @@ import { addComment, getAllCommentsByPostId, removeAllCommentsByPostId } from '.
 import { getPostsByForumId, removePost } from '../ApiCalls/postApiCalls';
 import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object';
 import { Select, FormControl, InputLabel } from '@mui/material';
-import { PRIMARY_COLOR } from './Home';
 import GlassTopBar from '../StyledComponents/GlassTopBar';
-
+import { Link } from 'react-router-dom';
 
 function PostList(props) {
     const { forum, userId, postId } = props;
@@ -155,18 +154,18 @@ function PostList(props) {
             <br />
             
             {/* Display a message if there are no posts */}
-            {posts.length === 0 && (
+            {posts.length === 0 && isLoggedin && (
                 <Alert severity="info">No posts found. Be the first to post!</Alert>
             )}
 
             {/* Display a message if the user is not logged in */}
             {!isLoggedin && (
-                <Alert severity="info">Please log in to post and comment</Alert>
+                <Alert severity="info">Please log in to sort, post, and comment</Alert>
             )}
 
 
             {/* Display the add post button if the user is logged in */}
-            {isLoggedin && (
+            {isLoggedin &&  (
                 <GlassTopBar>
                     <FormControl variant="outlined">
                         <InputLabel htmlFor="sort-select">Sort by</InputLabel>
@@ -248,8 +247,9 @@ function PostList(props) {
                         <Typography variant="h5" style={{ fontWeight: 'bold', textDecoration: 'underline' }}>
                             {post.postSubject}
                         </Typography>
+                        
                         <Typography variant="h12" style={{ fontStyle: 'italic' }}>
-                            Posted by: {post.userId.username || 'Unknown'} {'('+new Date(post.postDate).toLocaleString()+')'}
+                            Posted by: <Link to={`/users/${post.userId.userId}`} > {post.userId.username || 'Unknown'} </Link> {'('+new Date(post.postDate).toLocaleString()+')'}
                         </Typography>
                         <Typography variant="body1" style={{ marginTop: '10px' }}>
                             {post.postText}

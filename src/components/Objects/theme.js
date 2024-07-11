@@ -28,26 +28,6 @@ function rgbToHex(rgb) {
     return `#${rHex}${gHex}${bHex}`.toUpperCase();
 }
 
-// Initialize primary color as null initially
-let primaryColor = null;
-
-/**
- * Function to set the primary color.
- * @param {string} color - The primary color in RGB format.
- */
-export const setPrimaryColor = (color) => {
-    primaryColor = color;
-};
-
-/**
- * Function to check if it's night time (between 7 PM and 7 AM).
- * @returns {boolean} - True if it's night time, false otherwise.
- */
-const isNightTime = () => {
-    const hour = new Date().getHours();
-    return hour >= 19 || hour <= 7; // Night time is from 7 PM to 7 AM
-};
-
 /**
  * Function to lighten a hexadecimal color.
  * @param {string} hex - The hexadecimal color string to lighten.
@@ -81,15 +61,45 @@ function hexToRgb(hex) {
     } : null;
 }
 
+// Initialize primary color as null initially
+let primaryColor = null;
+
+/**
+ * Function to set the primary color.
+ * @param {string} color - The primary color in RGB format.
+ */
+export const setPrimaryColor = (color) => {
+    primaryColor = color;
+};
+
+/**
+ * Function to check if it's night time based on user's color scheme preference.
+ * @returns {boolean} - True if it's night time, false otherwise.
+ */
+export const isNightMode = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Determine night time based on user's color scheme preference
+    if (prefersDarkMode) {
+        // Use dark mode color scheme
+        return true; // Always consider it's night if user prefers dark mode
+    } else {
+        return false; // Consider it's day if user prefers light mode
+    }
+};
+
 /**
  * Function to create the custom MUI theme.
  * Uses primary color set by setPrimaryColor() and switches to dark mode at night.
  * Lightens the primary color for better visibility in dark mode.
+ * Applies backdrop blur to the root element and excludes <MenuItem>.
  * @returns {Object} - The created Material-UI theme object.
  */
 export const createCustomTheme = () => {
     // Determine if it's night time
-    const isNight = isNightTime();
+    const isNight = isNightMode();
 
     // Convert the RGB color to hexadecimal
     let hexColor = '#1976d2'; // Default to blue if primaryColor is not set
@@ -112,6 +122,19 @@ export const createCustomTheme = () => {
                 main: '#f0f8ff', // Add a secondary color
             },
             // Add more palette options (secondary, error, etc.) as needed
+        },
+        components: {
+            MuiBackdrop: {
+                styleOverrides: {
+                    root: {
+                        backdropFilter: 'blur(8px)', // Apply backdrop blur to the root element
+                    },
+                    '& .MuiMenu-paper': {
+                        backdropFilter: 'none', // Exclude backdrop filter for Menu items
+                    },
+                    
+                },
+            },
         },
     });
 

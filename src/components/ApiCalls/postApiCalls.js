@@ -1,5 +1,9 @@
 // Fetch all posts from the API
 
+/**
+ * Adds a new post to the API.
+ * @param {Object} postObject - The post object to be added.
+ */
 const addPost = async (postObject) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts`;
     try {
@@ -22,7 +26,11 @@ const addPost = async (postObject) => {
     }
 }
 
-// get all posts for a forum
+/**
+ * Retrieves all posts for a specific forum from the API.
+ * @param {number} forumId - The ID of the forum.
+ * @returns {Promise<Array>} - A promise that resolves to an array of posts.
+ */
 const getPostsByForumId = async (forumId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/forum/${forumId}`;
     try {
@@ -42,6 +50,10 @@ const getPostsByForumId = async (forumId) => {
     }
 }
 
+/**
+ * Removes a post from the API.
+ * @param {number} postId - The ID of the post to be removed.
+ */
 const removePost = async (postId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/${postId}`;
     try {
@@ -58,6 +70,10 @@ const removePost = async (postId) => {
     }
 }
 
+/**
+ * Retrieves popular posts from the API.
+ * @returns {Promise<Array>} - A promise that resolves to an array of popular posts.
+ */
 async function getPopularPosts () {
     const url = 'https://forumhubjavaservices.azurewebsites.net/api/posts/popular';
     try {
@@ -80,7 +96,10 @@ async function getPopularPosts () {
     }
 }
 
-// delete posts by forum id
+/**
+ * Removes all posts for a specific forum from the API.
+ * @param {number} forumId - The ID of the forum.
+ */
 const removeAllPostsByForumId = async (forumId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/forum/${forumId}`;
     try {
@@ -97,7 +116,11 @@ const removeAllPostsByForumId = async (forumId) => {
     }
 }
 
-// get post by id
+/**
+ * Retrieves a post by its ID from the API.
+ * @param {number} postId - The ID of the post.
+ * @returns {Promise<Object>} - A promise that resolves to the post object.
+ */
 const getPostById = async (postId) => {
     const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/${postId}`;
     try {
@@ -117,9 +140,4 @@ const getPostById = async (postId) => {
     }
 }
 
-//addPost(postObject);
-//getAllPosts();
-//getPostsByForumId(1);
-//removePost(1);
-
-export {removeAllPostsByForumId, addPost, removePost, getPostById, getPostsByForumId, getPopularPosts };
+export { removeAllPostsByForumId, addPost, removePost, getPostById, getPostsByForumId, getPopularPosts };

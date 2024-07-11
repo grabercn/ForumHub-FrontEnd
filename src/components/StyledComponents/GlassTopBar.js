@@ -3,14 +3,16 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import { isNightMode } from '../Objects/theme';
 
 // Styled component for the main top bar container
 const GlassTopBarContainer = styled(AppBar)(({ theme }) => ({
-  backgroundColor: 'rgba(80, 80, 80, 0.9)', // Slightly transparent white background
+  backgroundColor:  isNightMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.5)', // Glass color
   backdropFilter: 'blur(10px)', // Glass effect
   boxShadow: 'none', // No shadow
   borderRadius: '10px', // Rounded corners
   zIndex: 999,
+  padding: '10px' // Add padding around the components
 }));
 
 /**
@@ -36,7 +38,7 @@ const GlassTopBar = ({ children }) => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '0 16px', // Add padding to adjust spacing between children
+          padding: '0 10px', // Add padding to adjust spacing between children
         }}
       >
         {childrenArray.map((child, index) => (
