@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
-import { createUser, createStaff } from '../ApiCalls/userApiCalls';
-import { checkUniqueUser } from '../ApiCalls/userApiCalls';
+import { createUser, CheckUniqueUser } from '../ApiCalls/userApiCalls';
 const { isEmail, isStrongPassword, isMobilePhone } = require('validator');
 
 const Signup = () => {
@@ -15,61 +14,65 @@ const Signup = () => {
     const [password2, setPassword2] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isAdmin, setIsAdmin] = useState(false);
-    
+
     // Error states for form validation
-    const [nameError, setNameError] = useState(false);
-    const [usernameError, setUsernameError] = useState(false);  
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-    const [password2Error, setPassword2Error] = useState(false);
-    const [phoneNumberError, setPhoneNumberError] = useState(false);
+    const [nameError, setNameError] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [password2Error, setPassword2Error] = useState('');
+    const [phoneNumberError, setPhoneNumberError] = useState('');
 
-    const verifyFormData = (formData) => {
-        // verify password and email format
-
+    const verifyFormData = async (formData) => {
         // Reset all error states
+        setNameError('');
+        setUsernameError('');
         setEmailError('');
-        setUsernameError('');   
         setPasswordError('');
         setPassword2Error('');
-        setNameError('');
         setPhoneNumberError('');
-        
-        // Regular expressions for email, password, and phone number
-        const validateEmail = (email) => {
-            return isEmail(email);
-        };
-        const validatePassword = (password) => {
-            return isStrongPassword(password);
-        };
-        const validatePhoneNumber = (phoneNumber) => {
-            return isMobilePhone(phoneNumber);
-        };
 
         var error = false;
 
-        if(formData.userName.length === 0 || formData.userName === '') {
+        if (formData.userName.length === 0) {
             setNameError('Name cannot be empty.');
             error = true;
         }
 
-        if(formData.uniqueusername.length === 0 || formData.uniqueusername === '') {
+        if (formData.uniqueusername.length === 0) {
             setUsernameError('Username cannot be empty.');
             error = true;
-        }
-    
-        if (!validateEmail(String(formData.email))) {
-            setEmailError('Invalid email format. (Ex owen@gmail.com) \n ');
-            error = true;
-        }
-    
-        if (!validatePassword(String(formData.password))) {
-            setPasswordError('Invalid password format.');
-            error = true;
+        } else {
+            CheckUniqueUser(formData.uniqueusername, formData.email, formData.phoneNumber)
+            .then((isUnique) => {
+            if (isUnique[0]) {
+                setUsernameError('Username is already taken.');
+                error = true;
+            }
+            })
+            .catch((error) => {
+            console.log('Error checking username uniqueness:', error);
+            });
         }
 
-        if (!validatePassword(String(formData.password2))) {
-            setPassword2Error('Invalid password format.');
+        if (!isEmail(formData.email)) {
+            setEmailError('Invalid email format.');
+            error = true;
+        } else {
+            CheckUniqueUser(formData.email)
+            .then((isUnique) => {
+            if (isUnique[1]) {
+                setEmailError('Email is already taken.');
+                error = true;
+            }
+            })
+            .catch((error) => {
+            setEmailError('Error checking email uniqueness.');
+            });
+        }
+
+        if (!isStrongPassword(formData.password)) {
+            setPasswordError('Invalid password format.');
             error = true;
         }
 
@@ -78,29 +81,30 @@ const Signup = () => {
             setPassword2Error('Passwords do not match.');
             error = true;
         }
-    
-        if (!validatePhoneNumber(String(formData.phoneNumber))) {
-            setPhoneNumberError('Invalid phone number format. (Ex 123-456-7890)');
+
+        if (!isMobilePhone(formData.phoneNumber)) {
+            setPhoneNumberError('Invalid phone number format.');
             error = true;
+        } else {
+            CheckUniqueUser(formData.phoneNumber)
+            .then((isUnique) => {
+            if (isUnique[2]) {
+                setPhoneNumberError('Phone number is already taken.');
+                error = true;
+            }
+            })
+            .catch((error) => {
+            setPhoneNumberError('Error checking phone number uniqueness.');
+            });
         }
 
-        // If any errors are found, return false
+        return !error;
+    };
 
-        // bypassing regex check for now, will fix later
-        //if (error) {
-         //   return false;
-        //}
-
-        // If no errors are found, return true
-        return true;
-        
-        
-    }
-
-    const handleCreateUser = (event) => {
+    const handleCreateUser = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
 
-        if (!verifyFormData({ userName, uniqueusername, email, password, password2, phoneNumber })) {
+        if (!(await verifyFormData({ userName, uniqueusername, email, password, password2, phoneNumber }))) {
             alert('Invalid form data.');
         } else {
             const userObject2 = {
@@ -111,112 +115,125 @@ const Signup = () => {
                 password: password,
                 role: 'user' // Default role is user, is not able to be changed from the front end, so value here does not matter
             };
-            
+
             try {
-                createUser(userObject2).then((response) => {
-                    console.log(response);
-                    if (response === true) {
-                        alert(`Created user with username: ${userName}.`);
-                        window.location.reload();
-                    } else if (response === undefined) {
-                        alert(`User with this (phone number, email, or username) already exists.`);
-                    } else {
-                        alert(`Error creating user.`);
-                    }
-                });
+                const response = await createUser(userObject2);
+                if (response === true) {
+                    alert(`Created user with username: ${userName}.`);
+                    window.location.reload();
+                } else if (response === undefined) {
+                    alert(`User already exists or format is incorrect.`);
+                } else {
+                    alert(`Error creating user.`);
+                }
             } catch (error) {
                 alert(`Error creating user.`);
             }
         }
-    }
+    };
 
     return (
         <Container maxWidth="md">
-        <Grid container spacing={2} width={'page'}>
-            <Box
-                width={500}
-                height={'page'}
-                my={4}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                gap={2}
-            >
-                <h1>Sign Up</h1>
-                <form onSubmit={handleCreateUser}>
-                    <Grid container direction="column" spacing={2}>
-                        <Grid item>
-                            <TextField 
-                                value={userName} 
-                                helperText={nameError}
-                                onChange={(e) => setUserName(e.target.value)} 
-                                placeholder="Enter full name"
-                            />
+            <Grid container spacing={2}>
+                <Box
+                    width={500}
+                    my={4}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    gap={2}
+                >
+                    <h1>Sign Up</h1>
+                    <form onSubmit={handleCreateUser}>
+                        <Grid container direction="column" spacing={2}>
+                            <Grid item>
+                                <TextField 
+                                    value={userName} 
+                                    helperText={nameError}
+                                    error={!!nameError}
+                                    onChange={(e) => setUserName(e.target.value)} 
+                                    placeholder="Enter full name"
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    value={uniqueusername}
+                                    helperText={usernameError}
+                                    error={!!usernameError}
+                                    onChange={(e) => setUniqueUsername(e.target.value)}
+                                    placeholder="Enter username"
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField 
+                                    value={email}
+                                    helperText={emailError} 
+                                    error={!!emailError}
+                                    type="email" 
+                                    placeholder="Enter email" 
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField 
+                                    value={password}
+                                    helperText={passwordError} 
+                                    error={!!passwordError}
+                                    name="password"
+                                    type="password" 
+                                    placeholder="Enter password" 
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Alert severity="info">Password Requirements:
+                                    <ul>
+                                        <li>At least 8 characters</li>
+                                        <li>At least one uppercase letter</li>
+                                        <li>At least one lowercase letter</li>
+                                        <li>At least one special character</li>
+                                        <li>At least one number</li>
+                                    </ul>
+                                </Alert>
+                            </Grid>
+                            <Grid item>
+                                <TextField 
+                                    value={password2}
+                                    helperText={password2Error} 
+                                    error={!!password2Error}
+                                    type="password" 
+                                    placeholder="Confirm password" 
+                                    onChange={(e) => setPassword2(e.target.value)}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField 
+                                    value={phoneNumber}
+                                    helperText={phoneNumberError} 
+                                    error={!!phoneNumberError}
+                                    type="tel" 
+                                    placeholder="Enter phone number" 
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Button type="submit" variant="contained">
+                                    Create User
+                                </Button>    
+                            </Grid>
                         </Grid>
-                        <Grid item>
-                            <TextField
-                                value={uniqueusername}
-                                helperText={usernameError}
-                                onChange={(e) => setUniqueUsername(e.target.value)}
-                                placeholder="Enter username"
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField 
-                                helperText={emailError} 
-                                type="email" 
-                                placeholder="Enter email" 
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField 
-                                helperText={passwordError} 
-                                name='password'
-                                type="password" 
-                                placeholder="Enter password" 
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Alert severity="info">Password Requirements:
-                                <ul>
-                                    <li>At least 8 characters</li>
-                                    <li>At least one uppercase letter</li>
-                                    <li>At least one lowercase letter</li>
-                                    <li>At least one special character</li>
-                                    <li>At least one number</li>
-                                </ul>
-                            </Alert>
-                        </Grid>
-                        <Grid item>
-                            <TextField 
-                                helperText={password2Error} 
-                                type="password" 
-                                placeholder="Confirm password" 
-                                onChange={(e) => setPassword2(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField 
-                                helperText={phoneNumberError} 
-                                type="phoneNumber" 
-                                placeholder="Enter phone number" 
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Button type="submit" variant="contained">
-                                Create User
-                            </Button>    
-                        </Grid>
-                    </Grid>
-                </form>
-            </Box>
-        </Grid>
+                    </form>
+                </Box>
+            </Grid>
         </Container>
     );
-}
+};
 
 export default Signup;

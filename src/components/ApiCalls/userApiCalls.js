@@ -78,9 +78,29 @@ async function UpdateUserById(userId, userObject) {
     }
 }
 
+async function CheckUniqueUser(username, email, phoneNumber) {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/check/${username}/${email}/${phoneNumber}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error creating user:", error);
+    }
+}
+
+
 
 // Export the functions to be used in other files
-export { createUser, getUserById, UpdateUserById };
+export { createUser, getUserById, UpdateUserById, CheckUniqueUser };
 
 //createUser(userObject);
 //getUserById(1);

@@ -67,8 +67,8 @@ const HorizontalBar = styled('div')(({ waveColor }) => ({
     position: 'absolute',
     bottom: '-10px',
     width: '100%',
-    height: '10px',
-    background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), ${isNightMode ? 'black' : 'white'})`,
+    height: '1px',
+    background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), ${isNightMode() ? 'black' : 'white'})`,
 }));
 
 const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {
@@ -80,13 +80,13 @@ const PageBanner = ({ text, subtext, imgUrl, waveColor }) => {
             </div>
             
             <Waves>
-                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={30}>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={40}>
                     <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r+50}, ${waveColor.g+50}, ${waveColor.b+50}, 0.9)`} />
                 </Wave>
-                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={15}>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={25}>
                     <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r+25}, ${waveColor.g+25}, ${waveColor.b+25}, 0.7)`} />
                 </Wave>
-                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={10}>
+                <Wave viewBox="0 0 600 120" preserveAspectRatio="none" speed={15}>
                     <path className="wave" d="M0,0 V46c48.7,22,102.5,22,151,0s102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0,102.5-22,151,0,102.5,22,151,0V0z" fill={`rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 0.5)`} />
                 </Wave>
             </Waves>

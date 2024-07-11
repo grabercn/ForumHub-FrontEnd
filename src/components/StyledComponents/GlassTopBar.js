@@ -7,7 +7,7 @@ import { isNightMode } from '../Objects/theme';
 
 // Styled component for the main top bar container
 const GlassTopBarContainer = styled(AppBar)(({ theme }) => ({
-  backgroundColor:  isNightMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.5)', // Glass color
+  backgroundColor:  isNightMode() ? 'rgba(0, 0, 0, 0.9)' : 'rgba(230, 230, 230, 0.9)', // Glass color
   backdropFilter: 'blur(10px)', // Glass effect
   boxShadow: 'none', // No shadow
   borderRadius: '10px', // Rounded corners

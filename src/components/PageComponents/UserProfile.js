@@ -20,7 +20,6 @@ const UserProfile = ({ userId }) => {
     if (userIdUrl) {
       getUserById(userIdUrl).then((user) => {
         setUserData(user);
-        console.log(user);
       });
     } else {
       getUserById(userId).then((user) => {

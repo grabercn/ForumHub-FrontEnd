@@ -77,17 +77,11 @@ export const setPrimaryColor = (color) => {
  * @returns {boolean} - True if it's night time, false otherwise.
  */
 export const isNightMode = () => {
-    const now = new Date();
-    const hour = now.getHours();
     const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    // Determine night time based on user's color scheme preference
-    if (prefersDarkMode) {
-        // Use dark mode color scheme
-        return true; // Always consider it's night if user prefers dark mode
-    } else {
-        return false; // Consider it's day if user prefers light mode
-    }
+    console.log(prefersDarkMode)
+
+    return prefersDarkMode;
 };
 
 /**

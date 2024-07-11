@@ -6,20 +6,14 @@ import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
 import Dialog from "@mui/material/Dialog";
 import Signup from "./Signup";
-import { checkAuthLocal, checkCustomerAuthCookie, checkStaffAuthCookie, removeAuthCookieValues, setAuthCookieValues } from "../Objects/userData.object";
+import { checkAuthLocal, setAuthCookieValues } from "../Objects/userData.object";
 import { Alert } from "@mui/material";
-import { LinearProgress } from "@mui/material";
 
 const Login = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorType, setErrorType] = useState("error");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const handleToggleChange = () => {
-    setIsAdmin((prevIsAdmin) => !prevIsAdmin);
-  };
 
   const handleSignup = () => {
     setShowSignup(true);
@@ -30,26 +24,40 @@ const Login = () => {
 
     const password = event.target.elements.password.value;
     const email = event.target.elements.email.value;
-    const userType = isAdmin ? "admin" : "user";
+    const userType = ['user', 'admin'];
 
     setAuthCookieValues(email, password);
-    checkAuthLocal(userType).then((response) => {
+    checkAuthLocal(userType[0]).then((response) => {
       if (response === true) {
         setErrorType("success");
-        setErrorMessage("Login successful!");
+        setErrorMessage("User Login successful!");
         setIsError(true);
         
         setTimeout(() => {
           window.location.reload();
         }, 2000);
-      }else if (response === 'error getting user role') {
+      } else if (response === 'error getting user role') {
         setErrorType("error");
         setErrorMessage("Error getting user role! Try again later.");
         setIsError(true);
       } else {
-        setErrorType("error");
-        setErrorMessage("Invalid credentials!");
-        setIsError(true);
+        // Check for admin authentication
+        checkAuthLocal(userType[1]).then((adminResponse) => {
+          if (adminResponse === true) {
+            setErrorType("success");
+            setErrorMessage("Admin Login successful!");
+            setIsError(true);
+
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+
+          } else {
+            setErrorType("error");
+            setErrorMessage("Invalid credentials!");
+            setIsError(true);
+          }
+        });
       }
     });
   };
@@ -71,14 +79,6 @@ const Login = () => {
           {isError && (
             <Alert severity={errorType}>{errorMessage}</Alert>
           )}
-          <Grid item>
-            <Switch
-              checked={isAdmin}
-              onChange={handleToggleChange}
-              inputProps={{ "aria-label": "controlled" }}
-            />
-            Admin
-            </Grid>
           <Grid item>
             <TextField
               id="email"

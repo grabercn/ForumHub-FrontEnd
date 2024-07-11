@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { addPost } from '../ApiCalls/postApiCalls';
-import { Input, Button, TextField, Container, Paper, Typography, Box, Alert } from '@mui/material';
+import { Input, Button, TextField, Container, Paper, Typography, Box, Alert, Pagination, Select, FormControl, InputLabel } from '@mui/material';
 import { addComment, getAllCommentsByPostId, removeAllCommentsByPostId } from '../ApiCalls/commentApiCalls';
 import { getPostsByForumId, removePost } from '../ApiCalls/postApiCalls';
 import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object';
-import { Select, FormControl, InputLabel } from '@mui/material';
 import GlassTopBar from '../StyledComponents/GlassTopBar';
+import { isNightMode } from '../Objects/theme';
 import { Link } from 'react-router-dom';
 
 function PostList(props) {
@@ -23,7 +23,10 @@ function PostList(props) {
     const [admin, setAdmin] = React.useState(false);
     const [sortMethod, setSortMethod] = React.useState('date');
     
-    
+    // Pagination state
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const postsPerPage = 10; // Number of posts per page
+
     const sortedPosts = [...posts].sort((a, b) => {
         switch (sortMethod) {
             case 'subject':
@@ -37,6 +40,11 @@ function PostList(props) {
         }
     });
 
+    // Pagination logic
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+
     const postRefs = useRef({});
 
     const handleOpenForm = () => {
@@ -45,6 +53,11 @@ function PostList(props) {
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
+    };
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+        window.scrollTo(0, 0);
     };
 
     const handleContentChange = (event) => {
@@ -165,7 +178,7 @@ function PostList(props) {
 
 
             {/* Display the add post button if the user is logged in */}
-            {isLoggedin &&  (
+            {isLoggedin && posts.length !== 0 && (
                 <GlassTopBar>
                     <FormControl variant="outlined">
                         <InputLabel htmlFor="sort-select">Sort by</InputLabel>
@@ -233,7 +246,7 @@ function PostList(props) {
 
 
             {/* Display the posts (sorted by selection) */}
-            {sortedPosts.map((post) => (
+            {currentPosts.map((post) => (
                 <Container key={post.postId} style={{ marginBottom: '20px' }} ref={(el) => (postRefs.current[post.postId] = el)}>
                     <Paper elevation={3} style={{ padding: '15px', borderRadius: '15px' }}>
                         {isLoggedin && (Number(post.userId.userId) === Number(userId) || admin) && (
@@ -248,8 +261,10 @@ function PostList(props) {
                             {post.postSubject}
                         </Typography>
                         
-                        <Typography variant="h12" style={{ fontStyle: 'italic' }}>
-                            Posted by: <Link to={`/users/${post.userId.userId}`} > {post.userId.username || 'Unknown'} </Link> {'('+new Date(post.postDate).toLocaleString()+')'}
+                        <Typography
+                                variant="h12"
+                            >
+                            Posted by: {' '} <Link style={{ textDecoration: "none", color: isNightMode() ? 'lightblue' : 'navy' }} to={`/users/${post.userId.userId}`} > {post.userId.username || 'Unknown'} </Link> {'  '} {'('+new Date(post.postDate).toLocaleString()+')'}
                         </Typography>
                         <Typography variant="body1" style={{ marginTop: '10px' }}>
                             {post.postText}
@@ -301,6 +316,16 @@ function PostList(props) {
                     </Paper>
                 </Container>
             ))}
+
+            {/* Pagination */}
+            <Box display="flex" justifyContent="center" mt={3}>
+                <Pagination
+                    count={Math.ceil(sortedPosts.length / postsPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Box>
         </div>
     );
 }
