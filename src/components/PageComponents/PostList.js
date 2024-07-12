@@ -7,6 +7,8 @@ import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.obj
 import GlassTopBar from '../StyledComponents/GlassTopBar';
 import { isNightMode } from '../Objects/theme';
 import { Link } from 'react-router-dom';
+import ProfileIcon from '../StyledComponents/ProfileIcon';
+import { Scale } from '@mui/icons-material';
 
 function PostList(props) {
     const { forum, userId, postId } = props;
@@ -22,6 +24,32 @@ function PostList(props) {
     const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(null);
     const [admin, setAdmin] = React.useState(false);
     const [sortMethod, setSortMethod] = React.useState('date');
+
+    // Function to format the date difference
+    const formatDateDifference = (postDate) => {
+        const currentDate = new Date();
+        const datePosted = new Date(postDate);
+        const differenceInSeconds = Math.floor((currentDate - datePosted) / 1000);
+      
+        if (differenceInSeconds < 60) {
+          return `${differenceInSeconds} seconds ago`;
+        } else if (differenceInSeconds < 3600) {
+          const minutes = Math.floor(differenceInSeconds / 60);
+          return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        } else if (differenceInSeconds < 86400) {
+          const hours = Math.floor(differenceInSeconds / 3600);
+          return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        } else if (differenceInSeconds < 2592000) {
+          const days = Math.floor(differenceInSeconds / 86400);
+          return `${days} day${days > 1 ? 's' : ''} ago`;
+        } else if (differenceInSeconds < 31536000) {
+          const months = Math.floor(differenceInSeconds / 2592000);
+          return `${months} month${months > 1 ? 's' : ''} ago`;
+        } else {
+          const years = Math.floor(differenceInSeconds / 31536000);
+          return `${years} year${years > 1 ? 's' : ''} ago`;
+        }
+      };
     
     // Pagination state
     const [currentPage, setCurrentPage] = React.useState(1);
@@ -261,10 +289,21 @@ function PostList(props) {
                             {post.postSubject}
                         </Typography>
                         
-                        <Typography
-                                variant="h12"
+                        <Typography variant="h12">
+                            <Link
+                            style={{
+                                textDecoration: "none",
+                                color: isNightMode() ? 'lightblue' : 'navy',
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                            to={`/users/${post.userId.userId}`}
                             >
-                            Posted by: {' '} <Link style={{ textDecoration: "none", color: isNightMode() ? 'lightblue' : 'navy' }} to={`/users/${post.userId.userId}`} > {post.userId.username || 'Unknown'} </Link> {'  '} {'('+new Date(post.postDate).toLocaleString()+')'}
+                            <ProfileIcon username={post.userId.username || 'Unknown'} size={20} />
+                            <span style={{ marginLeft: "5px" }}>{post.userId.username || 'Unknown'}
+                            {' (' + formatDateDifference(post.postDate) + ')'}
+                            </span>
+                            </Link>{' '}
                         </Typography>
                         <Typography variant="body1" style={{ marginTop: '10px' }}>
                             {post.postText}
