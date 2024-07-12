@@ -96,7 +96,7 @@ async function getForumById(forumId) {
 
 async function getForumByName(forumName) {
     // Construct the URL with the forumName variable
-    const url = `http://localhost:8080/api/forums/search/${forumName}`;
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/search/${forumName}`;
     try {
         const response = await fetch(url, {
         method: 'GET'

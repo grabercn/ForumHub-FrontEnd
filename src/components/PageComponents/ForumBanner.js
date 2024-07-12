@@ -22,6 +22,7 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
                     width: "100%", 
                     height: isMobile ? "auto" : "100%", 
                     objectFit: isMobile ? "contain" : "contain",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a background color
                     transition: "opacity 0.3s ease-in-out",
                     opacity: "0.8", // Set initial opacity to 0.8
                 }}

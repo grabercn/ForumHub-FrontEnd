@@ -97,6 +97,7 @@ function Searchbar() {
       // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create('width'),
+      width: '100%',
       [theme.breakpoints.up('sm')]: {
         width: '12ch',
         '&:focus': {
@@ -108,6 +109,7 @@ function Searchbar() {
 
   return (
     <div style={{ position: 'relative', zIndex: '1000' }}>
+      {/* Mobile Search Icon Button */}
       <IconButton
         size="large"
         aria-label="search"
@@ -149,8 +151,8 @@ function Searchbar() {
         </Box>
       </Popover>
 
-      {/* Original search bar for larger screens */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      {/* Desktop Search Bar */}
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
         <Search>
           <SearchIconWrapper>
             <SearchIcon />
@@ -168,7 +170,7 @@ function Searchbar() {
       {searchResults.length > 0 && (
         <Paper elevation={3} style={{ position: 'absolute', top: '60px', left: 0, right: 0, zIndex: 1000 }}>
           {searchResults.map((forum) => (
-            <Link to={`/forum/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link to={`/forums/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
               <Typography variant="body1" sx={{ p: 2 }}>
                 {forum.forumName}
               </Typography>

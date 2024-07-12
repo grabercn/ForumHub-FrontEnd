@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Typography,
     Box,
     Card,
     CardContent,
     Grid,
     CircularProgress,
+    Button,
+    IconButton,
+    Select,
+    MenuItem,
+    Typography,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { getPopularForums } from "../ApiCalls/forumApiCalls";
-import ForumList from "./ForumList";
 import { getPopularPosts } from "../ApiCalls/postApiCalls";
-import { Link } from "react-router-dom";
-import { isNightMode } from "../Objects/theme";
+import { availableComponents, getComponent } from "../StyledComponents/ComponentsConfig";
 
 /**
  * Renders the home feed component.
@@ -21,28 +25,48 @@ const HomeFeed = () => {
     const [popularForums, setPopularForums] = useState([]);
     const [popularPosts, setPopularPosts] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
+    const [customizeMode, setCustomizeMode] = useState(false); // State to track customization mode
+    const [layout, setLayout] = useState([]); // State to track the layout
 
     const forumContainerRef = useRef(null);
 
     useEffect(() => {
-        /**
-         * Fetches popular forums from the API and updates the state.
-         */
+        // Fetch layout from localStorage
+        const savedLayout = JSON.parse(localStorage.getItem("homeFeedLayout"));
+        if (savedLayout) {
+            setLayout(savedLayout);
+        }
+
+        // Fetch popular forums from the API and updates the state.
         getPopularForums().then((forums) => {
             setPopularForums(forums);
         });
-    }, []);
 
-    useEffect(() => {
-        /**
-         * Fetches popular posts from the API and updates the state.
-         * Sets loading to false once data is fetched.
-         */
+        // Fetch popular posts from the API and updates the state.
         getPopularPosts().then((posts) => {
             setPopularPosts(posts);
             setLoading(false); // Set loading to false once data is fetched
         });
     }, []);
+
+    const saveLayoutToLocalStorage = (newLayout) => {
+        setLayout(newLayout);
+        localStorage.setItem("homeFeedLayout", JSON.stringify(newLayout));
+    };
+
+    const addComponent = (componentName) => {
+        const newLayout = [...layout, { name: componentName }];
+        saveLayoutToLocalStorage(newLayout);
+    };
+
+    const removeComponent = (index) => {
+        const newLayout = layout.filter((_, i) => i !== index);
+        saveLayoutToLocalStorage(newLayout);
+    };
+
+    const toggleCustomizeMode = () => {
+        setCustomizeMode((prev) => !prev);
+    };
 
     if (loading) {
         return (
@@ -60,64 +84,74 @@ const HomeFeed = () => {
     }
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12} md={8}>
-                <Card variant="outlined" sx={{ borderRadius: 2, marginBottom: 2 }}>
-                    <CardContent>
-                        <Typography
-                            variant="h6"
-                            align="left"
-                            gutterBottom
-                            sx={{ marginBottom: 1 }}
+        <Box>
+            {layout.length === 0 && (
+                <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+                    <Typography variant="h6">
+                        Welcome to your customizable homepage.
+                    </Typography>
+                    <Typography variant="body1">
+                        Click "Customize" to add components.
+                    </Typography>
+                </Box>
+            )}
+            <Grid container spacing={2}>
+                {layout.map((component, index) => {
+                    const Component = getComponent(component.name);
+                    return (
+                        <Grid item xs={12} key={index}>
+                            <Card variant="outlined" sx={{ borderRadius: 2, marginBottom: 2 }}>
+                                <CardContent>
+                                    {customizeMode && (
+                                        <IconButton
+                                            aria-label="remove component"
+                                            onClick={() => removeComponent(index)}
+                                            sx={{ float: "right" }}
+                                        >
+                                            <RemoveIcon />
+                                        </IconButton>
+                                    )}
+                                    <Component
+                                        forums={popularForums}
+                                        posts={popularPosts}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    );
+                })}
+                {customizeMode && (
+                    <Grid item xs={12}>
+                        <Select
+                            label="Add Component"
+                            onChange={(e) => addComponent(e.target.value)}
+                            value=""
+                            displayEmpty
+                            fullWidth
                         >
-                            Popular Forums:
-                        </Typography>
-                        <Box
-                            ref={forumContainerRef}
-                            sx={{ overflowX: "auto", display: "flex", alignItems: "center" }}
-                        >
-                            <ForumList forums={popularForums} title="Popular Forums">
-                                <Typography variant="h6" align="center">
-                                    Recent Posts
-                                </Typography>
-                            </ForumList>
-                        </Box>
-                    </CardContent>
-                </Card>
+                            <MenuItem value="" disabled>
+                                Add Component
+                            </MenuItem>
+                            {Object.keys(availableComponents).map((key) => (
+                                <MenuItem key={key} value={key}>
+                                    {key}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                )}
             </Grid>
-            <Grid item xs={12} md={4}>
-                <Card variant="outlined" sx={{ borderRadius: 2, marginBottom: 2 }}>
-                    <CardContent>
-                        <Typography
-                            variant="h6"
-                            align="left"
-                            gutterBottom
-                            sx={{ marginBottom: 1 }}
-                        >
-                            Popular Posts:
-                            <br />
-                            <i style={{ fontSize: "0.7em" }}>
-                                Click on a post to view more details
-                            </i>
-                        </Typography>
-                        {popularPosts.map((post) => (
-                            <Link
-                            key={post.postId}
-                            to={`/posts/${post.forumId.forumId}/${post.postId}`}
-                            style={{ textDecoration: "none" }}
-                        >
-                            <Typography
-                                variant="subtitle1"
-                                sx={{ textDecoration: "none", color: isNightMode() ? "white" : "black"}}
-                            >
-                                <b>{post.postSubject}</b>: {post.postText}
-                            </Typography>
-                        </Link>
-                        ))}
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid>
+            <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={toggleCustomizeMode}
+                    sx={{ marginRight: 2 }}
+                >
+                    {customizeMode ? "Save" : "Customize"}
+                </Button>
+            </Box>
+        </Box>
     );
 };
 
