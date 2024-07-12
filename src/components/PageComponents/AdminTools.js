@@ -86,8 +86,7 @@ const AdminTools = () => {
         <div>
             <Container maxWidth='md'>
             <Box
-                height={500}
-                width={500}
+                p={4}
                 my={0}
                 display="ho"
                 alignItems="top"

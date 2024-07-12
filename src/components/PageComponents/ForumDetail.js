@@ -38,7 +38,7 @@ const ForumDetail = ({ forum, postId }) => {
 
     // Return the forum details component
     return (
-        <Grid container spacing={2} id='forumDetails'  >
+        <Grid container spacing={2} id='forumDetails' p={1} >
           <Grid item xs={12}>
             {/* Display the alert button if forumIdUrl is defined */}
               {forumIdUrl && (
@@ -59,7 +59,7 @@ const ForumDetail = ({ forum, postId }) => {
                 </div>
               </Link>
               )}
-                <Paper elevation={3} style={{ padding: '10px' }}>
+                <Paper elevation={3} >
                     <ForumBanner
                         heading={forumDetail.forumName}
                         subheading={forumDetail.forumDescription}

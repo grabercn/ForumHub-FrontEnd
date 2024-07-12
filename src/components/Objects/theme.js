@@ -78,9 +78,6 @@ export const setPrimaryColor = (color) => {
  */
 export const isNightMode = () => {
     const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    console.log(prefersDarkMode)
-
     return prefersDarkMode;
 };
 

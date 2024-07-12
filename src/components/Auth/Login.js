@@ -64,8 +64,7 @@ const Login = () => {
 
   return (
     <Box
-      height={500}
-      width={500}
+      p={4}
       my={4}
       display="flex"
       alignItems="center"
