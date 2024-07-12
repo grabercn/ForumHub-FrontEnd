@@ -67,7 +67,7 @@ const HorizontalBar = styled('div')(({ waveColor }) => ({
     position: 'absolute',
     bottom: '-10px',
     width: '100%',
-    height: '1px',
+    height: '10px',
     background: `linear-gradient(to bottom, rgba(${waveColor.r}, ${waveColor.g}, ${waveColor.b}, 1), ${isNightMode() ? 'black' : 'white'})`,
 }));
 

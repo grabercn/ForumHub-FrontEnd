@@ -2,9 +2,13 @@
 import React from 'react';
 import ForumList from '../PageComponents/ForumList';
 import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
+import { getUserDataCookieValues } from '../Objects/userData.object';
+import ProfileIcon from './ProfileIcon';
+import About from '../PageComponents/About';
+import UserSettings from '../PageComponents/UserSettings';
 
 export const availableComponents = {
-    ForumList: (props) => (
+    PopularForums: (props) => (
         <Box {...props} sx={{ overflowY: 'auto'}}>
             <ForumList {...props} />
         </Box>
@@ -30,6 +34,15 @@ export const availableComponents = {
             ))}
         </Grid>
     ),
+    WelcomeTag: () => (
+        <Box>
+            <Typography variant="h4">Welcome, {getUserDataCookieValues().userName || "guest"}!</Typography>
+        </Box>
+    ),
+    About: () => (
+        <About />
+    ),
+
     // Add more components as needed
 };
 

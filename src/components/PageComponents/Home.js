@@ -135,7 +135,7 @@ const Home = () => {
         {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
         
         {rgb && (
-          <PageBanner text="Welcome to ForumHub" subtext="Click on a forum to view it." imgUrl={bannerImgUrl.current} waveColor={rgb} />
+          <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
         )}
 
         <Box sx={{ mt: 2, mb: 2 }}>

@@ -29,10 +29,12 @@ function PostList(props) {
     const formatDateDifference = (postDate) => {
         const currentDate = new Date();
         const datePosted = new Date(postDate);
-        const differenceInSeconds = Math.floor((currentDate - datePosted) / 1000);
-      
+        const currentUtcDate = new Date(currentDate.toUTCString());
+        const postedUtcDate = new Date(datePosted.toUTCString());
+        const differenceInSeconds = Math.abs(Math.floor((currentUtcDate - postedUtcDate) / 1000) + 14400);
+
         if (differenceInSeconds < 60) {
-          return `${differenceInSeconds} seconds ago`;
+          return `now`;
         } else if (differenceInSeconds < 3600) {
           const minutes = Math.floor(differenceInSeconds / 60);
           return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
@@ -138,7 +140,7 @@ function PostList(props) {
             postText: content,
             forumId: forumId,
             userId: userId,
-            postDate: new Date().toISOString(),
+            postDate: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // account for timezone offset of server
         };
 
         addPost(newPost).then((response) => {   
@@ -192,21 +194,21 @@ function PostList(props) {
                 <Typography variant="h3">Welcome, {getUserDataCookieValues().userName || 'Unknown'}</Typography>
             )}
             <Typography variant="h4">Posts:</Typography>
-            <br />
             
             {/* Display a message if there are no posts */}
             {posts.length === 0 && isLoggedin && (
-                <Alert severity="info">No posts found. Be the first to post!</Alert>
+                <Alert style={{ marginTop: '20px' }} severity="info">No posts found. Be the first to post!</Alert>
             )}
 
             {/* Display a message if the user is not logged in */}
             {!isLoggedin && (
-                <Alert severity="info">Please log in to sort, post, and comment</Alert>
+                <Alert style={{ marginTop: '20px' }} severity="info">Please log in to sort, post, and comment</Alert>
             )}
 
 
             {/* Display the add post button if the user is logged in */}
-            {isLoggedin && posts.length !== 0 && (
+            {isLoggedin && (
+                <div style={{ marginTop: '20px' }}>
                 <GlassTopBar>
                     <FormControl variant="outlined">
                         <InputLabel htmlFor="sort-select">Sort by</InputLabel>
@@ -235,9 +237,8 @@ function PostList(props) {
                         Add Post
                     </Button>
                 </GlassTopBar>
+                </div>
             )}
-
-            
 
             {/* Display the form to add a post */}
             {isFormOpen && (
@@ -251,6 +252,7 @@ function PostList(props) {
                                 placeholder="Title"
                                 fullWidth
                                 style={{ marginBottom: '10px' }}
+                                inputProps={{ maxLength: 70 }}
                             />
                             <TextField
                                 value={content}
@@ -260,10 +262,16 @@ function PostList(props) {
                                 rows={4}
                                 fullWidth
                                 variant="outlined"
+                                inputProps={{ maxLength: 800 }}
                             />
-                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '10px' }}>
-                                Submit
-                            </Button>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                <Typography variant="caption" color="textSecondary">
+                                    {content.length}/800 characters
+                                </Typography>
+                                <Button type="submit" variant="contained" color="primary" style={{ marginTop: '10px' }}>
+                                    Submit
+                                </Button>
+                            </div>
                         </form>
                     </Paper>
                 </Container>

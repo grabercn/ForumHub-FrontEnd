@@ -8,7 +8,7 @@ import { Typography } from '@mui/material';
  */
 function HomeSettings() {
     return(
-    <Typography variant="h6" align="center">View and appearence settings will be here.</Typography>
+    <Typography variant="h6" align="center">View and appearance settings will be here.</Typography>
     );
 }
 
