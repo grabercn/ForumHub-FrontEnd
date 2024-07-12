@@ -1,38 +1,65 @@
-// File: Searchbar.js
 import * as React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import { getAllForums } from '../ApiCalls/forumApiCalls';
 import Box from '@mui/material/Box';
+import { getForumByName } from '../ApiCalls/forumApiCalls';
+import { Link } from 'react-router-dom';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 function Searchbar() {
-  const [searchResult, setSearchResult] = React.useState(null);
+  const [searchInput, setSearchInput] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null); // State for search popover
+
+  // Ref for input base to focus on open
+  const inputRef = React.useRef(null);
 
   // Function to handle search query
   const searchQuery = (query) => {
-    getAllForums().then((response) => {
-      response.forEach((forum) => {
-        if (query && forum.forumName.toLowerCase().includes(query.toLowerCase())) {
-          setSearchResult(forum);
-        }
-      });
-    });
+    setSearchInput(query);
+    if (query.length > 0) {
+      getForumByName(query)
+        .then((response) => {
+          if (Array.isArray(response)) {
+            setSearchResults(response);
+          } else {
+            setSearchResults([]);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching forums:', error);
+          setSearchResults([]);
+        });
+    } else {
+      setSearchResults([]);
+    }
   };
 
   // Function to handle opening the search popover
   const handleOpenSearchPopover = (event) => {
     setAnchorEl(event.currentTarget);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   // Function to handle closing the search popover
   const handleCloseSearchPopover = () => {
     setAnchorEl(null);
-    setSearchResult(null); // Clear search results when closing
+    setSearchInput('');
+    setSearchResults([]); // Clear search results when closing
   };
+
+  // Use effect to focus input on search result change
+  React.useEffect(() => {
+    if (searchResults.length > 0 && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchResults]);
 
   // Search bar styling
   const Search = styled('div')(({ theme }) => ({
@@ -80,7 +107,7 @@ function Searchbar() {
   }));
 
   return (
-    <div style={{ zIndex: '1000' }}>
+    <div style={{ position: 'relative', zIndex: '1000' }}>
       <IconButton
         size="large"
         aria-label="search"
@@ -114,15 +141,11 @@ function Searchbar() {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              inputRef={inputRef}
               onChange={(event) => searchQuery(event.target.value)}
+              value={searchInput}
             />
           </Search>
-          {searchResult && (
-            <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', position: 'absolute' }}>
-              {searchResult.forumName}
-              <br />
-            </div>
-          )}
         </Box>
       </Popover>
 
@@ -136,15 +159,23 @@ function Searchbar() {
             placeholder="Search…"
             inputProps={{ 'aria-label': 'search' }}
             onChange={(event) => searchQuery(event.target.value)}
+            value={searchInput}
           />
         </Search>
-        {searchResult && (
-          <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', position: 'absolute' }}>
-            {searchResult.forumName}
-            <br />
-          </div>
-        )}
       </Box>
+
+      {/* Floating search results */}
+      {searchResults.length > 0 && (
+        <Paper elevation={3} style={{ position: 'absolute', top: '60px', left: 0, right: 0, zIndex: 1000 }}>
+          {searchResults.map((forum) => (
+            <Link to={`/forum/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Typography variant="body1" sx={{ p: 2 }}>
+                {forum.forumName}
+              </Typography>
+            </Link>
+          ))}
+        </Paper>
+      )}
     </div>
   );
 }

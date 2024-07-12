@@ -26,6 +26,7 @@ import Searchbar from './Searchbar';
 import AdminTools from './AdminTools';
 import UserSettings from './UserSettings';
 import UserProfile from './UserProfile';
+import About from './About';
 import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object'
 
 function ResponsiveAppBar(props) {
@@ -264,20 +265,7 @@ function ResponsiveAppBar(props) {
       )}
       {showAbout && (
         <Dialog open={showAbout} onClose={() => setShowAbout(false)}>
-          <Container maxWidth="md">
-          <Typography variant="h6" align="center">
-            About
-          </Typography>
-          <Typography variant="body1" align="center">
-            ForumHub Application
-          </Typography>
-          <Typography variant="body1" align="center">
-            Created by Christian Graber based off DDD Project.
-          </Typography>
-          <Typography variant="body1" align="center">
-            Version 1.0
-          </Typography>
-          </Container>
+          <About />
         </Dialog>
       )}
       {showSettings && (
