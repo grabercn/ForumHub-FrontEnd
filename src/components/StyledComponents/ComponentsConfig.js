@@ -1,7 +1,7 @@
 // componentsConfig.js
 import React from 'react';
 import ForumList from '../PageComponents/ForumList';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
 
 export const availableComponents = {
     ForumList: (props) => (
@@ -10,13 +10,25 @@ export const availableComponents = {
         </Box>
     ),
     PopularPosts: ({ posts, ...props }) => (
-        <Box {...props}>
+        <Grid container spacing={2} {...props}>
             {posts.map((post) => (
-                <Typography key={post.postId} variant="subtitle1">
-                    <b>{post.postSubject}</b>: {post.postText}
-                </Typography>
+                <Grid item xs={12} sm={6} key={post.postId}>
+                    <Card variant="outlined" sx={{ height: '100%' }}>
+                        <CardContent>
+                            <Link
+                                key={post.postId}
+                                href={`/posts/${post.forumId.forumId}/${post.postId}`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <Typography variant="subtitle1">
+                                    <b>{post.postSubject}</b>: {post.postText}
+                                </Typography>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                </Grid>
             ))}
-        </Box>
+        </Grid>
     ),
     // Add more components as needed
 };
