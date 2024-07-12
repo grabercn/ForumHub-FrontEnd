@@ -1,9 +1,7 @@
-import { Container, Grid, Input, Switch, TextField } from '@mui/material';
+import { Container, Grid, TextField, Alert, Box, Button } from '@mui/material';
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
 import { createUser, CheckUniqueUser } from '../ApiCalls/userApiCalls';
+import Turnstile from 'react-turnstile'; // Import Turnstile
 const { isEmail, isStrongPassword, isMobilePhone } = require('validator');
 
 const Signup = () => {
@@ -22,6 +20,10 @@ const Signup = () => {
     const [passwordError, setPasswordError] = useState('');
     const [password2Error, setPassword2Error] = useState('');
     const [phoneNumberError, setPhoneNumberError] = useState('');
+
+    // Turnstile state
+    const [recaptchaVerified, setRecaptchaVerified] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState('');
 
     const verifyFormData = async (formData) => {
         // Reset all error states
@@ -43,32 +45,22 @@ const Signup = () => {
             setUsernameError('Username cannot be empty.');
             error = true;
         } else {
-            CheckUniqueUser(formData.uniqueusername, formData.email, formData.phoneNumber)
-            .then((isUnique) => {
+            const isUnique = await CheckUniqueUser(formData.uniqueusername, formData.email, formData.phoneNumber);
             if (isUnique[0]) {
                 setUsernameError('Username is already taken.');
                 error = true;
             }
-            })
-            .catch((error) => {
-            console.log('Error checking username uniqueness:', error);
-            });
         }
 
         if (!isEmail(formData.email)) {
             setEmailError('Invalid email format.');
             error = true;
         } else {
-            CheckUniqueUser(formData.email)
-            .then((isUnique) => {
+            const isUnique = await CheckUniqueUser(formData.email);
             if (isUnique[1]) {
                 setEmailError('Email is already taken.');
                 error = true;
             }
-            })
-            .catch((error) => {
-            setEmailError('Error checking email uniqueness.');
-            });
         }
 
         if (!isStrongPassword(formData.password)) {
@@ -86,23 +78,29 @@ const Signup = () => {
             setPhoneNumberError('Invalid phone number format.');
             error = true;
         } else {
-            CheckUniqueUser(formData.phoneNumber)
-            .then((isUnique) => {
+            const isUnique = await CheckUniqueUser(formData.phoneNumber);
             if (isUnique[2]) {
                 setPhoneNumberError('Phone number is already taken.');
                 error = true;
             }
-            })
-            .catch((error) => {
-            setPhoneNumberError('Error checking phone number uniqueness.');
-            });
         }
 
         return !error;
     };
 
+    const handleRecaptchaVerify = (token) => {
+        console.log('Turnstile verified:', token);
+        setRecaptchaToken(token);
+        setRecaptchaVerified(true);
+    };
+
     const handleCreateUser = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
+
+        if (!recaptchaVerified) {
+            alert('Please complete the Turnstile.');
+            return;
+        }
 
         if (!(await verifyFormData({ userName, uniqueusername, email, password, password2, phoneNumber }))) {
             alert('Invalid form data.');
@@ -221,6 +219,13 @@ const Signup = () => {
                                     placeholder="Enter phone number" 
                                     onChange={(e) => setPhoneNumber(e.target.value)}
                                     fullWidth
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Turnstile
+                                    sitekey="0x4AAAAAAAe9bHH_A0xJsKVx"
+                                    onVerify={handleRecaptchaVerify}
+                                    theme="light"
                                 />
                             </Grid>
                             <Grid item>
