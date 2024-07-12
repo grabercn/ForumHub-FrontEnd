@@ -5,7 +5,7 @@ import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
 
 export const availableComponents = {
     ForumList: (props) => (
-        <Box {...props}>
+        <Box {...props} sx={{ overflowY: 'auto'}}>
             <ForumList {...props} />
         </Box>
     ),
