@@ -91,7 +91,7 @@ const Home = () => {
   }, []);
 
   function getRandomImageUrl() {
-    const numberOfImages = 14;
+    const numberOfImages = 24;
     const randomImageNumber = Math.floor(Math.random() * numberOfImages) + 1;
     return `/images/image${randomImageNumber}.jpg`;
   }

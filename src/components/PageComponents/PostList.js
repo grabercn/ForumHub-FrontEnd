@@ -8,7 +8,6 @@ import GlassTopBar from '../StyledComponents/GlassTopBar';
 import { isNightMode } from '../Objects/theme';
 import { Link } from 'react-router-dom';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
-import { Scale } from '@mui/icons-material';
 
 function PostList(props) {
     const { forum, userId, postId } = props;
