@@ -16,6 +16,7 @@ import { useMediaQuery } from '@mui/material';
 import HomeSettings from "./HomeSettings";
 import HomeFeed from "./HomeFeed";
 import { isNightMode, setPrimaryColor } from "../Objects/theme";
+import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 
 // Create the theme instance (not in use here but need for breakpoints)
 const theme = createTheme({
@@ -24,7 +25,7 @@ const theme = createTheme({
   },
 });
 
-var PRIMARY_COLOR = null; // Variable to store the primary color';
+var PRIMARY_COLOR = null; // Variable to store the primary color
 
 /**
  * Represents the Home component.
@@ -34,12 +35,15 @@ var PRIMARY_COLOR = null; // Variable to store the primary color';
  */
 const Home = () => {
   const [selectedForum, setSelectedForum] = useState(null);
-  const [forums, setForums] = useState(forumsData);
+  const [forums, setForums] = useState([]);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [settings, setSettings] = useState([]);
   const [pages, setPages] = useState([]);
   const [rgb, setRgb] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0); // For list item selection
+  const [isLoadingForums, setIsLoadingForums] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isProcessingImage, setIsProcessingImage] = useState(true);
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
   const imageProcessed = useRef(false); // Track if the image has been processed
@@ -49,11 +53,14 @@ const Home = () => {
     setSelectedForum(forum);
   }
 
-  useEffect(() => {
+  useEffect(() => { // this is the first thing that runs when the component is loaded, and thus will hang the page until it is done
+    console.log("Loading forums...");
     setForums(forumsData);
+    setIsLoadingForums(false);
   } , []);
 
   useEffect(() => {
+    console.log("Checking auth...");
     checkAuthLocal().then((response) => {
       if (response === true){
         setSettings(['Profile', 'User Settings', 'Logout']);
@@ -70,13 +77,16 @@ const Home = () => {
         setPages(['About']);
         setIsAuthChecked(true);
       }
+      setIsCheckingAuth(false);
     });
   }, []);
 
   useEffect(() => {
+    console.log("Processing image...");
     if (!imageProcessed.current) {
       getAverageRGB(bannerImgUrl.current);
       imageProcessed.current = true; // Set the flag to true after processing the image
+      setIsProcessingImage(false);
     }
   }, []);
 
@@ -132,112 +142,117 @@ const Home = () => {
   return (
     <>
       <div>
-        {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
-        
-        {rgb && (
-          <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
-        )}
+        {isCheckingAuth || isLoadingForums || isProcessingImage ? (
+          <LoadingSpinner isLoading={true} />
+        ) : (
+          <>
+            {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
+            
+            {rgb && (
+              <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
+            )}
 
-        <Box sx={{ mt: 2, mb: 2 }}>
-          <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isNightMode() ? 'black' : 'white' }}>
-            <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
-              <ListItem 
-                button 
-                selected={selectedIndex === 0} 
-                onClick={(event) => handleListItemClick(event, 0)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
-              >
-                <Grid container alignItems="center" justifyContent="center">
-                  <Grid item>
-                    <ListItemIcon sx={{ minWidth: 'auto' }}>
-                      <HomeIcon />
-                    </ListItemIcon>
-                  </Grid>
-                  <Grid item>
-                    <ListItemText primary="HOME" sx={{ marginLeft: '8px', textAlign: 'center' }} />
-                  </Grid>
-                </Grid>
-              </ListItem>
-              <ListItem 
-                button 
-                selected={selectedIndex === 1} 
-                onClick={(event) => handleListItemClick(event, 1)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
-              >
-                <Grid container alignItems="center" justifyContent="center">
-                  <Grid item>
-                    <ListItemIcon sx={{ minWidth: 'auto' }}>
-                      <ForumIcon />
-                    </ListItemIcon>
-                  </Grid>
-                  <Grid item>
-                    <ListItemText primary="FORUMS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
-                  </Grid>
-                </Grid>
-              </ListItem>
-              <ListItem 
-                button 
-                selected={selectedIndex === 2} 
-                onClick={(event) => handleListItemClick(event, 2)}
-                sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
-              >
-                <Grid container alignItems="center" justifyContent="center">
-                  <Grid item>
-                    <ListItemIcon sx={{ minWidth: 'auto' }}>
-                      <SettingsIcon />
-                    </ListItemIcon>
-                  </Grid>
-                  <Grid item>
-                    <ListItemText primary="SETTINGS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
-                  </Grid>
-                </Grid>
-              </ListItem>
-            </List>
-          </Box>
-        </Box>
-
-        <Box sx={{ mt: 4 }}>
-          {selectedIndex === 0 && (
-            <Container maxWidth="xl">
-              { /* Display the HomeFeed component */}
-              <HomeFeed />
-            </Container>
-          )}
-
-          {selectedIndex === 1 && (
-            <Container maxWidth="xl">
-              <Grid container spacing={2}>
-                {Object.values(forums).length === 0 ? (
-                  <Alert severity="info"><strong>No forums available.</strong></Alert>
-                ) : (
-                  Object.values(forums).map((forum) => (
-                    <Grid item xs={12} md={2} key={forum.id}>
-                      <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', fontFamily: 'Roboto, sans-serif' }}>
-                        <ForumList forums={[forum]} onForumClick={handleForumClick} />
-                      </div>
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isNightMode() ? 'black' : 'white' }}>
+                <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
+                  <ListItem 
+                    button 
+                    selected={selectedIndex === 0} 
+                    onClick={(event) => handleListItemClick(event, 0)}
+                    sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
+                  >
+                    <Grid container alignItems="center" justifyContent="center">
+                      <Grid item>
+                        <ListItemIcon sx={{ minWidth: 'auto' }}>
+                          <HomeIcon />
+                        </ListItemIcon>
+                      </Grid>
+                      <Grid item>
+                        <ListItemText primary="HOME" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                      </Grid>
                     </Grid>
-                  ))
-                )}
-                <Grid item xs={12} md={6}>
-                  {selectedForum && <ForumDetail forum={selectedForum} />}
-                </Grid>
-              </Grid>
-            </Container>
-          )}
+                  </ListItem>
+                  <ListItem 
+                    button 
+                    selected={selectedIndex === 1} 
+                    onClick={(event) => handleListItemClick(event, 1)}
+                    sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
+                  >
+                    <Grid container alignItems="center" justifyContent="center">
+                      <Grid item>
+                        <ListItemIcon sx={{ minWidth: 'auto' }}>
+                          <ForumIcon />
+                        </ListItemIcon>
+                      </Grid>
+                      <Grid item>
+                        <ListItemText primary="FORUMS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                  <ListItem 
+                    button 
+                    selected={selectedIndex === 2} 
+                    onClick={(event) => handleListItemClick(event, 2)}
+                    sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
+                  >
+                    <Grid container alignItems="center" justifyContent="center">
+                      <Grid item>
+                        <ListItemIcon sx={{ minWidth: 'auto' }}>
+                          <SettingsIcon />
+                        </ListItemIcon>
+                      </Grid>
+                      <Grid item>
+                        <ListItemText primary="SETTINGS" sx={{ marginLeft: '8px', textAlign: 'center' }} />
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                </List>
+              </Box>
+            </Box>
 
-          {selectedIndex === 2 && (
-            <Container maxWidth="xl">
-              { /* Display the HomeSettings component */}
-              <HomeSettings />
-            </Container>
-          )}
-        </Box>
-        
+            <Box sx={{ mt: 4 }}>
+              {selectedIndex === 0 && (
+                <Container maxWidth="xl">
+                  { /* Display the HomeFeed component */}
+                  <HomeFeed />
+                </Container>
+              )}
+
+              {selectedIndex === 1 && (
+                <Container maxWidth="xl">
+                  <Grid container spacing={2}>
+                    {Object.values(forums).length === 0 ? (
+                      <Alert severity="info"><strong>No forums available.</strong></Alert>
+                    ) : (
+                      Object.values(forums).map((forum) => (
+                        <Grid item xs={12} md={2} key={forum.id}>
+                          <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', fontFamily: 'Roboto, sans-serif' }}>
+                            <ForumList forums={[forum]} onForumClick={handleForumClick} />
+                          </div>
+                        </Grid>
+                      ))
+                    )}
+                    <Grid item xs={12} md={6}>
+                      {selectedForum && <ForumDetail forum={selectedForum} />}
+                    </Grid>
+                  </Grid>
+                </Container>
+              )}
+
+              {selectedIndex === 2 && (
+                <Container maxWidth="xl">
+                  { /* Display the HomeSettings component */}
+                  <HomeSettings />
+                </Container>
+              )}
+            </Box>
+          </>
+        )}
       </div>
       <div>
         <GoogleAd />
       </div>
-      </>
+    </>
   );
 };
 
