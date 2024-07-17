@@ -53,7 +53,7 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
                     fontSize: isMobile ? "32px" : "2vw", 
                     fontWeight: "bold", 
                     textShadow: "0 0 10px rgba(0, 0, 0, 0.3)", 
-                    color: "white" 
+                    color: isMobile ? "black" : "white"
                 }}>
                     {heading}
                 </h1>
@@ -61,7 +61,7 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
                     fontStyle: "italic", 
                     fontSize: isMobile ? "20px" : "1.5vw", 
                     textShadow: "0 0 10px rgba(0, 0, 0, 0.3)", 
-                    color: "white" 
+                    color: isMobile ? "black" : "white"
                 }}>
                     {subheading}
                 </h2>

@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/PageComponents/Home";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
-import HomeFeed from "./components/PageComponents/HomeFeed";
 import ForumDetail from "./components/PageComponents/ForumDetail";
-import { Dialog, Tooltip } from "@mui/material";
+import { Dialog } from "@mui/material";
 import UserProfile from "./components/PageComponents/UserProfile";
+import ForumBanner from "./components/PageComponents/ForumBanner";
 
 const PageRoutes = () => {
   return (
@@ -39,7 +39,16 @@ const PageRoutes = () => {
             </Dialog>
           }
         />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route
+          path="*"
+          element={
+            <ForumBanner
+              imgUrl="/images/image10.jpg"
+              heading="404 Error"
+              subheading="Page Not Found."
+            />
+          }
+        />
       </Routes>
     </Router>
   );
