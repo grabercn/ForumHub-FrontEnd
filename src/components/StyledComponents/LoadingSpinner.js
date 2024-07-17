@@ -23,7 +23,7 @@ const LoadingSpinner = ({ isLoading = false, component = null }) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
           zIndex: 9999,
         }}a
       >

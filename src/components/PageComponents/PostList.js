@@ -8,6 +8,7 @@ import GlassTopBar from '../StyledComponents/GlassTopBar';
 import { isNightMode } from '../Objects/theme';
 import { Link } from 'react-router-dom';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
+import LoadingSpinner from '../StyledComponents/LoadingSpinner';
 
 function PostList(props) {
     const { forum, userId, postId } = props;
@@ -23,6 +24,7 @@ function PostList(props) {
     const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(null);
     const [admin, setAdmin] = React.useState(false);
     const [sortMethod, setSortMethod] = React.useState('date');
+    const [isLoadingPosts, setIsLoadingPosts] = React.useState(true);
 
     // Function to format the date difference
     const formatDateDifference = (postDate) => {
@@ -164,6 +166,7 @@ function PostList(props) {
     }, []);
 
     useEffect(() => {
+        setIsLoadingPosts(true)
         getPostsByForumId(forumId).then((data) => {
             if (data) {
                 setPosts(data);
@@ -175,6 +178,7 @@ function PostList(props) {
                         }));
                     });
                 });
+                setIsLoadingPosts(false)
             } else {
                 setPosts([]);
             }
@@ -204,6 +208,7 @@ function PostList(props) {
                 <Alert style={{ marginTop: '20px' }} severity="info">Please log in to sort, post, and comment</Alert>
             )}
 
+            <LoadingSpinner isLoading={isLoadingPosts}/>
 
             {/* Display the add post button if the user is logged in */}
             {isLoggedin && (

@@ -84,14 +84,13 @@ const AdminTools = () => {
 
     return (
         <div>
-            <Container maxWidth='md'>
+            <Container maxWidth='xs'>
             <Box
-                p={4}
+                p={2}
                 my={0}
                 display="ho"
                 alignItems="top"
                 gap={4}
-                p={2}
             >
                 <h1>Admin Tools</h1>
                 <br />

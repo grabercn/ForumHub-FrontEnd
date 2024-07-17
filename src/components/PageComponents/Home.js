@@ -4,7 +4,7 @@ import ForumDetail from "./ForumDetail";
 import ForumList from "./ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
-import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ForumIcon from '@mui/icons-material/Forum';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -44,6 +44,7 @@ const Home = () => {
   const [isLoadingForums, setIsLoadingForums] = useState(true);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isProcessingImage, setIsProcessingImage] = useState(true);
+  const [sortBy, setSortBy] = useState('title'); // State for sorting option
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
   const imageProcessed = useRef(false); // Track if the image has been processed
@@ -53,19 +54,19 @@ const Home = () => {
     setSelectedForum(forum);
   }
 
-  useEffect(() => { // this is the first thing that runs when the component is loaded, and thus will hang the page until it is done
+  useEffect(() => {
     console.log("Loading forums...");
     setForums(forumsData);
     setIsLoadingForums(false);
-  } , []);
+  }, []);
 
   useEffect(() => {
     console.log("Checking auth...");
     checkAuthLocal().then((response) => {
-      if (response === true){
+      if (response === true) {
         setSettings(['Profile', 'User Settings', 'Logout']);
         checkAuthLocal("admin").then((response) => {
-          if (response){
+          if (response) {
             setPages(['Admin Tools', 'About']);
           } else {
             setPages(['About']);
@@ -100,7 +101,7 @@ const Home = () => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.src = imgSrc;
-    
+
     img.onload = () => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -132,7 +133,32 @@ const Home = () => {
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
-  
+
+  // Sorting function
+  const sortForums = (sortBy) => {
+    switch (sortBy) {
+      case 'name':
+        setForums([...forums].sort((a, b) => a.forumName.localeCompare(b.title)));
+        break;
+      case 'category':
+        setForums([...forums].sort((a, b) => a.forumCategory.localeCompare(b.category)));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Effect to sort forums when selectedIndex changes
+  useEffect(() => {
+    if (selectedIndex === 1) { // Check if forums tab is selected
+      sortForums(sortBy); // Sort by current sortBy option
+    }
+  }, [selectedIndex, sortBy]);
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+  };
+
   // if nightmode is enabled, set the primary color to the rgb value and background color to black
   if (isNightMode()) {
     PRIMARY_COLOR = rgb;
@@ -147,7 +173,7 @@ const Home = () => {
         ) : (
           <>
             {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
-            
+
             {rgb && (
               <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
             )}
@@ -155,9 +181,9 @@ const Home = () => {
             <Box sx={{ mt: 2, mb: 2 }}>
               <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isNightMode() ? 'black' : 'white' }}>
                 <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
-                  <ListItem 
-                    button 
-                    selected={selectedIndex === 0} 
+                  <ListItem
+                    button
+                    selected={selectedIndex === 0}
                     onClick={(event) => handleListItemClick(event, 0)}
                     sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
                   >
@@ -172,9 +198,9 @@ const Home = () => {
                       </Grid>
                     </Grid>
                   </ListItem>
-                  <ListItem 
-                    button 
-                    selected={selectedIndex === 1} 
+                  <ListItem
+                    button
+                    selected={selectedIndex === 1}
                     onClick={(event) => handleListItemClick(event, 1)}
                     sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
                   >
@@ -189,9 +215,9 @@ const Home = () => {
                       </Grid>
                     </Grid>
                   </ListItem>
-                  <ListItem 
-                    button 
-                    selected={selectedIndex === 2} 
+                  <ListItem
+                    button
+                    selected={selectedIndex === 2}
                     onClick={(event) => handleListItemClick(event, 2)}
                     sx={{ flex: '1 1 auto', justifyContent: 'center', textAlign: 'center', padding: '8px 16px', color: isNightMode() ? 'white' : 'black' }}
                   >
@@ -220,6 +246,21 @@ const Home = () => {
 
               {selectedIndex === 1 && (
                 <Container maxWidth="xl">
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                    <FormControl sx={{ minWidth: 120 }}>
+                      <InputLabel id="sort-by-label">Sort by</InputLabel>
+                      <Select
+                        labelId="sort-by-label"
+                        id="sort-by"
+                        value={sortBy}
+                        onChange={handleSortChange}
+                        label="Sort by"
+                      >
+                        <MenuItem value="name">Name</MenuItem>
+                        <MenuItem value="category">Category</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
                   <Grid container spacing={2}>
                     {Object.values(forums).length === 0 ? (
                       <Alert severity="info"><strong>No forums available.</strong></Alert>
