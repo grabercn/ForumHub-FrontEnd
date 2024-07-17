@@ -26,7 +26,8 @@ const Text = styled('h1')(() => ({
 const SubText = styled('p')(() => ({
     color: 'white',
     fontFamily: 'Roboto',
-    fontSize: '18px',
+    fontSize: '24px',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 10)',
     textAlign: 'center',
 }));
 
