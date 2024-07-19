@@ -32,7 +32,7 @@ const addComment = async (postObject) => {
  * @returns {Array} - An array of comments.
  */
 const getAllCommentsByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/post/${postId}`;
+    const url = `https://forumhubjavaservices.azurewebsites.net:8080/api/comments/post/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'

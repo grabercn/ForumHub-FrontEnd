@@ -16,6 +16,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { getPopularForums } from "../ApiCalls/forumApiCalls";
 import { getPopularPosts } from "../ApiCalls/postApiCalls";
 import { availableComponents, getComponent } from "../StyledComponents/ComponentsConfig";
+import { isNightMode } from "../Objects/theme";
 
 /**
  * Renders the home feed component.
@@ -87,10 +88,10 @@ const HomeFeed = () => {
         <Box>
             {layout.length === 0 && (
                 <Box sx={{ textAlign: "center", marginBottom: 2 }}>
-                    <Typography variant="h6">
+                    <Typography variant="h6" color={isNightMode() ? 'white' : 'black'}>
                         Welcome to your customizable homepage.
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" color={isNightMode() ? 'lightblue' : 'black'}>
                         Click "Customize" to add components.
                     </Typography>
                 </Box>

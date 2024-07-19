@@ -27,12 +27,12 @@ const addPost = async (postObject) => {
 }
 
 /**
- * Retrieves all posts for a specific forum from the API.
+ * Retrieves all posts for a specific forum (full) including related Comments and Reactions from the API.
  * @param {number} forumId - The ID of the forum.
- * @returns {Promise<Array>} - A promise that resolves to an array of posts.
+ * @returns {Promise<Array>} - A promise that resolves to an array of posts with all related comments and reactions.
  */
-const getPostsByForumId = async (forumId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/forum/${forumId}`;
+const getFullPostsByForumId = async (forumId) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/full/forum/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -140,4 +140,80 @@ const getPostById = async (postId) => {
     }
 }
 
-export { removeAllPostsByForumId, addPost, removePost, getPostById, getPostsByForumId, getPopularPosts };
+const getReactionsByPostId = async (postId) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${postId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error retrieving reactions:", error);
+    }
+}
+
+const addReactionByPostId = async (userId, postId, reactionType) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${userId}/${postId}/${reactionType}`;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+    }
+    catch(error) {
+        console.error("Error adding reaction:", error);
+    }
+}
+
+const getReactionScoreByPostId = async (postId) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/${postId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error retrieving reaction score:", error);
+    }
+}
+
+const removeReactionByPostId = async (userId, postId) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${userId}/${postId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+    }
+    catch(error) {
+        console.error("Error removing reaction:", error);
+    }
+}
+
+
+export { removeAllPostsByForumId, addPost, removePost, getPostById, getFullPostsByForumId, getPopularPosts, 
+         getReactionsByPostId, addReactionByPostId, getReactionScoreByPostId, 
+         removeReactionByPostId };

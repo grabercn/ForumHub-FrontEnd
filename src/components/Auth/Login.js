@@ -34,7 +34,7 @@ const Login = () => {
     const password = event.target.elements.password.value;
     const email = event.target.elements.email.value;
     const userType = ["user", "admin"];
-
+    
     if (!recaptchaVerified) {
       setErrorMessage("Please complete the Turnstile.");
       setIsError(true);
