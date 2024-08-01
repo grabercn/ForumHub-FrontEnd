@@ -60,8 +60,6 @@ function PostList(props) {
     switch (sortMethod) {
       case "subject":
         return a.postSubject.localeCompare(b.postSubject);
-      case "user":
-        return a.userId.userId.localeCompare(b.userId.userId);
       case "comments":
         return (a.comments || []).length - (b.comments || []).length;
       case "likes":
@@ -321,7 +319,6 @@ function PostList(props) {
             <Select native value={sortMethod} onChange={handleSortChange}>
               <option value="date">Date</option>
               <option value="subject">Subject</option>
-              <option value="user">User</option>
               <option value="comments">Comments</option>
               <option value="likes">Likes</option>
             </Select>
@@ -381,6 +378,7 @@ function PostList(props) {
           >
             <Box display="flex" alignItems="center" marginBottom={1}>
               <ProfileIcon size={25} username={post.userId.username} />
+              <div style={{ width: "10px" }} />
               <Typography
                 component={Link}
                 to={`/users/${post.userId.userId}`}
@@ -426,7 +424,6 @@ function PostList(props) {
                     size={15}
                     sx={{ marginLeft: 0.5 }}
                     component={Link}
-                    to={`/users/${user.userId}`}
                   />
                 ))}
                 {likedUsers[post.postId]?.length > 5 && (
@@ -472,6 +469,7 @@ function PostList(props) {
                         size={20}
                         username={comment.userId.username}
                       />
+                      <div style={{ width: "10px" }} />
                       <Typography
                         component={Link}
                         to={`/users/${comment.userId.userId}`}

@@ -30,8 +30,8 @@ const UserSettings = () => {
 
         const updatedUserData = {
             username: document.getElementById('username').value,
-            email: document.getElementById('email').value,
-            phoneNumber: document.getElementById('phone').value,
+            email: userData.email,
+            phoneNumber: userData.phoneNumber,
         };
         
         UpdateUserById(getUserDataCookieValues().userId, {
@@ -85,12 +85,7 @@ const UserSettings = () => {
                                 <Grid item>
                                     <TextField id='username' label="Username" defaultValue={userData.username} style={{ margin: '10px 0' }} />
                                 </Grid>
-                                <Grid item>
-                                    <TextField id='email' label="Email" defaultValue={userData.email} style={{ margin: '10px 0' }} />
-                                </Grid>
-                                <Grid item>
-                                    <TextField id='phone' label="Phone" defaultValue={userData.phoneNumber} style={{ margin: '10px 0' }} />
-                                </Grid>
+                                
                                 <Grid item>
                                     <center><Button onClick={handleSave} style={{ margin: '10px 0' }}>Save</Button></center>
                                 </Grid>
@@ -101,18 +96,12 @@ const UserSettings = () => {
                                     <AlternateEmail style={{ marginRight: '5px' }} />
                                     {userData.username}
                                 </Typography>
-                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                    <Email style={{ marginRight: '5px' }} />
-                                    {userData.email}
-                                </Typography>
+
                                 <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                     <SupervisedUserCircle style={{ marginRight: '5px' }} />
                                     {userData.role}
                                 </Typography>
-                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                    <Phone style={{ marginRight: '5px' }} />
-                                    {userData.phoneNumber}
-                                </Typography>
+                                
                                 <Grid item>
                                     <br />
                                     <center><Button onClick={handleEdit}>Edit</Button></center>

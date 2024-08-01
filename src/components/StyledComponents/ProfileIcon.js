@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { update as jdenticonUpdate } from "jdenticon";
 import { isNightMode } from "../Objects/theme";
 
-const ProfileIcon = ({ username, size = 100 }) => {
+const ProfileIcon = ({ username, size = 100, linkTo="" }) => {
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -26,6 +26,7 @@ const ProfileIcon = ({ username, size = 100 }) => {
         width="100%"
         height="100%"
         data-jdenticon-value={username}
+        to={linkTo}
       />
     </div>
   );

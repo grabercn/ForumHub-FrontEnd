@@ -6,30 +6,31 @@ const userObject = {
     email: 'owen@gmail.com',
     phoneNumber: '123-456-7890',
     password: 'password',
+    username: 'owen123', // Ensure this field is included
+    role: 'user', // Ensure this field is included
+    dateCreated: new Date().toISOString()
 };
 
 async function createUser(userObject) {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/users';
+    const url = 'http://localhost:8080/api/users';
     try {
-      const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userObject) // Body expects JSON string
-      });
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userObject) // Body expects JSON string
+        });
 
-      if (!response.ok) {
-          throw new Error(`API call failed with status ${response.status}`);
-      }
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
 
-      const data = await response.json();
-        console.log("User created successfully:", data);
+        const data = await response.json();
         return data;
-  }
-  catch(error) {
-      console.error("Error creating user:", error);
-  }
+    } catch (error) {
+        console.error("Error creating user:", error);
+    }
 }
 
 

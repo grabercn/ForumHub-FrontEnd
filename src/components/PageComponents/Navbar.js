@@ -19,7 +19,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
-import Login from '../Auth/Login';
+import {default as Login} from '../Auth/AnonLogin';
 import Logout from '../Auth/Logout';
 import { Dialog } from '@mui/material';
 import Searchbar from './Searchbar';
