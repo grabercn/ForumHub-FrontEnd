@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import { UpdateUserById } from '../ApiCalls/userApiCalls';
 import Typography from '@mui/material/Typography';
 import { Email, Phone, SupervisedUserCircle, AlternateEmail } from '@mui/icons-material';
+import LoadingSpinner from '../StyledComponents/LoadingSpinner';
 
 const UserSettings = () => {
     const [userData, setUserData] = React.useState({});
@@ -71,6 +72,7 @@ const UserSettings = () => {
                         <br />
                     </Grid>
                 )}
+                <LoadingSpinner isLoading={!userData.username} />
                 <Grid container spacing={2} direction="column">
                     <Grid item>
                         <center><Typography variant="h10">Hello, {userData.name}</Typography></center>

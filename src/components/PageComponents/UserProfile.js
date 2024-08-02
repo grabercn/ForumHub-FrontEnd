@@ -3,6 +3,7 @@ import { getUserById } from "../ApiCalls/userApiCalls";
 import { Typography, Grid } from "@mui/material";
 import { useParams, Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
+import LoadingSpinner from "../StyledComponents/LoadingSpinner"; // Import the LoadingSpinner component
 import {
   AlternateEmail,
   CalendarMonth,
@@ -49,6 +50,7 @@ const UserProfile = ({ userId }) => {
         </Link>
       )}
       <h1>User Profile</h1>
+      <LoadingSpinner isLoading={!userData.username} /> {/* Add the LoadingSpinner component */}
       <Grid container spacing={2} alignItems="center">
         <Grid item>
           <div style={{ display: "flex", alignItems: "right", marginLeft: "30px", marginBottom: "10px", marginTop: "-10px"	}}
@@ -79,6 +81,7 @@ const UserProfile = ({ userId }) => {
         <CalendarMonth style={{ marginRight: "5px" }} />
         {userData.dateCreated}
       </Typography>
+      
     </div>
   );
 };

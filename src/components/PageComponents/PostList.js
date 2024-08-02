@@ -168,10 +168,9 @@ function PostList(props) {
         [postId]: [...(prevComments[postId] || []), newComment],
       }));
     });
-
+    refreshPosts();
     setComment("");
     setIsCommentFormOpen(false);
-    refreshPosts();
   };
 
   const handleSubmit = (event) => {
@@ -221,12 +220,14 @@ function PostList(props) {
           ...prevCount,
           [postId]: (prevCount[postId] || 0) - 1,
         }));
+        refreshPosts();
       } else {
         await addReactionByPostId(userId, postId, 1);
         setLikeCount((prevCount) => ({
           ...prevCount,
           [postId]: (prevCount[postId] || 0) + 1,
         }));
+        refreshPosts();
       }
     } catch (error) {
       console.error("Failed to update like reaction:", error);
