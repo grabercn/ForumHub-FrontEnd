@@ -5,8 +5,8 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import { default as Signup } from "./AnonSignup";
 import { Alert } from "@mui/material";
-import Turnstile from "react-turnstile"; // Import Turnstile
-import { faker } from '@faker-js/faker'; // Import faker for generating random data
+import Turnstile from "react-turnstile";
+import { faker } from '@faker-js/faker';
 import { setAuthCookieValues, checkAuthLocal } from "../Objects/userData.object";
 import { getUserIp } from "../ApiCalls/helperApiCalls";
 
@@ -26,34 +26,33 @@ const AnonLogin = () => {
   useEffect(() => {
     const fetchIpAndMac = async () => {
       try {
-        // Fetch IP address
-        getUserIp().then((response) => {
-          if (response) {
-              setIpAddress(response.ip);
-          }else {
-              console.error('Error fetching IP', response);
-              setIpAddress(null);
-          }
-      });
+        const response = await getUserIp();
+        if (response) {
+          const ip = response.ip;
+          setIpAddress(ip);
 
-        // Generate username and password
-        const generatedUsername = generateRandomUsername();
-        const generatedPassword = `pass_${ipAddress.split('.').join('')}`;
-        setGeneratedUsername(generatedUsername);
-        setGeneratedPassword(generatedPassword);
+          // Generate username and password
+          const generatedUsername = generateRandomUsername();
+          const generatedPassword = `pass_${ip.split('.').join('')}`;
+          setGeneratedUsername(generatedUsername);
+          setGeneratedPassword(generatedPassword);
 
-        // Generate email using IP and MAC address combination
-        const generatedEmail = `${ipAddress.replace(/\./g, '_')}@theforumhub.com`;
-        setGeneratedEmail(generatedEmail);
+          // Generate email using IP
+          const generatedEmail = `${ip.replace(/\./g, '_')}@theforumhub.com`;
+          setGeneratedEmail(generatedEmail);
 
-        // Generate random phone number
-        const randomPhoneNumber = faker.phone.number('##########'); // 10-digit phone number
-        setGeneratedPhoneNumber(randomPhoneNumber);
+          // Generate random phone number
+          const randomPhoneNumber = faker.phone.number('##########');
+          setGeneratedPhoneNumber(randomPhoneNumber);
 
-        // Check for uniqueness (implement this function based on your backend)
-        // await checkUniqueness(generatedUsername, generatedEmail, randomPhoneNumber);
+          // Optionally, check for uniqueness here if needed
+          // await checkUniqueness(generatedUsername, generatedEmail, randomPhoneNumber);
+        } else {
+          console.error('Error fetching IP', response);
+          setIpAddress(null);
+        }
       } catch (error) {
-        console.error('Error fetching IP or MAC address:', error);
+        console.error('Error fetching IP:', error);
       }
     };
 
@@ -61,7 +60,6 @@ const AnonLogin = () => {
   }, []);
 
   const generateRandomUsername = () => {
-    // Function to generate a random username
     return `user_${Math.random().toString(36).substring(2, 10)}`;
   };
 
@@ -70,8 +68,6 @@ const AnonLogin = () => {
   };
 
   const handleRecaptchaVerify = (token) => {
-    // Handle Turnstile verification here
-    console.log("Turnstile verified:", token);
     setRecaptchaToken(token);
     setRecaptchaVerified(true);
   };
@@ -85,7 +81,12 @@ const AnonLogin = () => {
       return;
     }
 
-    // Continue with authentication logic using generated details
+    if (!ipAddress) {
+      setErrorMessage("Error fetching IP address. Try again later.");
+      setIsError(true);
+      return;
+    }
+
     setAuthCookieValues(generatedEmail, generatedPassword);
     checkAuthLocal("user").then((response) => {
       if (response === true) {
@@ -117,7 +118,6 @@ const AnonLogin = () => {
           {isError && <Alert severity={errorType}>{errorMessage}</Alert>}
           
           <Grid item>
-            {/* Render Turnstile component */}
             <Turnstile
               sitekey="0x4AAAAAAAe9bHH_A0xJsKVx"
               onVerify={handleRecaptchaVerify}

@@ -1,4 +1,3 @@
-
 // File: helper.js
 // This file contains helper functions for API calls
 
@@ -17,12 +16,21 @@ async function getUserIp() {
       }
   
       const data = await response.json();
-      return data;
+      const ip = parseIpFromResponse(data.ip);
+      return { ip };
     } catch (error) {
-      console.error("Error getting ip:", error);
+      console.error("Error getting IP:", error);
       return null;
     }
   }
   
-  export { getUserIp};
+  function parseIpFromResponse(ipString) {
+    if (ipString) {
+      const ip = ipString.split(':')[0]; // Split by colon and take the first part
+      return ip;
+    }
+    return null;
+  }
+  
+  export { getUserIp };
   

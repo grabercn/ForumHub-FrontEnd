@@ -370,7 +370,7 @@ function PostList(props) {
             key={post.postId}
             ref={(el) => (postRefs.current[post.postId] = el)}
             sx={{
-              padding: 2,
+              padding: 1.5,
               marginBottom: 2,
               backgroundColor: isNightMode() ? "grey.800" : "background.paper",
               color: isNightMode() ? "grey.200" : "text.primary",

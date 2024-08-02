@@ -31,33 +31,31 @@ const AnonSignup = () => {
         const fetchIpAndMac = async () => {
             try {
                 // Fetch IP address
-                getUserIp().then((response) => {
-                    if (response) {
-                        setIpAddress(response.ip);
-                    }else {
-                        console.error('Error fetching IP', response);
-                        setIpAddress(null);
-                    }
-                });
-                
-                // Generate username and password
-                const generatedUsername = generateRandomUsername();
-                const generatedPassword = `pass_${ipAddress.split('.').join('')}`;
+                const response = await getUserIp();
+                if (response) {
+                    const ip = response.ip;
+                    setIpAddress(ip);
 
-                setGeneratedUsername(generatedUsername);
-                setGeneratedPassword(generatedPassword);
+                    // Generate username and password
+                    const generatedUsername = generateRandomUsername();
+                    const generatedPassword = `pass_${ip.split('.').join('')}`;
+                    setGeneratedUsername(generatedUsername);
+                    setGeneratedPassword(generatedPassword);
 
-                // Generate email using IP and MAC address combination
-                const generatedEmail = `${ipAddress.replace(/\./g, '_')}@theforumhub.com`;
+                    // Generate email using IP
+                    const generatedEmail = `${ip.replace(/\./g, '_')}@theforumhub.com`;
+                    setGeneratedEmail(generatedEmail);
 
-                // Generate random phone number
-                const randomPhoneNumber = faker.phone.number('##########'); // 10-digit phone number
+                    // Generate random phone number
+                    const randomPhoneNumber = faker.phone.number('##########'); // 10-digit phone number
+                    setGeneratedPhoneNumber(randomPhoneNumber);
 
-                setGeneratedEmail(generatedEmail);
-                setGeneratedPhoneNumber(randomPhoneNumber);
-
-                // Check for uniqueness
-                await checkUniqueness(generatedUsername, generatedEmail, randomPhoneNumber);
+                    // Check for uniqueness
+                    await checkUniqueness(generatedUsername, generatedEmail, randomPhoneNumber);
+                } else {
+                    console.error('Error fetching IP', response);
+                    setIpAddress(null);
+                }
             } catch (error) {
                 console.error('Error fetching IP or MAC address:', error); // Log any errors
             }
@@ -163,7 +161,7 @@ const AnonSignup = () => {
                             <Grid item>
                                 <TextField
                                     value={ipAddress}
-                                    
+                                    label="IP Address"
                                     fullWidth
                                     disabled
                                 />
