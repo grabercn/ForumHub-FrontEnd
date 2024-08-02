@@ -12,7 +12,7 @@ const userObject = {
 };
 
 async function createUser(userObject) {
-    const url = 'http://localhost:8080/api/users';
+    const url = 'https://forumhubjavaservices.azurewebsites.net/api/users';
     try {
         const response = await fetch(url, {
             method: 'POST',

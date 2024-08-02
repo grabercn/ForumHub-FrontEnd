@@ -2,9 +2,8 @@ import { Container, Grid, TextField, Box, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { createUser, CheckUniqueUser } from '../ApiCalls/userApiCalls';
 import Turnstile from 'react-turnstile';
-import axios from 'axios';
 import { faker } from '@faker-js/faker';
-const { isEmail, isStrongPassword, isMobilePhone } = require('validator');
+import { getUserIp } from '../ApiCalls/helperApiCalls';
 
 const AnonSignup = () => {
     const [generatedUsername, setGeneratedUsername] = useState('');
@@ -31,19 +30,25 @@ const AnonSignup = () => {
     useEffect(() => {
         const fetchIpAndMac = async () => {
             try {
-                // Fetch IP address using CORS proxy
-                const ipResponse = await axios.get('https://corsproxy.io/?https://api.ipify.org?format=json');
-                setIpAddress(ipResponse.data.ip);
-
+                // Fetch IP address
+                getUserIp().then((response) => {
+                    if (response) {
+                        setIpAddress(response.ip);
+                    }else {
+                        console.error('Error fetching IP', response);
+                        setIpAddress(null);
+                    }
+                });
+                
                 // Generate username and password
                 const generatedUsername = generateRandomUsername();
-                const generatedPassword = `pass_${ipResponse.data.ip.split('.').join('')}`;
+                const generatedPassword = `pass_${ipAddress.split('.').join('')}`;
 
                 setGeneratedUsername(generatedUsername);
                 setGeneratedPassword(generatedPassword);
 
                 // Generate email using IP and MAC address combination
-                const generatedEmail = `${ipResponse.data.ip.replace(/\./g, '_')}@theforumhub.com`;
+                const generatedEmail = `${ipAddress.replace(/\./g, '_')}@theforumhub.com`;
 
                 // Generate random phone number
                 const randomPhoneNumber = faker.phone.number('##########'); // 10-digit phone number
@@ -54,7 +59,7 @@ const AnonSignup = () => {
                 // Check for uniqueness
                 await checkUniqueness(generatedUsername, generatedEmail, randomPhoneNumber);
             } catch (error) {
-                console.error('Error fetching IP or MAC address:', error);
+                console.error('Error fetching IP or MAC address:', error); // Log any errors
             }
         };
 
@@ -86,7 +91,6 @@ const AnonSignup = () => {
     };
 
     const handleRecaptchaVerify = (token) => {
-        console.log('Turnstile verified:', token);
         setRecaptchaToken(token);
         setRecaptchaVerified(true);
     };
@@ -96,6 +100,11 @@ const AnonSignup = () => {
 
         if (!recaptchaVerified) {
             alert('Please complete the Turnstile.');
+            return;
+        }
+
+        if (!ipAddress) {
+            alert('Error fetching IP address. Try again later.');
             return;
         }
 
@@ -116,6 +125,7 @@ const AnonSignup = () => {
                 window.location.reload();
             } else if (response === undefined) {
                 alert(`A User for this device already exists.`);
+                window.location.reload();
             } else {
                 alert(`Error creating user.`);
             }
@@ -147,6 +157,15 @@ const AnonSignup = () => {
                                     error={!!usernameError}
                                     helperText={usernameError}
                                     onChange={(e) => setGeneratedUsername(e.target.value)}
+                                />
+                            </Grid>
+                            {/* display the ip details */}
+                            <Grid item>
+                                <TextField
+                                    value={ipAddress}
+                                    
+                                    fullWidth
+                                    disabled
                                 />
                             </Grid>
             

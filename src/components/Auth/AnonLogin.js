@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import { default as Signup } from "./AnonSignup";
 import { Alert } from "@mui/material";
-import axios from "axios";
 import Turnstile from "react-turnstile"; // Import Turnstile
 import { faker } from '@faker-js/faker'; // Import faker for generating random data
 import { setAuthCookieValues, checkAuthLocal } from "../Objects/userData.object";
+import { getUserIp } from "../ApiCalls/helperApiCalls";
 
 const AnonLogin = () => {
   const [showSignup, setShowSignup] = useState(false);
@@ -27,19 +26,24 @@ const AnonLogin = () => {
   useEffect(() => {
     const fetchIpAndMac = async () => {
       try {
-        // Fetch IP address using axios
-        const ipResponse = await axios.get('https://corsproxy.io/?https://api.ipify.org?format=json');
-        const ip = ipResponse.data.ip;
-        setIpAddress(ip);
+        // Fetch IP address
+        getUserIp().then((response) => {
+          if (response) {
+              setIpAddress(response.ip);
+          }else {
+              console.error('Error fetching IP', response);
+              setIpAddress(null);
+          }
+      });
 
         // Generate username and password
         const generatedUsername = generateRandomUsername();
-        const generatedPassword = `pass_${ip.split('.').join('')}`;
+        const generatedPassword = `pass_${ipAddress.split('.').join('')}`;
         setGeneratedUsername(generatedUsername);
         setGeneratedPassword(generatedPassword);
 
         // Generate email using IP and MAC address combination
-        const generatedEmail = `${ip.replace(/\./g, '_')}@theforumhub.com`;
+        const generatedEmail = `${ipAddress.replace(/\./g, '_')}@theforumhub.com`;
         setGeneratedEmail(generatedEmail);
 
         // Generate random phone number
