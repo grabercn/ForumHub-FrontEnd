@@ -7,6 +7,7 @@ import ForumDetail from "./components/PageComponents/ForumDetail";
 import { Dialog } from "@mui/material";
 import UserProfile from "./components/PageComponents/UserProfile";
 import ForumBanner from "./components/PageComponents/ForumBanner";
+import PrivacyPolicy from "./components/PageComponents/PrivacyPolicy";
 
 const PageRoutes = () => {
   return (
@@ -49,6 +50,7 @@ const PageRoutes = () => {
             />
           }
         />
+        <Route path="/privacy-policy" element={<PrivacyPolicy /> } />
       </Routes>
     </Router>
   );
