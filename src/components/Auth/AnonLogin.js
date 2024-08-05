@@ -88,7 +88,7 @@ const AnonLogin = () => {
     }
 
     setAuthCookieValues(generatedEmail, generatedPassword);
-    checkAuthLocal("user").then((response) => {
+    checkAuthLocal().then((response) => {
       if (response === true) {
         setErrorType("success");
         setErrorMessage("User Login successful!");
