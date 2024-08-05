@@ -15,6 +15,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { Helmet } from 'react-helmet-async';
 import {
   getFullPostsByForumId,
   addPost,
@@ -303,6 +304,10 @@ function PostList(props) {
 
   return (
     <div>
+       <Helmet>
+        <title>{`Posts in ${forum.name}`}</title>
+        <meta name="description" content={`Browse posts in ${forum.name}.`} />
+      </Helmet>
       {posts.length === 0 && isLoggedin && (
         <Alert style={{ marginTop: "20px" }} severity="info">
           No posts found. Add one!
@@ -377,6 +382,10 @@ function PostList(props) {
               color: isNightMode() ? "grey.200" : "text.primary",
             }}
           >
+             <Helmet>
+                <title>{post.postSubject}</title>
+                <meta name="description" content={post.postText.substring(0, 150)} />
+              </Helmet>
             <Box display="flex" alignItems="center" marginBottom={1}>
               <ProfileIcon size={25} username={post.userId.username} />
               <div style={{ width: "10px" }} />
