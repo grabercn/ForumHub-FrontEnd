@@ -1,10 +1,33 @@
 import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import { styled } from '@mui/system';
+
+/**
+ * Custom styled CircularProgress component.
+ */
+const CustomCircularProgress = styled(CircularProgress)(({ theme }) => ({
+  color: theme.palette.secondary.main, // Customize color
+  animationDuration: '1.5s', // Customize animation duration
+  '@keyframes mui-progress-circular-dash': {
+    '0%': {
+      strokeDasharray: '1, 200',
+      strokeDashoffset: '0',
+    },
+    '50%': {
+      strokeDasharray: '100, 200',
+      strokeDashoffset: '-15',
+    },
+    '100%': {
+      strokeDasharray: '100, 200',
+      strokeDashoffset: '-120',
+    },
+  },
+}));
 
 /**
  * A loading spinner component that displays a circular progress indicator
- * while waiting for data to load.
+ * with custom styling and multiple nested spinners while waiting for data to load.
  *
  * @param {boolean} [isLoading=false] - Indicates whether the data is currently loading.
  * @param {React.Component} [component=null] - The component to render when the data is not loading.
@@ -26,7 +49,29 @@ const LoadingSpinner = ({ isLoading = false, component = null }) => {
           zIndex: 9999,
         }}
       >
-        <CircularProgress />
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+          <CustomCircularProgress size={80} thickness={2.5} />
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: 'absolute',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <CircularProgress size={60} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 4 }} />
+            <CircularProgress size={40} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 4 }} />
+            <CircularProgress size={20} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 3 }} />
+            <CircularProgress size={10} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 2 }} />
+            <CircularProgress size={5} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 1 }} />
+            <CircularProgress size={2} thickness={4} color="primary" sx={{ position: 'absolute', zIndex: 0 }} />
+          </Box>
+        </Box>
       </Box>
     ) : (
       component

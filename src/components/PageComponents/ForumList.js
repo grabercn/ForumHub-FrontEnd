@@ -1,7 +1,7 @@
 import * as React from "react";
 import Stack from "@mui/material/Stack";
 import ForumCard from "./ForumCard";
-import Dialog from "@mui/material/Dialog";
+import ResponsiveDialog from "../StyledComponents/ResponsiveDialog";
 import DialogContent from "@mui/material/DialogContent";
 import ForumDetail from "./ForumDetail";
 
@@ -45,7 +45,7 @@ const ForumList = ({ forums, onForumClick }) => {
         ))}
       </Stack>
       {selectedForum && (
-        <Dialog
+        <ResponsiveDialog
           open={open}
           onClose={handleClose}
           slotProps={{ backdrop: { style: { backdropFilter: "blur(10px)" } } }}
@@ -54,7 +54,7 @@ const ForumList = ({ forums, onForumClick }) => {
             {/* Display the forum details as a page, pass in selectedForum */}
             <ForumDetail forum={selectedForum} />
           </DialogContent>
-        </Dialog>
+        </ResponsiveDialog>
       )}
     </div>
   );

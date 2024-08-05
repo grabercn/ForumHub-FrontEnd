@@ -11,12 +11,12 @@ import {
     MenuItem,
     Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { getPopularForums } from "../ApiCalls/forumApiCalls";
 import { getPopularPosts } from "../ApiCalls/postApiCalls";
 import { availableComponents, getComponent } from "../StyledComponents/ComponentsConfig";
 import { isNightMode } from "../Objects/theme";
+import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 
 /**
  * Renders the home feed component.
@@ -79,7 +79,7 @@ const HomeFeed = () => {
                     minHeight: "50vh",
                 }}
             >
-                <CircularProgress />
+                <LoadingSpinner isLoading={loading} />
             </Box>
         );
     }

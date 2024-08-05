@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import LoadingSpinner from '../StyledComponents/LoadingSpinner';
 
 /**
  * Represents a card component for displaying forum information.
@@ -15,99 +16,95 @@ import { styled } from '@mui/material/styles';
  * @returns {JSX.Element} The rendered card component.
  */
 const ForumCard = ({ forum, onClick }) => {
-  /**
-   * Represents a styled container for the card.
-   *
-   * @type {import('@mui/system').SxProps<import('@mui/system').Theme>}
-   */
-  const CardContainer = styled('div')({
-    margin: '16px', // Adjust margin as per your design
-    width: '300px', // Fixed width for each card
-    height: '100%', // Ensures cards are the same height
-    borderRadius: '16px', // Rounded corners
-    '@media (max-width: 600px)': {
-      width: '100%', // Full width on small screens
-    },
-  });
+  const [loading, setLoading] = useState(true);
 
-  /**
-   * Represents a styled custom card component.
-   *
-   * @type {import('@mui/material/Card').CardTypeMap['defaultComponent']}
-   */
-  const CustomCard = styled(Card)({
+  const CardContainer = styled('div')(({ theme }) => ({
+    margin: theme.spacing(2),
+    width: '100%', // Ensure full width of container
+    maxWidth: '300px',
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+    boxShadow: theme.shadows[5],
+    background: theme.palette.background.paper,
+    '@media (max-width: 600px)': {
+      maxWidth: '100%',
+    },
+  }));
+
+  const CustomCard = styled(Card)(({ theme }) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    borderRadius: '16px', // Rounded corners
-  });
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[3],
+    background: theme.palette.background.default,
+  }));
 
-  /**
-   * Represents a styled header for the card.
-   *
-   * @type {import('@mui/system').SxProps<import('@mui/system').Theme>}
-   */
   const CardHeader = styled('div')({
-    padding: '8px',
-    textAlign: 'center',
+    position: 'relative',
+    height: '150px',
+    overflow: 'hidden',
+    borderBottom: '4px solid',
+    borderColor: 'transparent', // Placeholder border color, can be set dynamically
   });
 
-  /**
-   * Represents a styled container for the forum photo.
-   *
-   * @type {import('@mui/material/Paper').PaperTypeMap['defaultComponent']}
-   */
-  const PhotoContainer = styled(Paper)({
+  const PhotoContainer = styled(Paper)(({ theme }) => ({
     display: 'flex',
     justifyContent: 'center',
-  });
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    padding: theme.spacing(1),
+    boxSizing: 'border-box',
+  }));
 
-  /**
-   * Represents a styled image element for the forum photo.
-   *
-   * @type {import('react').DetailedHTMLProps<import('react').ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>}
-   */
   const Photo = styled('img')({
     width: '100%',
-    height: 'auto',
-    margin: '8px',
+    height: '100%',
+    objectFit: 'cover',
+    display: loading ? 'none' : 'block',
+    position: 'absolute',
+    top: 0,
+    left: 0,
   });
 
-  /**
-   * Represents a styled typography component for the forum name.
-   *
-   * @type {import('@mui/material/Typography').TypographyTypeMap['defaultComponent']}
-   */
-  const ForumName = styled(Typography)({
-    marginBottom: '8px',
-  });
+  const ForumName = styled(Typography)(({ theme }) => ({
+    marginBottom: theme.spacing(1),
+    fontWeight: theme.typography.fontWeightBold,
+    color: theme.palette.text.primary,
+  }));
 
-  /**
-   * Represents a styled typography component for the forum description.
-   *
-   * @type {import('@mui/material/Typography').TypographyTypeMap['defaultComponent']}
-   */
-  const Description = styled(Typography)({
-    flexGrow: 1,
-  });
+  const Description = styled(Typography)(({ theme }) => ({
+    color: theme.palette.text.secondary,
+  }));
+
+  const truncateText = (text, length) => {
+    return text.length <= length ? text : `${text.substring(0, length)}...`;
+  };
 
   return (
     <CardContainer>
       <CustomCard variant="outlined" onClick={() => onClick(forum)}>
-        <CardHeader>
+        <CardHeader style={{ borderColor: forum.borderColor || '#3f51b5' }}>
           <PhotoContainer elevation={3}>
+            <LoadingSpinner loading={loading} />
             <Photo
               src={forum.imgUrl || "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"}
               alt="Forum Photo"
+              onLoad={() => setLoading(false)}
+              onError={() => setLoading(false)}
             />
           </PhotoContainer>
         </CardHeader>
         <CardContent>
-          <ForumName variant="h5" component="div">
+          <ForumName variant="h6" component="div">
             {forum.forumName}
           </ForumName>
-          <Description variant="body2" color="text.secondary">
-            {forum.description}
+          <Description variant="body2">
+            {truncateText(forum.forumDescription, 20)}
           </Description>
         </CardContent>
       </CustomCard>

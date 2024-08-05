@@ -49,11 +49,10 @@ const UserProfile = ({ userId }) => {
           </div>
         </Link>
       )}
-      <h1>User Profile</h1>
       <LoadingSpinner isLoading={!userData.username} /> {/* Add the LoadingSpinner component */}
       <Grid container spacing={2} alignItems="center">
         <Grid item>
-          <div style={{ display: "flex", alignItems: "right", marginLeft: "30px", marginBottom: "10px", marginTop: "-10px"	}}
+          <div style={{ display: "flex", alignItems: "right", marginLeft: "10px", marginBottom: "10px", marginTop: "-10px"	}}
           >
             {/* Render the ProfileIcon component */}
             <ProfileIcon username={userData.username} />

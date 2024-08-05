@@ -4,7 +4,7 @@ import Home from "./components/PageComponents/Home";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import ForumDetail from "./components/PageComponents/ForumDetail";
-import { Dialog } from "@mui/material";
+import ResponsiveDialog from "./components/StyledComponents/ResponsiveDialog";
 import UserProfile from "./components/PageComponents/UserProfile";
 import ForumBanner from "./components/PageComponents/ForumBanner";
 import PrivacyPolicy from "./components/PageComponents/PrivacyPolicy";
@@ -17,9 +17,9 @@ const PageRoutes = () => {
         <Route
           path="/forums/:forumIdUrl"
           element={
-            <Dialog open={true} sx={{ backgroundColor: "light-gray" }}>
+            <ResponsiveDialog open={true} sx={{ backgroundColor: "light-gray" }}>
               <ForumDetail />
-            </Dialog>
+            </ResponsiveDialog>
           }
         />
         <Route path="/login" element={<Login />} />
@@ -27,17 +27,17 @@ const PageRoutes = () => {
         <Route
           path="/users/:userIdUrl"
           element={
-            <Dialog open={true} sx={{ backgroundColor: "light-gray" }}>
+            <ResponsiveDialog open={true} sx={{ backgroundColor: "light-gray" }}>
               <UserProfile />
-            </Dialog>
+            </ResponsiveDialog>
           }
         />
         <Route
           path="/posts/:forumIdUrl/:postIdUrl"
           element={
-            <Dialog open={true} sx={{ backgroundColor: "light-gray" }}>
+            <ResponsiveDialog open={true} sx={{ backgroundColor: "light-gray" }}>
               <ForumDetail />
-            </Dialog>
+            </ResponsiveDialog>
           }
         />
         <Route

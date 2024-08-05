@@ -1,11 +1,5 @@
 // File: Navbar.js
-// This file contains the Navbar component that displays the navigation bar at the top of the page. 
-// It includes links to different pages, a user profile menu, and a responsive menu for small screens.
-// The component also handles navigation logic based on user interactions. All components are rendered conditionally based on the state.
-// See bottom of file for the conditional rendering of each component.
-
-import * as React from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,26 +13,28 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
-import {default as Login} from '../Auth/AnonLogin';
+import Login from '../Auth/AnonLogin';
 import Logout from '../Auth/Logout';
-import { Dialog } from '@mui/material';
 import Searchbar from './Searchbar';
 import AdminTools from './AdminTools';
 import UserSettings from './UserSettings';
 import UserProfile from './UserProfile';
 import About from './About';
-import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object'
+import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
+import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
 
 function ResponsiveAppBar(props) {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [showLogin, setShowLogin] = React.useState(false);
-  const [showAuth, setShowAuth] = React.useState(false);
-  const [showAbout, setShowAbout] = React.useState(false);
-  const [showUserProfile, setShowUserProfile] = React.useState(false);
-  const [showSettings, setShowSettings] = React.useState(false);
-  const [isLoggedin, setIsLoggedin] = React.useState(false);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [showDialog, setShowDialog] = useState({
+    login: false,
+    auth: false,
+    about: false,
+    userProfile: false,
+    settings: false,
+  });
+  const [isLoggedin, setIsLoggedin] = useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -56,68 +52,51 @@ function ResponsiveAppBar(props) {
     setAnchorElUser(null);
   };
 
-  const handleCloseAdminTools = () => {
-    setShowAuth(false);
-    window.location.reload()
+  const handleCloseDialog = (dialogName) => {
+    setShowDialog((prevState) => ({ ...prevState, [dialogName]: false }));
+    if (dialogName === 'auth') window.location.reload();
   };
 
   const userData = getUserDataCookieValues();
   const userName = userData ? userData.userName : 'User';
   const userId = userData ? userData.userId : null;
 
-  // Add the pages and settings to the navbar, force them to be arrays
-  var pages = props.pages || [];
-  var settings = props.settings || [];
+  const pages = props.pages || [];
+  const settings = props.settings || [];
 
   const handleNavClick = (button) => {
-    setAnchorElUser(null); // close menu after clicking
+    const selectedButton = button.target.innerText;
+    handleCloseUserMenu();
 
-    var selectedButton = button.target.innerText;
-
-    // Add logic to handle navigation based on the button clicked
     if (selectedButton === 'Login') {
-      // Show the login component
-      setShowLogin(true);
+      setShowDialog({ ...showDialog, login: true });
     } else if (selectedButton === 'Logout') {
-      // Show the logout component
-      setShowLogin(true);
-    }else if (selectedButton === 'Profile') {
-        setShowUserProfile(true);
+      setShowDialog({ ...showDialog, login: true });
+    } else if (selectedButton === 'Profile') {
+      setShowDialog({ ...showDialog, userProfile: true });
     } else if (selectedButton === 'User Settings') {
-      setShowSettings(true);
+      setShowDialog({ ...showDialog, settings: true });
     }
-    
   };
 
-  // Check if the user is logged in, and set the state accordingly
   useEffect(() => {
     checkAuthLocal().then((response) => {
-      if (response === true){
-        setIsLoggedin(true);
-      }else{
-        setIsLoggedin(false);
-      }
+      setIsLoggedin(response);
     });
   }, []);
 
   const handleSettingsClick = (button) => {
-    setAnchorElUser(null); // close menu after clicking
+    const selectedButton = button.target.innerText;
+    handleCloseUserMenu();
 
-    var selectedButton = button.target.innerText;
-
-    // Add logic to handle navigation based on the button clicked
     if (selectedButton === 'ADMIN TOOLS') {
-      // Show the admin tools component
-      setShowAuth(true);
+      setShowDialog({ ...showDialog, auth: true });
     } else if (selectedButton === 'ABOUT') {
-      // Show the about component
-      setShowAbout(true);
+      setShowDialog({ ...showDialog, about: true });
     }
   };
 
-  // return the responsive app bar
   return (
-    // THE BELOW CODE IS MOBILE ONLY / SMALL SCREENS
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -206,15 +185,12 @@ function ResponsiveAppBar(props) {
             ))}
           </Box>
 
-          {/* Show the search bar */}
           <Box sx={{ flexGrow: 0, ml: 2 }}>
-            <Searchbar/>
-          </Box> 
+            <Searchbar />
+          </Box>
 
-          {/* Add blank space */}
           <Box sx={{ flexGrow: 0, width: '16px' }}></Box>
 
-          {/* Show the user menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -247,39 +223,33 @@ function ResponsiveAppBar(props) {
         </Toolbar>
       </Container>
 
-      {/* Show login component */}
-      {showLogin && (
-        <>
-          <Dialog open={showLogin} onClose={() => setShowLogin(false)}>
-            {isLoggedin ? <Logout /> : <Login />}
-          </Dialog>
-        </>
+      {showDialog.login && (
+        <ResponsiveDialog open={showDialog.login} onClose={() => handleCloseDialog('login')} title={isLoggedin ? "Logout" : "Login"}>
+          {isLoggedin ? <Logout /> : <Login />}
+        </ResponsiveDialog>
       )}
-      {/* Show the admin tools */}
-      {showAuth && (
-        <>
-          <Dialog open={showAuth} onClose={handleCloseAdminTools} fullWidth={true} >
-            <AdminTools />
-          </Dialog>
-        </>
+      {showDialog.auth && (
+        <ResponsiveDialog open={showDialog.auth} onClose={() => handleCloseDialog('auth')} title="Admin Tools">
+          <AdminTools />
+        </ResponsiveDialog>
       )}
-      {showAbout && (
-        <Dialog open={showAbout} onClose={() => setShowAbout(false)}>
+      {showDialog.about && (
+        <ResponsiveDialog open={showDialog.about} onClose={() => handleCloseDialog('about')} title="About">
           <About />
-        </Dialog>
+        </ResponsiveDialog>
       )}
-      {showSettings && (
-        <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
+      {showDialog.settings && (
+        <ResponsiveDialog open={showDialog.settings} onClose={() => handleCloseDialog('settings')} title="User Settings">
           <UserSettings />
-        </Dialog>
+        </ResponsiveDialog>
       )}
-      {showUserProfile && (
-        <Dialog open={showUserProfile} onClose={() => setShowUserProfile(false)}>
-          <UserProfile userId={userId}/>
-        </Dialog>
+      {showDialog.userProfile && (
+        <ResponsiveDialog open={showDialog.userProfile} onClose={() => handleCloseDialog('userProfile')} title="User Profile">
+          <UserProfile userId={userId} />
+        </ResponsiveDialog>
       )}
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
 
+export default ResponsiveAppBar;
