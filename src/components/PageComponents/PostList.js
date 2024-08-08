@@ -306,11 +306,11 @@ function PostList(props) {
     <div style={{marginBottom: "20px", marginTop: "20px"}}>
        <Helmet>
         <title>{`Posts in ${forum.name}`}</title>
-        <meta name="description" content={`Browse posts in ${forum.name}.`} />
+        <meta name="description" content={`Browse posts in ${forum.forumName}.`} />
       </Helmet>
-      {posts.length === 0 && isLoggedin && (
+      {posts.length === 0 && (
         <Alert severity="info">
-          No posts found. Add one!
+          No posts found. Be the first! Click the "Add Post" button to create one.
         </Alert>
       )}
       
