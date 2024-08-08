@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMediaQuery } from '@mui/material';
+import AnimationTag from '../StyledComponents/AnimationTag';
 
 /**
  * Renders a forum banner component.
@@ -13,6 +14,7 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
     const isMobile = useMediaQuery('(max-width: 600px)');
 
     return (
+        <AnimationTag variant="slide">
         <div className="forum-banner" style={{ position: "relative", textAlign: "center", borderRadius: "10px" }}>
             <img 
                 src={imgUrl || "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"} 
@@ -67,6 +69,7 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
                 </h2>
             </div>
         </div>
+        </AnimationTag>
     );
 }
 

@@ -18,6 +18,7 @@ import HomeFeed from "./HomeFeed";
 import { isNightMode, setPrimaryColor } from "../Objects/theme";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 import { getReactionScoreByForumId } from "../ApiCalls/forumApiCalls";
+import AnimationTag from "../StyledComponents/AnimationTag";
 
 // Create the theme instance (not in use here but need for breakpoints)
 const theme = createTheme({
@@ -182,6 +183,7 @@ const Home = () => {
               <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
             )}
 
+            <AnimationTag animation="grow">
             <Box sx={{ mt: 2, mb: 2 }}>
               <Box sx={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isNightMode() ? 'black' : 'white' }}>
                 <List component="nav" aria-label="main mailbox folders" sx={{ display: 'flex', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
@@ -239,6 +241,7 @@ const Home = () => {
                 </List>
               </Box>
             </Box>
+            </AnimationTag>
 
             <Box sx={{ mt: 4 }}>
               {selectedIndex === 0 && (

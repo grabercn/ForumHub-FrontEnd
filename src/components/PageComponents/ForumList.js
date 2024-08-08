@@ -4,6 +4,7 @@ import ForumCard from "./ForumCard";
 import ResponsiveDialog from "../StyledComponents/ResponsiveDialog";
 import DialogContent from "@mui/material/DialogContent";
 import ForumDetail from "./ForumDetail";
+import AnimationTag from "../StyledComponents/AnimationTag";
 
 /**
  * Renders a list of forums with clickable cards that display forum details in a dialog.
@@ -34,6 +35,7 @@ const ForumList = ({ forums, onForumClick }) => {
   };
 
   return (
+    <AnimationTag variant="slide-up">
     <div>
       <Stack spacing={2} direction="row">
         {forums.map((forum) => (
@@ -57,6 +59,7 @@ const ForumList = ({ forums, onForumClick }) => {
         </ResponsiveDialog>
       )}
     </div>
+    </AnimationTag>
   );
 };
 

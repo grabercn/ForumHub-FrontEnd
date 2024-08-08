@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Typography } from '@mui/material';
+import AnimationTag from '../StyledComponents/AnimationTag';
 
 /**
  * Renders the home settings component.
@@ -8,7 +9,9 @@ import { Typography } from '@mui/material';
  */
 function HomeSettings() {
     return(
-    <Typography variant="h6" align="center">View and appearance settings will be here.</Typography>
+    <AnimationTag variant="fade">
+        <Typography variant="h6" align="center">View and appearance settings will be here.</Typography>
+    </AnimationTag>
     );
 }
 

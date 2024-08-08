@@ -17,6 +17,7 @@ import { getPopularPosts } from "../ApiCalls/postApiCalls";
 import { availableComponents, getComponent } from "../StyledComponents/ComponentsConfig";
 import { isNightMode } from "../Objects/theme";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
+import AnimationTag from "../StyledComponents/AnimationTag";
 
 /**
  * Renders the home feed component.
@@ -85,6 +86,7 @@ const HomeFeed = () => {
     }
 
     return (
+        <AnimationTag animation="slide-up">
         <Box>
             {layout.length === 0 && (
                 <Box sx={{ textAlign: "center", marginBottom: 2 }}>
@@ -153,6 +155,7 @@ const HomeFeed = () => {
                 </Button>
             </Box>
         </Box>
+        </AnimationTag>
     );
 };
 
