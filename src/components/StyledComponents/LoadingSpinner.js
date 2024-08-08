@@ -28,6 +28,7 @@ const CustomCircularProgress = styled(CircularProgress)(({ theme }) => ({
 /**
  * A loading spinner component that displays a circular progress indicator
  * with custom styling and multiple nested spinners while waiting for data to load.
+ * A modern white circle with a raised and shadowed effect is displayed behind the spinner.
  *
  * @param {boolean} [isLoading=false] - Indicates whether the data is currently loading.
  * @param {React.Component} [component=null] - The component to render when the data is not loading.
@@ -49,7 +50,27 @@ const LoadingSpinner = ({ isLoading = false, component = null }) => {
           zIndex: 9999,
         }}
       >
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'inline-flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {/* White Circle with raised and shadowed effect */}
+          <Box
+            sx={{
+              position: 'absolute',
+              width: 120, // Set the size of the white circle
+              height: 120, // Set the size of the white circle
+              borderRadius: '50%',
+              backgroundColor: 'white', // White circle color
+              zIndex: 0, // Positioned behind the spinner
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Shadow effect
+              transform: 'translateY(-10px)', // Slightly raised effect
+            }}
+          />
           <CustomCircularProgress size={80} thickness={2.5} />
           <Box
             sx={{
