@@ -303,16 +303,17 @@ function PostList(props) {
   }, [posts, postId]);
 
   return (
-    <div>
+    <div style={{marginBottom: "20px", marginTop: "20px"}}>
        <Helmet>
         <title>{`Posts in ${forum.name}`}</title>
         <meta name="description" content={`Browse posts in ${forum.name}.`} />
       </Helmet>
       {posts.length === 0 && isLoggedin && (
-        <Alert style={{ marginTop: "20px" }} severity="info">
+        <Alert severity="info">
           No posts found. Add one!
         </Alert>
       )}
+      
 
       {isLoggedin && (
         <GlassTopBar>

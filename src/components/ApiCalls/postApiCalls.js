@@ -179,7 +179,7 @@ const addReactionByPostId = async (userId, postId, reactionType) => {
 }
 
 const getReactionScoreByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/${postId}`;
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/posts/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'

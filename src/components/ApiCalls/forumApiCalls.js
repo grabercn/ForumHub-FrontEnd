@@ -169,8 +169,28 @@ async function deleteForumById(forumId) {
     }
 }
 
+// get the reaction score of a forum by forumid
+async function getReactionScoreByForumId(forumId) {
+    // Construct the URL with the forumId variable
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/forums/${forumId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    }
+    catch(error) {
+        console.error("Error getting forum reaction score:", error);
+    }
+}  
+
 // Export the functions to be used in other files
-export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums};
+export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums, getReactionScoreByForumId };
 
 
 // Usage examples

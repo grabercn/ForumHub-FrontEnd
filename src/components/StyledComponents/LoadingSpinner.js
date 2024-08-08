@@ -7,7 +7,7 @@ import { styled } from '@mui/system';
  * Custom styled CircularProgress component.
  */
 const CustomCircularProgress = styled(CircularProgress)(({ theme }) => ({
-  color: theme.palette.secondary.main, // Customize color
+  color: "skyblue", // Customize color
   animationDuration: '1.5s', // Customize animation duration
   '@keyframes mui-progress-circular-dash': {
     '0%': {

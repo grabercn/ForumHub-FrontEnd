@@ -4,7 +4,7 @@ import ForumDetail from "./ForumDetail";
 import ForumList from "./ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
-import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem, Menu } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ForumIcon from '@mui/icons-material/Forum';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -17,6 +17,7 @@ import HomeSettings from "./HomeSettings";
 import HomeFeed from "./HomeFeed";
 import { isNightMode, setPrimaryColor } from "../Objects/theme";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
+import { getReactionScoreByForumId } from "../ApiCalls/forumApiCalls";
 
 // Create the theme instance (not in use here but need for breakpoints)
 const theme = createTheme({
@@ -44,7 +45,7 @@ const Home = () => {
   const [isLoadingForums, setIsLoadingForums] = useState(true);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isProcessingImage, setIsProcessingImage] = useState(true);
-  const [sortBy, setSortBy] = useState('title'); // State for sorting option
+  const [sortBy, setSortBy] = useState('reactions'); // State for sorting option
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
   const imageProcessed = useRef(false); // Track if the image has been processed
@@ -137,11 +138,14 @@ const Home = () => {
   // Sorting function
   const sortForums = (sortBy) => {
     switch (sortBy) {
+      case 'reactions':
+        setForums([...forums].sort((a, b) => getReactionScoreByForumId(b.forumId) - getReactionScoreByForumId(a.forumId)));
+        break;
       case 'name':
-        setForums([...forums].sort((a, b) => a.forumName.localeCompare(b.title)));
+        setForums([...forums].sort((a, b) => a.forumName.localeCompare(b.forumName)));
         break;
       case 'category':
-        setForums([...forums].sort((a, b) => a.forumCategory.localeCompare(b.category)));
+        setForums([...forums].sort((a, b) => a.forumCategory.localeCompare(b.forumCategory)));
         break;
       default:
         break;
@@ -256,6 +260,7 @@ const Home = () => {
                         onChange={handleSortChange}
                         label="Sort by"
                       >
+                        <MenuItem value="reactions">Reactions</MenuItem>
                         <MenuItem value="name">Name</MenuItem>
                         <MenuItem value="category">Category</MenuItem>
                       </Select>

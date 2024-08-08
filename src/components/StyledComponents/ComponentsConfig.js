@@ -3,14 +3,14 @@ import React from 'react';
 import ForumList from '../PageComponents/ForumList';
 import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
 import { getUserDataCookieValues } from '../Objects/userData.object';
-import ProfileIcon from './ProfileIcon';
 import About from '../PageComponents/About';
-import UserSettings from '../PageComponents/UserSettings';
+import { UPDATED, VERSION } from '../../version';
 
 export const availableComponents = {
     PopularForums: (props) => (
         <Box {...props} sx={{ overflowY: 'auto'}}>
             <ForumList {...props} />
+            <div style={{ height: '10px' }}></div>
         </Box>
     ),
     PopularPosts: ({ posts, ...props }) => (
@@ -41,6 +41,15 @@ export const availableComponents = {
     ),
     About: () => (
         <About />
+    ),
+    Version: () => (
+        <Box>
+            <Typography variant="h6">
+                Version: <br/> {VERSION}: 
+                <br />
+                Last Updated: <br/> {UPDATED} 
+            </Typography>
+        </Box>
     ),
 
     // Add more components as needed
