@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
-import Login from '../Auth/AnonLogin';
+import Login from '../Auth/Login';
 import Logout from '../Auth/Logout';
 import Searchbar from './Searchbar';
 import AdminTools from './AdminTools';

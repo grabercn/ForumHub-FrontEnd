@@ -6,7 +6,8 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import Signup from "./Signup";
 import { Alert } from "@mui/material";
-import Turnstile from "react-turnstile"; // Import Turnstile
+import Turnstile from "react-turnstile"; 
+import { GoogleLogin } from '@react-oauth/google';
 import { setAuthCookieValues, checkAuthLocal } from "../Objects/userData.object";
 
 const Login = () => {
@@ -85,22 +86,13 @@ const Login = () => {
     <Box p={4} my={4} display="flex" alignItems="center" justifyContent="center">
       <form onSubmit={handleFormSubmit}>
         <Grid container spacing={2} direction="column">
-          <Grid item>
-            <h1>Login:</h1>
-          </Grid>
+        
           {isError && <Alert severity={errorType}>{errorMessage}</Alert>}
+          
           <Grid item>
-            <TextField id="email" label="Email" variant="outlined" name="email" />
+            <GoogleLogin onSuccess={handleFormSubmit} onError={alert('error!')}/>
           </Grid>
-          <Grid item>
-            <TextField
-              id="password"
-              type="password"
-              label="Password"
-              variant="outlined"
-              name="password"
-            />
-          </Grid>
+
           <Grid item>
             {/* Render Turnstile component */}
             <Turnstile
@@ -108,22 +100,6 @@ const Login = () => {
               onVerify={handleRecaptchaVerify}
               theme="light"
             />
-          </Grid>
-          <Grid item>
-            <Button variant="contained" type="submit">
-              Sign-in
-            </Button>
-          </Grid>
-          <Grid item>
-            <br />
-            <h3>
-              <u>Need an account?</u>
-            </h3>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" onClick={handleSignup}>
-              Sign-up
-            </Button>
           </Grid>
         </Grid>
       </form>

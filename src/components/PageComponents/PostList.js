@@ -404,7 +404,7 @@ function PostList(props) {
                 {formatDateDifference(post.postDate)}
               </Typography>
             </Box>
-
+            
             <Typography variant="h6">{post.postSubject}</Typography>
             <Typography variant="body1">{post.postText}</Typography>
 
