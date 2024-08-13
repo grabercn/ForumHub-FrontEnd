@@ -96,7 +96,7 @@ const HomeFeed = () => {
                     <Typography variant="body1" color={isNightMode() ? 'lightblue' : 'black'}>
                         Click "Customize" to add components.
                     </Typography>
-                </Box>
+                </Box>  
             )}
             <Grid container spacing={2}>
                 {layout.map((component, index) => {
