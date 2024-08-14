@@ -37,6 +37,9 @@ function ResponsiveAppBar(props) {
   });
   const [isLoggedin, setIsLoggedin] = useState(false);
 
+  // Default profile photo for users when they are not logged in (in navbar)
+  const defaultProfilePhoto = "https://images.pexels.com/photos/8567869/pexels-photo-8567869.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -61,7 +64,11 @@ function ResponsiveAppBar(props) {
 
   useEffect(() => {
     getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
-      setUserData(data);
+      if (data) {
+        setUserData(data);
+      }else {
+        setUserData(null);
+      }
     });
   }, []);
 
@@ -198,7 +205,11 @@ function ResponsiveAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} />
+                {userData ? (
+                  <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} outline={false}/>
+                ): (
+                  <ProfileIcon imgUrl={defaultProfilePhoto} size={40} outline={false} />
+                )}
               </IconButton>
             </Tooltip>
             <Menu

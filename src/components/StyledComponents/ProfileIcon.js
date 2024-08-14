@@ -11,9 +11,10 @@ import { isNightMode } from "../Objects/theme";
  * @param {string} [props.imgUrl=""] - The URL of the profile image if one exists.
  * @param {number} [props.size=100] - The size of the icon in pixels.
  * @param {string} [props.linkTo=""] - The link to navigate when the icon is clicked.
+ * @param {boolean} [props.outline=true] - Whether to show an outline around the icon
  * @returns {JSX.Element} The rendered profile icon component.
  */
-const ProfileIcon = ({ username,imgUrl="", size = 100, linkTo="" }) => {
+const ProfileIcon = ({ username,imgUrl="", size = 100, linkTo="", outline = true }) => {
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const ProfileIcon = ({ username,imgUrl="", size = 100, linkTo="" }) => {
         height: size,
         borderRadius: "50%", // Make the div circular
         overflow: "hidden", // Ensure the SVG doesn't overflow the circle
-        border: isNightMode() ? "2px solid white"  :"2px solid #000", // Add a border around the circle
+        border: outline ? (isNightMode() ? "2px solid white"  :"2px solid #000"):'', // Add a border around the circle
       }}
     >
       {imgUrl ? (

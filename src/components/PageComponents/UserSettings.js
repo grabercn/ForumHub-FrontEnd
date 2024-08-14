@@ -76,9 +76,7 @@ const UserSettings = () => {
                 <Grid container spacing={2} direction="column">
                     <Grid item>
                         <center><Typography variant="h10">Hello, {userData.name}</Typography></center>
-                        <center><Typography variant="h5">Your User Settings</Typography></center>
-                        <br />
-                        <center >Change your account settings below...</center>
+                        <center >Change your account details below...</center>
                         <hr />
                     </Grid>
                     <Grid item>
