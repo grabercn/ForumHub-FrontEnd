@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { update as jdenticonUpdate } from "jdenticon";
 import { isNightMode } from "../Objects/theme";
 
-const ProfileIcon = ({ username, size = 100, linkTo="" }) => {
+const ProfileIcon = ({ username,imgUrl="", size = 100, linkTo="" }) => {
   const svgRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +21,13 @@ const ProfileIcon = ({ username, size = 100, linkTo="" }) => {
         border: isNightMode() ? "2px solid white"  :"2px solid #000", // Add a border around the circle
       }}
     >
+      {imgUrl ? (
+        <img
+          src={imgUrl}
+          alt="Profile"
+          style={{ width: "100%", height: "100%" }}
+        />
+      ) : (
       <svg
         ref={svgRef}
         width="100%"
@@ -28,6 +35,7 @@ const ProfileIcon = ({ username, size = 100, linkTo="" }) => {
         data-jdenticon-value={username}
         to={linkTo}
       />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Alert, Paper } from '@mui/material';
+import { Container, Alert } from '@mui/material';
 import { getAuthCookieValues, getUserDataCookieValues, removeAuthCookieValues, removeUserDataCookieValues } from '../Objects/userData.object';
 import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 import { Button, TextField } from '@mui/material';
@@ -102,6 +102,11 @@ const UserSettings = () => {
                                 <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                     <SupervisedUserCircle style={{ marginRight: '5px' }} />
                                     {userData.role}
+                                </Typography>
+
+                                <Typography variant="h6" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <Email style={{ marginRight: '5px' }} />
+                                    {userData.email}
                                 </Typography>
                                 
                                 <Grid item>

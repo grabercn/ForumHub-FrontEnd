@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Card,
     CardContent,
     Grid,
-    CircularProgress,
     Button,
     IconButton,
     Select,
@@ -29,8 +28,6 @@ const HomeFeed = () => {
     const [loading, setLoading] = useState(true); // State to track loading status
     const [customizeMode, setCustomizeMode] = useState(false); // State to track customization mode
     const [layout, setLayout] = useState([]); // State to track the layout
-
-    const forumContainerRef = useRef(null);
 
     useEffect(() => {
         // Fetch layout from localStorage

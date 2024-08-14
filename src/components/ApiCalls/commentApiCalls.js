@@ -20,6 +20,7 @@ const addComment = async (postObject) => {
         }
 
         const data = await response.json();
+        return data;
     }
     catch(error) {
         console.error("Error adding post:", error);

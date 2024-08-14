@@ -22,7 +22,6 @@ import {
   removePost,
   addReactionByPostId,
   removeReactionByPostId,
-  addLikeByPostId,
 } from "../ApiCalls/postApiCalls";
 import {
   addComment,
@@ -212,7 +211,7 @@ function PostList(props) {
       const reactions = await getReactionsByPostId(postId);
       const isLiked = reactions.some(
         (reaction) =>
-          reaction.userId.userId == userId && reaction.reactionType === "like"
+          reaction.userId.userId === userId && reaction.reactionType === "like"
       );
 
       if (isLiked) {
@@ -282,10 +281,6 @@ function PostList(props) {
       setIsLoadingPosts(false);
     }
   };
-
-  useEffect(() => {
-    refreshPosts();
-  }, [forumId]);
 
   useEffect(() => {
     checkAuthLocal().then((response) => {
