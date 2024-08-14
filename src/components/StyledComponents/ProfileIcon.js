@@ -2,6 +2,17 @@ import React, { useEffect, useRef } from "react";
 import { update as jdenticonUpdate } from "jdenticon";
 import { isNightMode } from "../Objects/theme";
 
+/**
+ * Component for rendering a profile icon.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.username - The username used for generating the icon.
+ * @param {string} [props.imgUrl=""] - The URL of the profile image if one exists.
+ * @param {number} [props.size=100] - The size of the icon in pixels.
+ * @param {string} [props.linkTo=""] - The link to navigate when the icon is clicked.
+ * @returns {JSX.Element} The rendered profile icon component.
+ */
 const ProfileIcon = ({ username,imgUrl="", size = 100, linkTo="" }) => {
   const svgRef = useRef(null);
 

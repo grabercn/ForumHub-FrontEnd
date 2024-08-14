@@ -49,7 +49,7 @@ function PostList(props) {
   const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(null);
   const [admin, setAdmin] = React.useState(false);
   const [sortMethod, setSortMethod] = React.useState("date");
-  const [isLoadingPosts, setIsLoadingPosts] = React.useState(true);
+  const [isLoadingPosts, setIsLoadingPosts] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [reactions, setReactions] = React.useState({});
   const [likeCount, setLikeCount] = React.useState({});
@@ -190,16 +190,6 @@ function PostList(props) {
       window.scrollTo(0, 0);
     });
 
-    addReactionByPostId(userId, newPost.postId, 1).then(() => {
-      setReactions((prevReactions) => ({
-        ...prevReactions,
-        [newPost.postId]: [
-          ...(prevReactions[newPost.postId] || []),
-          { userId: userId, reactionType: "like" },
-        ],
-      }));
-    });
-
     setTitle("");
     setContent("");
     refreshPosts();
@@ -245,6 +235,7 @@ function PostList(props) {
         setComments({});
         setLikeCount({});
         setLikedUsers({});
+        setIsLoadingPosts(false);
         return;
       }
 
@@ -271,13 +262,13 @@ function PostList(props) {
           return acc;
         }, {})
       );
-
+      // Set posts, comments, and liked users
       setPosts(data);
       setComments(commentsMap);
       setLikedUsers(likedUsersMap); // Set liked users
-    } catch (error) {
+    } catch (error) { // Catch any errors
       console.error("Failed to fetch posts:", error);
-    } finally {
+    } finally { // Finally, set loading to false
       setIsLoadingPosts(false);
     }
   };
@@ -296,6 +287,10 @@ function PostList(props) {
       postRefs.current[postId].scrollIntoView({ behavior: "smooth" });
     }
   }, [posts, postId]);
+
+  useEffect(() => {
+    refreshPosts();
+  }, [forumId]);
 
   return (
     <div style={{marginBottom: "20px", marginTop: "20px"}}>
@@ -383,7 +378,7 @@ function PostList(props) {
                 <meta name="description" content={post.postText.substring(0, 150)} />
               </Helmet>
             <Box display="flex" alignItems="center" marginBottom={1}>
-              <ProfileIcon size={25} username={post.userId.username} />
+              <ProfileIcon size={25} username={post.userId.username} imgUrl={post.userId.profilePicture} />
               <div style={{ width: "10px" }} />
               <Typography
                 component={Link}
@@ -398,6 +393,17 @@ function PostList(props) {
               <Typography variant="caption" sx={{ marginLeft: 1 }}>
                 {formatDateDifference(post.postDate)}
               </Typography>
+                {(admin || (userId === post.userId.userId)) && (
+                <div style={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
+                <Button
+                  variant="text"
+                  color="error"
+                  onClick={() => handleRemovePost(post.postId)}
+                >
+                  Remove
+                </Button>
+              </div>
+              )}
             </Box>
             
             <Typography variant="h6">{post.postSubject}</Typography>
@@ -427,6 +433,7 @@ function PostList(props) {
                   <ProfileIcon
                     key={user.userId}
                     username={user.username}
+                    imgUrl={post.userId.profilePicture}
                     size={15}
                     sx={{ marginLeft: 0.5 }}
                     component={Link}
@@ -439,16 +446,6 @@ function PostList(props) {
                 )}
               </Box>
             </Box>
-
-            {admin && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => handleRemovePost(post.postId)}
-              >
-                Remove Post
-              </Button>
-            )}
 
             <Box>
               <Typography
@@ -474,6 +471,7 @@ function PostList(props) {
                       <ProfileIcon
                         size={20}
                         username={comment.userId.username}
+                        imgUrl={post.userId.profilePicture}
                       />
                       <div style={{ width: "10px" }} />
                       <Typography

@@ -185,7 +185,7 @@ function GoogleLoginComponent() {
         email: email,
         phoneNumber: phoneNumber,
         password: password,
-        profileImgUrl: profileImgUrl,
+        profilePicture: profileImgUrl,
         role: 'user' // Default role is user, is not able to be changed from the front end, so value here does not matter
     };
 

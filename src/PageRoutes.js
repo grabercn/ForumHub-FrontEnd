@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/PageComponents/Home";
 import Login from "./components/Auth/Login";
-import Signup from "./components/Auth/Signup";
 import ForumDetail from "./components/PageComponents/ForumDetail";
 import ResponsiveDialog from "./components/StyledComponents/ResponsiveDialog";
 import UserProfile from "./components/PageComponents/UserProfile";
@@ -23,7 +22,6 @@ const PageRoutes = () => {
           }
         />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
         <Route
           path="/users/:userIdUrl"
           element={

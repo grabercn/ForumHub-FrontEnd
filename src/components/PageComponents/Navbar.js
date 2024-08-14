@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,13 +19,15 @@ import AdminTools from './AdminTools';
 import UserSettings from './UserSettings';
 import UserProfile from './UserProfile';
 import About from './About';
-import { checkAuthLocal, getUserDataCookieValues } from '../Objects/userData.object';
+import { checkAuthLocal, getAuthCookieValues } from '../Objects/userData.object';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
+import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userData, setUserData] = useState({});
   const [showDialog, setShowDialog] = useState({
     login: false,
     auth: false,
@@ -57,9 +58,12 @@ function ResponsiveAppBar(props) {
     if (dialogName === 'auth') window.location.reload();
   };
 
-  const userData = getUserDataCookieValues();
-  const userName = userData ? userData.userName : 'User';
-  const userId = userData ? userData.userId : null;
+
+  useEffect(() => {
+    getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
+      setUserData(data);
+    });
+  }, []);
 
   const pages = props.pages || [];
   const settings = props.settings || [];
@@ -194,7 +198,7 @@ function ResponsiveAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={userName} src={<ProfileIcon />} />
+                <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -245,7 +249,7 @@ function ResponsiveAppBar(props) {
       )}
       {showDialog.userProfile && (
         <ResponsiveDialog open={showDialog.userProfile} onClose={() => handleCloseDialog('userProfile')} title="User Profile">
-          <UserProfile userId={userId} />
+          <UserProfile userId={userData.userId} />
         </ResponsiveDialog>
       )}
     </AppBar>
