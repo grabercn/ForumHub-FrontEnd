@@ -38,7 +38,7 @@ function ResponsiveAppBar(props) {
   const [isLoggedin, setIsLoggedin] = useState(false);
 
   // Default profile photo for users when they are not logged in (in navbar)
-  const defaultProfilePhoto = "https://images.pexels.com/photos/8567869/pexels-photo-8567869.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+  const defaultProfilePhoto = "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);

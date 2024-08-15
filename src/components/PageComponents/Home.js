@@ -57,13 +57,11 @@ const Home = () => {
   }
 
   useEffect(() => {
-    console.log("Loading forums...");
     setForums(forumsData);
     setIsLoadingForums(false);
   }, []);
 
   useEffect(() => {
-    console.log("Checking auth...");
     checkAuthLocal().then((response) => {
       if (response === true) {
         setSettings(['Profile', 'User Settings', 'Logout']);
@@ -85,7 +83,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Processing image...");
     if (!imageProcessed.current) {
       getAverageRGB(bannerImgUrl.current);
       imageProcessed.current = true; // Set the flag to true after processing the image

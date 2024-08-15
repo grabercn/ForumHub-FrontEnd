@@ -8,6 +8,7 @@ import { UpdateUserById } from '../ApiCalls/userApiCalls';
 import Typography from '@mui/material/Typography';
 import { Email, Phone, SupervisedUserCircle, AlternateEmail } from '@mui/icons-material';
 import LoadingSpinner from '../StyledComponents/LoadingSpinner';
+import { googleLogout } from '@react-oauth/google';
 
 const UserSettings = () => {
     const [userData, setUserData] = React.useState({});
@@ -49,6 +50,7 @@ const UserSettings = () => {
                 setUserData(updatedUserData);
                 removeAuthCookieValues();
                 removeUserDataCookieValues();
+                googleLogout();
                 window.location.reload();
             } else {
                 setIsError(true);
@@ -62,7 +64,7 @@ const UserSettings = () => {
                 <br />
                 {isSaved && (
                     <Grid item>
-                        <Alert severity="success">Saved successfully!</Alert>
+                        <Alert severity="success">Saved successfully! Logging out...</Alert>
                         <br />
                     </Grid>
                 )}

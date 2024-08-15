@@ -13,6 +13,13 @@ import ProfileIcon from "../StyledComponents/ProfileIcon"; // Import the Profile
 
 // this element is called either from the routers or from the navbar when the user clicks on profile
 
+/**
+ * UserProfile component displays user profile information.
+ * 
+ * @param {Object} props - The component props.
+ * @param {string} props.userId - The user ID.
+ * @returns {JSX.Element} The rendered UserProfile component.
+ */
 const UserProfile = ({ userId }) => {
   const [userData, setUserData] = React.useState({});
   let { userIdUrl } = useParams();
@@ -28,6 +35,8 @@ const UserProfile = ({ userId }) => {
       });
     }
   }, [userIdUrl, userId]);
+
+
 
   return (
     <div style={{ margin: "20px" }}>

@@ -299,13 +299,19 @@ function PostList(props) {
         <meta name="description" content={`Browse posts in ${forum.forumName}.`} />
       </Helmet>
       {posts.length === 0 && (
-        <Alert severity="info">
-          No posts found. Be the first! Click the "Add Post" button to create one.
-        </Alert>
+        <div>
+          <Alert severity="info">
+            No posts found. Be the first! Click the "Add Post" button to create one.
+          </Alert>
+          <br />
+          <center>
+          <Button variant="contained" color="primary" onClick={handleOpenForm}> Add Post </Button>
+          </center>
+        </div>
       )}
       
 
-      {isLoggedin && (
+      {isLoggedin && posts.length > 0 && (
         <GlassTopBar>
           <Button variant="contained" color="primary" onClick={handleOpenForm}>
             Add Post

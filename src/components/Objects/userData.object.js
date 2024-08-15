@@ -9,7 +9,9 @@ import { checkUserAuth, getUserByEmailAndPassword, getUserRole } from '../ApiCal
 function setCookie(name, value, days) {
     const expires = new Date();
     expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    
+    // set cookie secure to true if the website is using https and httpOnly to true to prevent access from javascript
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;secure=true;SameSite=Strict;`;
 }
 
 // delete a cookie

@@ -2,19 +2,16 @@
 // Login Page for both users and staff members
 import React from 'react';
 import { removeAuthCookieValues, removeUserDataCookieValues } from '../Objects/userData.object';
-import { Container } from '@mui/material';
+import { googleLogout } from '@react-oauth/google';
 
 function Logout () {    
         return (
             <div>
-                <Container>
                 {/* Remove the auth cookie values and user data cookie values, then reload */}
-                {removeAuthCookieValues() && removeUserDataCookieValues() ? (
+                {removeAuthCookieValues() && removeUserDataCookieValues() && googleLogout ? (
                     console.log("User logged out successfully!"),
-                    window.location.reload()
+                    window.location.href = '/'
                 ) : (alert("Error logging out, please try again later."))}
-                
-                </Container>
             </div>
         );
     }
