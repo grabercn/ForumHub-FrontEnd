@@ -17,6 +17,7 @@ import { availableComponents, getComponent } from "../StyledComponents/Component
 import { isNightMode } from "../Objects/theme";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 import AnimationTag from "../StyledComponents/AnimationTag";
+import ForumHubIcon from "../StyledComponents/ForumHubIcon";
 
 /**
  * Renders the home feed component.
@@ -84,74 +85,91 @@ const HomeFeed = () => {
 
     return (
         <AnimationTag animation="slide-up">
-        <Box>
-            {layout.length === 0 && (
-                <Box sx={{ textAlign: "center", marginBottom: 2 }}>
-                    <Typography variant="h6" color={isNightMode() ? 'white' : 'black'}>
-                        Welcome to your customizable homepage.
-                    </Typography>
-                    <Typography variant="body1" color={isNightMode() ? 'lightblue' : 'black'}>
-                        Click "Customize" to add components.
-                    </Typography>
-                </Box>  
-            )}
-            <Grid container spacing={2}>
-                {layout.map((component, index) => {
-                    const Component = getComponent(component.name);
-                    return (
-                        <Grid item xs={12} key={index}>
-                            <Card variant="outlined" sx={{ borderRadius: 2, marginBottom: 2 }}>
-                                <CardContent>
-                                    {customizeMode && (
-                                        <IconButton
-                                            aria-label="remove component"
-                                            onClick={() => removeComponent(index)}
-                                            sx={{ float: "right" }}
-                                        >
-                                            <RemoveIcon />
-                                        </IconButton>
-                                    )}
-                                    <Component
-                                        forums={popularForums}
-                                        posts={popularPosts}
-                                    />
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    );
-                })}
-                {customizeMode && (
-                    <Grid item xs={12}>
-                        <Select
-                            label="Add Component"
-                            onChange={(e) => addComponent(e.target.value)}
-                            value=""
-                            displayEmpty
-                            fullWidth
+            <Box sx={{ padding: 2 }}>
+                {layout.length === 0 && (
+                    <Box
+                        sx={{
+                            textAlign: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            minHeight: "50vh", // Ensures vertical centering within the viewport height
+                        }}
+                    >
+                        <ForumHubIcon width={200} height={200} showText={true} />
+                        <Typography
+                            variant="h6"
+                            color={isNightMode() ? 'white' : 'black'}
+                            sx={{ marginTop: 2 }}
                         >
-                            <MenuItem value="" disabled>
-                                Add Component
-                            </MenuItem>
-                            {Object.keys(availableComponents).map((key) => (
-                                <MenuItem key={key} value={key}>
-                                    {key}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </Grid>
+                            Welcome to your customizable homepage.
+                        </Typography>
+                        <Typography
+                            variant="body1"
+                            color={isNightMode() ? 'lightblue' : 'black'}
+                        >
+                            Click "Customize" to add components.
+                        </Typography>
+                    </Box>
                 )}
-            </Grid>
-            <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={toggleCustomizeMode}
-                    sx={{ marginRight: 2 }}
-                >
-                    {customizeMode ? "Save" : "Customize"}
-                </Button>
+                <Grid container spacing={2}>
+                    {layout.map((component, index) => {
+                        const Component = getComponent(component.name);
+                        return (
+                            <Grid item xs={12} key={index}>
+                                <Card variant="outlined" sx={{ borderRadius: 2, marginBottom: 2 }}>
+                                    <CardContent>
+                                        {customizeMode && (
+                                            <IconButton
+                                                aria-label="remove component"
+                                                onClick={() => removeComponent(index)}
+                                                sx={{ float: "right" }}
+                                            >
+                                                <RemoveIcon />
+                                            </IconButton>
+                                        )}
+                                        <Component
+                                            forums={popularForums}
+                                            posts={popularPosts}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
+                    {customizeMode && (
+                        <Grid item xs={12}>
+                            <Select
+                                label="Add Component"
+                                onChange={(e) => addComponent(e.target.value)}
+                                value=""
+                                displayEmpty
+                                fullWidth
+                            >
+                                <MenuItem value="" disabled>
+                                    Add Component
+                                </MenuItem>
+                                {Object.keys(availableComponents).map((key) => (
+                                    <MenuItem key={key} value={key}>
+                                        {key}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
+                    )}
+                </Grid>
+                <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={toggleCustomizeMode}
+                        sx={{ marginRight: 2 }}
+                    >
+                        {customizeMode ? "Save" : "Customize"}
+                    </Button>
+                </Box>
             </Box>
-        </Box>
         </AnimationTag>
     );
 };

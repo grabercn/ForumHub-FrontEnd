@@ -1,4 +1,3 @@
-// File: Navbar.js
 import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -11,22 +10,25 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
 import Login from '../Auth/Login';
 import Logout from '../Auth/Logout';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import Searchbar from './Searchbar';
 import AdminTools from './AdminTools';
 import UserSettings from './UserSettings';
 import UserProfile from './UserProfile';
 import About from './About';
+import NewsDropdown from './NewsDropdown'; // New dropdown component for news
 import { checkAuthLocal, getAuthCookieValues } from '../Objects/userData.object';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
-import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
+import ResponsiveDialog from '../StyledComponents/ResponsiveDialog';
 import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
+import ForumHubIcon from '../StyledComponents/ForumHubIcon';
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElNews, setAnchorElNews] = useState(null); // State for news dropdown
   const [userData, setUserData] = useState({});
   const [showDialog, setShowDialog] = useState({
     login: false,
@@ -37,7 +39,6 @@ function ResponsiveAppBar(props) {
   });
   const [isLoggedin, setIsLoggedin] = useState(false);
 
-  // Default profile photo for users when they are not logged in (in navbar)
   const defaultProfilePhoto = "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
 
   const handleOpenNavMenu = (event) => {
@@ -48,6 +49,10 @@ function ResponsiveAppBar(props) {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleOpenNewsMenu = (event) => {
+    setAnchorElNews(event.currentTarget);
+  };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -56,17 +61,20 @@ function ResponsiveAppBar(props) {
     setAnchorElUser(null);
   };
 
+  const handleCloseNewsMenu = () => {
+    setAnchorElNews(null);
+  };
+
   const handleCloseDialog = (dialogName) => {
     setShowDialog((prevState) => ({ ...prevState, [dialogName]: false }));
     if (dialogName === 'auth') window.location.reload();
   };
 
-
   useEffect(() => {
     getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
       if (data) {
         setUserData(data);
-      }else {
+      } else {
         setUserData(null);
       }
     });
@@ -75,8 +83,8 @@ function ResponsiveAppBar(props) {
   const pages = props.pages || [];
   const settings = props.settings || [];
 
-  const handleNavClick = (button) => {
-    const selectedButton = button.target.innerText;
+  const handleNavClick = (event) => {
+    const selectedButton = event.target.innerText;
     handleCloseUserMenu();
 
     if (selectedButton === 'Login') {
@@ -96,9 +104,9 @@ function ResponsiveAppBar(props) {
     });
   }, []);
 
-  const handleSettingsClick = (button) => {
-    const selectedButton = button.target.innerText;
-    handleCloseUserMenu();
+  const handleSettingsClick = (event) => {
+    const selectedButton = event.target.innerText;
+    handleCloseNavMenu();
 
     if (selectedButton === 'ADMIN TOOLS') {
       setShowDialog({ ...showDialog, auth: true });
@@ -111,23 +119,6 @@ function ResponsiveAppBar(props) {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <HubOutlinedIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            ForumHub
-          </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -159,55 +150,88 @@ function ResponsiveAppBar(props) {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={handleSettingsClick}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <HubOutlinedIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
             }}
           >
-            ForumHub
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleSettingsClick}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <ForumHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
               >
-                {page}
-              </Button>
-            ))}
+                ForumHub
+              </Typography>
+              {pages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={handleSettingsClick}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page}
+                </Button>
+              ))}
+            </Box>
           </Box>
 
           <Box sx={{ flexGrow: 0, ml: 2 }}>
             <Searchbar />
           </Box>
 
-          <Box sx={{ flexGrow: 0, width: '16px' }}></Box>
+          <Box sx={{ flexGrow: 0, m: 2 }}>
+            <Tooltip title="Notifications">
+              <IconButton onClick={handleOpenNewsMenu} sx={{ p: 0 }}>
+                <NotificationsNoneIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="news-menu"
+              anchorEl={anchorElNews}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElNews)}
+              onClose={handleCloseNewsMenu}
+            >
+              <NewsDropdown />
+            </Menu>
+          </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {userData ? (
-                  <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} outline={false}/>
-                ): (
+                  <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} outline={false} />
+                ) : (
                   <ProfileIcon imgUrl={defaultProfilePhoto} size={40} outline={false} />
                 )}
               </IconButton>
@@ -260,7 +284,7 @@ function ResponsiveAppBar(props) {
       )}
       {showDialog.userProfile && (
         <ResponsiveDialog open={showDialog.userProfile} onClose={() => handleCloseDialog('userProfile')} title="User Profile">
-          <UserProfile userId={userData.userId} />
+          <UserProfile />
         </ResponsiveDialog>
       )}
     </AppBar>

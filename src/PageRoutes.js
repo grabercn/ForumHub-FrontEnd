@@ -2,10 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/PageComponents/Home";
 import Login from "./components/Auth/Login";
-import ForumDetail from "./components/PageComponents/ForumDetail";
+import ForumDetail from "./components/PageComponents/Forums/ForumDetail";
 import ResponsiveDialog from "./components/StyledComponents/ResponsiveDialog";
 import UserProfile from "./components/PageComponents/UserProfile";
-import ForumBanner from "./components/PageComponents/ForumBanner";
+import ForumBanner from "./components/PageComponents/Forums/ForumBanner";
 import PrivacyPolicy from "./components/PageComponents/PrivacyPolicy";
 
 const PageRoutes = () => {

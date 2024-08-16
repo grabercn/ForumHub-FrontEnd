@@ -451,7 +451,7 @@ function PostList(props) {
                   <ProfileIcon
                     key={user.userId}
                     username={user.username}
-                    imgUrl={post.userId.profilePicture}
+                    imgUrl={user.profilePicture}
                     size={15}
                     sx={{ marginLeft: 0.5 }}
                     component={Link}
@@ -485,7 +485,6 @@ function PostList(props) {
                     key={comment.commentId}
                     sx={{ padding: 1, marginBottom: 1 }}
                   >
-                    {console.log(comment)}
                     <Box display="flex" alignItems="center" marginBottom={1}>
                       <ProfileIcon
                         size={20}
@@ -552,6 +551,8 @@ function PostList(props) {
         />
       </Box>
     </div>
+
+    
   );
 }
 

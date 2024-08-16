@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ForumDetail from "./ForumDetail";
-import ForumList from "./ForumList";
+import ForumDetail from "./Forums/ForumDetail";
+import ForumList from "./Forums/ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
 import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem, Menu } from '@mui/material';

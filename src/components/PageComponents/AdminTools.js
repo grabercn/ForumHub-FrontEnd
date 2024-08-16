@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Grid, Container, Dialog, Stack, Typography, Paper } from '@mui/material';
+import { Button, Grid, Container, Dialog, Stack, Typography, Paper, Select, Input } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import ForumDetail from './ForumDetail';
-import ForumList from './ForumList';
+import ForumDetail from './Forums/ForumDetail';
+import ForumList from './Forums/ForumList';
 import { forumsData } from '../Objects/forumsData.objects';
 import { createForum, deleteForumById } from '../ApiCalls/forumApiCalls';
 import UserProfile from './UserProfile';
@@ -11,6 +11,7 @@ import { deleteUserById, getAllUserIds } from '../ApiCalls/userApiCalls';
 import LoadingSpinner from '../StyledComponents/LoadingSpinner';
 import { checkAuthLocal } from '../Objects/userData.object';
 import GlassTopBar from '../StyledComponents/GlassTopBar';
+import ResponsiveDialog from '../StyledComponents/ResponsiveDialog';
 
 /**
  * AdminTools component for managing forums.
@@ -127,7 +128,7 @@ const AdminTools = () => {
                                 {forumsData.map((forum) => (
                                     <Grid item xs={12} md={4} key={forum.id} style={{ marginLeft: '10px' }}>
                                         <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word' }}>
-                                            <ForumList forums={[forum]} onForumClick={handleForumClick} />
+                                            <ForumList forums={[forum]} onForumClick={handleForumClick} isCompact={true} />
                                         </div>
                                     </Grid>
                                 ))}
@@ -139,64 +140,61 @@ const AdminTools = () => {
 
                         <Container maxWidth="lg" style={{ marginTop: '20px' }}>
                             {showAddForumForm && (
-                                <Dialog open={true} onClose={handleCloseForm}>
-                                    <Container maxWidth="page" style={{ padding: '20px', marginTop: '20px' }}>
-                                        <h2>Add Forum</h2>
-                                        <form>
-                                            <Grid container spacing={1}>
-                                                <Grid item xs={12}>
-                                                    <input type="text" id="name" placeholder="Name" />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <input type="text" id="description" placeholder="Description" />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <select
-                                                        id="category"
-                                                        value={category}
-                                                        onChange={(e) => setCategory(e.target.value)}
-                                                    >
-                                                        <option value="General">General</option>
-                                                        <option value="Technology">Technology</option>
-                                                        <option value="Science">Science</option>
-                                                        <option value="Health">Health</option>
-                                                        <option value="Business">Business</option>
-                                                        <option value="Entertainment">Entertainment</option>
-                                                        <option value="Sports">Sports</option>
-                                                        <option value="Education">Education</option>
-                                                        <option value="Other">Other</option>
-                                                    </select>
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <input type="text" id="imgUrl" placeholder="Image URL (Optional)" />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Button onClick={handleAddForum}>Add Forum</Button>
-                                                </Grid>
+                                <ResponsiveDialog open={true} onClose={handleCloseForm}>
+                                    <h2>Add Forum</h2>
+                                    <form>
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={12}>
+                                                <Input type="text" id="name" placeholder="Name" />
                                             </Grid>
-                                        </form>
-                                    </Container>
-                                </Dialog>
+                                            <Grid item xs={12}>
+                                                <Input type="text" id="description" placeholder="Description" />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Select
+                                                    id="category"
+                                                    value={category}
+                                                    onChange={(e) => setCategory(e.target.value)}
+                                                >
+                                                    <option value="General">General</option>
+                                                    <option value="Technology">Technology</option>
+                                                    <option value="Science">Science</option>
+                                                    <option value="Health">Health</option>
+                                                    <option value="Business">Business</option>
+                                                    <option value="Entertainment">Entertainment</option>
+                                                    <option value="Sports">Sports</option>
+                                                    <option value="Education">Education</option>
+                                                    <option value="Other">Other</option>
+                                                </Select>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Input type="text" id="imgUrl" placeholder="Image URL (Optional)" />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Button onClick={handleAddForum}>Add Forum</Button>
+                                            </Grid>
+                                        </Grid>
+                                    </form>
+                                </ResponsiveDialog>
                             )}
                             {showRemoveForumForm && (
-                                <Dialog open={true} onClose={handleCloseForm}>
-                                    <Container maxWidth="page" style={{ padding: '20px', marginTop: '20px' }}>
-                                        <h2>Remove Forum</h2>
+                                <ResponsiveDialog open={true} onClose={handleCloseForm}>
+                                    <h2>Remove Forum</h2>
+                                    <Grid container spacing={1}>
+                                        <ForumList forums={forumsData} onForumClick={handleForumClick} isCompact={true} />
+                                    </Grid>
+                                    <form onSubmit={handleRemoveForum}>
                                         <Grid container spacing={1}>
-                                            <ForumList forums={forumsData} onForumClick={handleForumClick} />
-                                        </Grid>
-                                        <form onSubmit={handleRemoveForum}>
-                                            <Grid container spacing={1}>
-                                                <Grid item xs={12}>
-                                                    <input type="text" id="id" placeholder="ID" />
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Button type="submit">Remove Forum</Button>
-                                                </Grid>
+                                            <Grid item xs={12}>
+                                                <Input type="text" id="id" placeholder="ID" />
                                             </Grid>
-                                        </form>
-                                    </Container>
-                                </Dialog>
+                                            <div style={{ height: '20px' }} />
+                                            <Grid item xs={12}>
+                                                <Button type="submit">Remove Forum</Button>
+                                            </Grid>
+                                        </Grid>
+                                    </form>
+                                </ResponsiveDialog>
                             )}
                         </Container>
                     </div>

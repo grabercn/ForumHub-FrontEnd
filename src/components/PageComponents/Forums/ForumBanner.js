@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMediaQuery } from '@mui/material';
-import AnimationTag from '../StyledComponents/AnimationTag';
+import AnimationTag from '../../StyledComponents/AnimationTag';
 
 /**
  * Renders a forum banner component.

@@ -1,6 +1,6 @@
 // componentsConfig.js
 import React from 'react';
-import ForumList from '../PageComponents/ForumList';
+import ForumList from '../PageComponents/Forums/ForumList';
 import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
 import { getUserDataCookieValues } from '../Objects/userData.object';
 import About from '../PageComponents/About';

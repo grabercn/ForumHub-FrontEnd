@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import LoadingSpinner from '../StyledComponents/LoadingSpinner';
+import LoadingSpinner from '../../StyledComponents/LoadingSpinner';
 
 /**
  * Represents a card component for displaying forum information.
@@ -13,9 +13,10 @@ import LoadingSpinner from '../StyledComponents/LoadingSpinner';
  * @param {Object} props - The component props.
  * @param {Object} props.forum - The forum object containing forum details.
  * @param {Function} props.onClick - The function to be called when the card is clicked.
+ * @param {boolean} props.isCompact - Whether to render the card in a compact format without a photo.
  * @returns {JSX.Element} The rendered card component.
  */
-const ForumCard = ({ forum, onClick }) => {
+const ForumCard = ({ forum, onClick, isCompact }) => {
   const [loading, setLoading] = useState(true);
 
   const CardContainer = styled('div')(({ theme }) => ({
@@ -88,17 +89,19 @@ const ForumCard = ({ forum, onClick }) => {
   return (
     <CardContainer>
       <CustomCard variant="outlined" onClick={() => onClick(forum)}>
-        <CardHeader style={{ borderColor: forum.borderColor || '#3f51b5' }}>
-          <PhotoContainer elevation={3}>
-            <LoadingSpinner loading={loading} />
-            <Photo
-              src={forum.imgUrl || "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"}
-              alt="Forum Photo"
-              onLoad={() => setLoading(false)}
-              onError={() => setLoading(false)}
-            />
-          </PhotoContainer>
-        </CardHeader>
+        {!isCompact && (
+          <CardHeader style={{ borderColor: forum.borderColor || '#3f51b5' }}>
+            <PhotoContainer elevation={3}>
+              <LoadingSpinner loading={loading} />
+              <Photo
+                src={forum.imgUrl || "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"}
+                alt="Forum Photo"
+                onLoad={() => setLoading(false)}
+                onError={() => setLoading(false)}
+              />
+            </PhotoContainer>
+          </CardHeader>
+        )}
         <CardContent>
           <ForumName variant="h6" component="div">
             {forum.forumName}

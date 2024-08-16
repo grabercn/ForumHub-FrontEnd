@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import PostList from './PostList';
+import PostList from '../PostList';
 import ForumBanner from './ForumBanner';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { getAuthCookieValues } from '../Objects/userData.object';
-import { getForumById } from '../ApiCalls/forumApiCalls';
+import { getAuthCookieValues } from '../../Objects/userData.object';
+import { getForumById } from '../../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
-import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
+import { getUserByEmailAndPassword } from '../../ApiCalls/authApiCalls';
 
 /**
  * Renders the details of a forum, including the forum banner, category, and posts.
