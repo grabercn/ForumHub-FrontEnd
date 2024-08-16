@@ -12,6 +12,7 @@ import LoadingSpinner from '../StyledComponents/LoadingSpinner';
 import { checkAuthLocal } from '../Objects/userData.object';
 import GlassTopBar from '../StyledComponents/GlassTopBar';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog';
+import { MenuItem } from '@mui/material';
 
 /**
  * AdminTools component for managing forums.
@@ -155,18 +156,26 @@ const AdminTools = () => {
                                                     id="category"
                                                     value={category}
                                                     onChange={(e) => setCategory(e.target.value)}
+                                                    fullWidth
                                                 >
-                                                    <option value="General">General</option>
-                                                    <option value="Technology">Technology</option>
-                                                    <option value="Science">Science</option>
-                                                    <option value="Health">Health</option>
-                                                    <option value="Business">Business</option>
-                                                    <option value="Entertainment">Entertainment</option>
-                                                    <option value="Sports">Sports</option>
-                                                    <option value="Education">Education</option>
-                                                    <option value="Other">Other</option>
+                                                    <MenuItem value="General">General</MenuItem>
+                                                    <MenuItem value="Technology">Technology</MenuItem>
+                                                    <MenuItem value="Science">Science</MenuItem>
+                                                    <MenuItem value="Health">Health</MenuItem>
+                                                    <MenuItem value="Food">Food</MenuItem>
+                                                    <MenuItem value="Business">Business</MenuItem>
+                                                    <MenuItem value="Entertainment">Entertainment</MenuItem>
+                                                    <MenuItem value="Sports">Sports</MenuItem>
+                                                    <MenuItem value="Education">Education</MenuItem>
+                                                    <MenuItem value="Finance">Finance</MenuItem>
+                                                    <MenuItem value="Travel">Travel</MenuItem>
+                                                    <MenuItem value="Lifestyle">Lifestyle</MenuItem>
+                                                    <MenuItem value="Politics">Politics</MenuItem>
+                                                    <MenuItem value="Environment">Environment</MenuItem>
+                                                    <MenuItem value="Art">Art</MenuItem>
+                                                    <MenuItem value="History">History</MenuItem>
                                                 </Select>
-                                            </Grid>
+                                                </Grid>
                                             <Grid item xs={12}>
                                                 <Input type="text" id="imgUrl" placeholder="Image URL (Optional)" />
                                             </Grid>

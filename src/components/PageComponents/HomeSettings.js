@@ -13,13 +13,11 @@ function HomeSettings() {
     <AnimationTag variant="slide-up">
         <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12}>
-                <Paper elevation={3} style={{ padding: '1rem' }}>
                     <Typography variant="h4" align="center">Home Settings</Typography>
                     <Typography variant="body1" align="center">Customize your home page settings</Typography>
-                </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper elevation={3} style={{ padding: '1rem' }}>
+                <Paper elevation={1} style={{ padding: '1rem' }}>
                     <Typography variant="h5">General Settings</Typography>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
@@ -32,7 +30,7 @@ function HomeSettings() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper elevation={3} style={{ padding: '1rem' }}>
+                <Paper elevation={1} style={{ padding: '1rem' }}>
                     <Typography variant="h5">Forum Settings</Typography>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
