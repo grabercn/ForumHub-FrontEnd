@@ -13,6 +13,8 @@ import { checkAuthLocal } from '../Objects/userData.object';
 import GlassTopBar from '../StyledComponents/GlassTopBar';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog';
 import { MenuItem } from '@mui/material';
+import { Switch, FormControlLabel } from '@mui/material';
+
 
 /**
  * AdminTools component for managing forums.
@@ -26,7 +28,9 @@ const AdminTools = () => {
     const [showAddForumForm, setShowAddForumForm] = useState(false);
     const [showRemoveForumForm, setShowRemoveForumForm] = useState(false);
     const [category, setCategory] = useState('');
+    const [isLocked, setIsLocked] = useState(false);
 
+    
     // Fetch all user IDs from the API and set the user IDs state variable
     useEffect(() => {
         // Check if the user is an admin before loading the page
@@ -51,6 +55,12 @@ const AdminTools = () => {
     const handleForumClick = (forum) => {
         setSelectedForum(forum);
     };
+
+    // Handle change event for the switch
+    const handleChange = (event) => {
+        setIsLocked(event.target.checked);
+    };
+
 
     const handleRemoveForum = (event) => {
         const id = document.getElementById('id').value;
@@ -79,10 +89,16 @@ const AdminTools = () => {
             forumName: document.getElementById('name').value,
             forumDescription: document.getElementById('description').value,
             imgUrl: document.getElementById('imgUrl').value,
+            isLocked: isLocked,
         };
 
         // Create the forum in the API
-        createForum(forumObject);
+        createForum(forumObject).then((data) => {
+            if (!data) {
+                alert('Error adding forum!');
+                return;
+            }
+        });
 
         alert('Forum added!');
         event.preventDefault();
@@ -176,6 +192,19 @@ const AdminTools = () => {
                                                     <MenuItem value="History">History</MenuItem>
                                                 </Select>
                                                 </Grid>
+                                                <Grid item xs={12}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={isLocked} // Switch will be ON if isLocked is true
+                                                            onChange={handleChange}
+                                                            name="isLocked"
+                                                            color="primary"
+                                                        />
+                                                    }
+                                                    label="View Only?"
+                                                />
+                                            </Grid>
                                             <Grid item xs={12}>
                                                 <Input type="text" id="imgUrl" placeholder="Image URL (Optional)" />
                                             </Grid>

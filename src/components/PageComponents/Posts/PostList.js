@@ -23,18 +23,18 @@ import {
   addReactionByPostId,
   removeReactionByPostId,
   removeAllReactionsByPostId,
-} from "../ApiCalls/postApiCalls";
+} from "../../ApiCalls/postApiCalls";
 import {
   addComment,
   removeAllCommentsByPostId,
-} from "../ApiCalls/commentApiCalls";
-import { checkAuthLocal } from "../Objects/userData.object";
-import GlassTopBar from "../StyledComponents/GlassTopBar";
-import { isNightMode } from "../Objects/theme";
+} from "../../ApiCalls/commentApiCalls";
+import { checkAuthLocal } from "../../Objects/userData.object";
+import GlassTopBar from "../../StyledComponents/GlassTopBar";
+import { isNightMode } from "../../Objects/theme";
 import { Link } from "react-router-dom";
-import ProfileIcon from "../StyledComponents/ProfileIcon";
-import LoadingSpinner from "../StyledComponents/LoadingSpinner";
-import { getReactionsByPostId } from "../ApiCalls/postApiCalls";
+import ProfileIcon from "../../StyledComponents/ProfileIcon";
+import LoadingSpinner from "../../StyledComponents/LoadingSpinner";
+import { getReactionsByPostId } from "../../ApiCalls/postApiCalls";
 
 /**
  * Component for displaying a list of posts in a forum.
@@ -67,6 +67,7 @@ function PostList(props) {
   const [likedUsers, setLikedUsers] = React.useState({});
   const postsPerPage = 10;
 
+  // Sort posts based on the selected method
   const sortedPosts = [...posts].sort((a, b) => {
     switch (sortMethod) {
       case "subject":
@@ -310,7 +311,7 @@ function PostList(props) {
         <title>{`Posts in ${forum.name}`}</title>
         <meta name="description" content={`Browse posts in ${forum.forumName}.`} />
       </Helmet>
-      {posts.length === 0 && (
+      {posts.length === 0 && isLoggedin ? (
         <div>
           <Alert severity="info">
             No posts found. Be the first! Click the "Add Post" button to create one.
@@ -320,6 +321,10 @@ function PostList(props) {
           <Button variant="contained" color="primary" onClick={handleOpenForm}> Add Post </Button>
           </center>
         </div>
+      ):(
+        <Alert severity="info">
+            Login to create and interact with posts.
+          </Alert>
       )}
       
 

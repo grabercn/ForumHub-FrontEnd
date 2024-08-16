@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import PostList from '../PostList';
+import PostList from '../Posts/PostList';
 import ForumBanner from './ForumBanner';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
