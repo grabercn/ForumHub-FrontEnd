@@ -97,9 +97,9 @@ async function checkUserAuthCookie() {
                 getUserByEmailAndPassword(userEmail, userPassword).then((user) => {
                     getUserRole(user.username).then((response) => {
                         if (response === 'admin') {
-                            setUserDataCookieValues('admin', user.name, user.username, user.userId);
+                            //setUserDataCookieValues('admin', user.name, user.username, user.userId);
                         } else {
-                            setUserDataCookieValues('user', user.name, user.username, user.userId);
+                            //setUserDataCookieValues('user', user.name, user.username, user.userId);
                         }
                     }
                     )});

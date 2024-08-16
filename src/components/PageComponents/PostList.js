@@ -22,6 +22,7 @@ import {
   removePost,
   addReactionByPostId,
   removeReactionByPostId,
+  removeAllReactionsByPostId,
 } from "../ApiCalls/postApiCalls";
 import {
   addComment,
@@ -35,6 +36,16 @@ import ProfileIcon from "../StyledComponents/ProfileIcon";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 import { getReactionsByPostId } from "../ApiCalls/postApiCalls";
 
+/**
+ * Component for displaying a list of posts in a forum.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.forum - The forum object.
+ * @param {string} props.userId - The user ID.
+ * @param {string} props.postId - The post ID.
+ * @returns {JSX.Element} The rendered component.
+ */
 function PostList(props) {
   const { forum, userId, postId } = props;
   const forumId = forum.forumId;
@@ -146,6 +157,7 @@ function PostList(props) {
 
   const handleRemovePost = (postId) => {
     removeAllCommentsByPostId(postId);
+    removeAllReactionsByPostId(postId);
     removePost(postId);
     setPosts(posts.filter((post) => post.postId !== postId));
   };
@@ -473,11 +485,12 @@ function PostList(props) {
                     key={comment.commentId}
                     sx={{ padding: 1, marginBottom: 1 }}
                   >
+                    {console.log(comment)}
                     <Box display="flex" alignItems="center" marginBottom={1}>
                       <ProfileIcon
                         size={20}
                         username={comment.userId.username}
-                        imgUrl={post.userId.profilePicture}
+                        imgUrl={comment.userId.profilePicture}
                       />
                       <div style={{ width: "10px" }} />
                       <Typography

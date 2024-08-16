@@ -213,7 +213,24 @@ const removeReactionByPostId = async (userId, postId) => {
     }
 }
 
+// remove all reactions by post id
+const removeAllReactionsByPostId = async (postId) => {
+    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${postId}`;
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error(`API call failed with status ${response.status}`);
+        }
+    }
+    catch(error) {
+        console.error("Error removing reactions:", error);
+    }
+}
+
 
 export { removeAllPostsByForumId, addPost, removePost, getPostById, getFullPostsByForumId, getPopularPosts, 
          getReactionsByPostId, addReactionByPostId, getReactionScoreByPostId, 
-         removeReactionByPostId };
+         removeReactionByPostId, removeAllReactionsByPostId };

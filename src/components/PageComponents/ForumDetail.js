@@ -1,13 +1,14 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import PostList from './PostList';
 import ForumBanner from './ForumBanner';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { getUserDataCookieValues } from '../Objects/userData.object';
+import { getAuthCookieValues } from '../Objects/userData.object';
 import { getForumById } from '../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
+import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 
 /**
  * Renders the details of a forum, including the forum banner, category, and posts.
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 const ForumDetail = ({ forum, postId }) => {
   
   const [forumDataFromUrl, setForumDataFromUrl] = React.useState({});
+  const [userData, setUserData] = React.useState(null);
 
   let { forumIdUrl, postIdUrl } = useParams();
 
@@ -28,13 +30,25 @@ const ForumDetail = ({ forum, postId }) => {
   postId = postId || postIdUrl;
 
   // Get the forum data from the API
-  React.useEffect(() => {
+  useEffect(() => {
     if (forumIdUrl) {
       getForumById(forumIdUrl).then((forum) => {
         setForumDataFromUrl(forum);
       });
     }
   }, [forumIdUrl]);
+
+  // get the current user id
+  useEffect(() => {
+    getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
+      if (data) {
+        setUserData(data);
+      }else {
+        setUserData(null);
+      }
+    });
+  }, []);
+
 
     // Return the forum details component
     return (
@@ -74,11 +88,13 @@ const ForumDetail = ({ forum, postId }) => {
                 </div>
 
                 {/* Display the posts in the forum */}
+                {userData && (
                 <PostList
                     forum={forumDetail}
-                    userId={getUserDataCookieValues().userId}
+                    userId={userData.userId}
                     postId={postId} // Pass postId to PostList
                 />
+                )}
             </Grid>
         </Grid>
     );
