@@ -88,10 +88,15 @@ const ForumDetail = ({ forum, postId }) => {
                 </div>
 
                 {/* Display the posts in the forum */}
-                {userData && (
+                {userData ? (
                 <PostList
                     forum={forumDetail}
                     userId={userData.userId}
+                    postId={postId} // Pass postId to PostList
+                />
+                ):(
+                <PostList
+                    forum={forumDetail}
                     postId={postId} // Pass postId to PostList
                 />
                 )}
