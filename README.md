@@ -2,7 +2,7 @@
 
 Forum Hub is a website that provides a platform for users to discover and engage in various forums.
 
-Visit [Forum Hub](https://forumhub.free.nf/) to explore the platform.
+Visit [Forum Hub](https://theforumhub.com/) to explore the platform.
 
 ## Frontend Focus
 
