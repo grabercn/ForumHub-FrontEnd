@@ -166,7 +166,7 @@ function ResponsiveAppBar(props) {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ForumHubIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+              <ForumHubIcon variant='noUnderline' sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
               <Typography
                 variant="h6"
                 noWrap

@@ -8,13 +8,25 @@ import PropTypes from 'prop-types';
  * @param {Object} props - The component props.
  * @param {string|number} props.width - The width of the icon.
  * @param {string|number} props.height - The height of the icon.
- * @param {boolean} props.showText - Determines which SVG to show, based on text inclusion.
+ * @param {('normal' | 'noUnderline' | 'noText')} props.variant - Determines which SVG to show based on the variant.
  * @returns {JSX.Element} The rendered SVG icon.
  */
-const ForumHubIcon = ({ width = 70, height = 70, showText = false }) => {
-  const iconSrc = showText
-    ? `${process.env.PUBLIC_URL}/logos/BandWLogoNoBG.svg`
-    : `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoText.svg`;
+const ForumHubIcon = ({ width = 70, height = 70, variant = 'normal' }) => {
+  let iconSrc = '';
+
+  switch (variant) {
+    case 'normal':
+      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBG.svg`;
+      break;
+    case 'noUnderline':
+      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoTextNoUnderline.svg`;
+      break;
+    case 'noText':
+      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoText.svg`;
+      break;
+    default:
+      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBG.svg`;
+  }
 
   return (
     <img
@@ -29,7 +41,7 @@ const ForumHubIcon = ({ width = 70, height = 70, showText = false }) => {
 ForumHubIcon.propTypes = {
   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  showText: PropTypes.bool,
+  variant: PropTypes.oneOf(['normal', 'noUnderline', 'noText']),
 };
 
 export default ForumHubIcon;

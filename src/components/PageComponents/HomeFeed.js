@@ -97,7 +97,7 @@ const HomeFeed = () => {
                             minHeight: "50vh", // Ensures vertical centering within the viewport height
                         }}
                     >
-                        <ForumHubIcon width={200} height={200} showText={true} />
+                        <ForumHubIcon width={200} height={200} variant="normal" />
                         <Typography
                             variant="h6"
                             color={isNightMode() ? 'white' : 'black'}
