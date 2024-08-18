@@ -1,11 +1,11 @@
-// Fetch all comments from the API
+import BASE_URL from './baseUrl';
 
 /**
  * Adds a comment to the API.
  * @param {Object} postObject - The comment object to be added.
  */
 const addComment = async (postObject) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/comments`;
+    const url = `${BASE_URL}/comments`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -33,7 +33,7 @@ const addComment = async (postObject) => {
  * @returns {Array} - An array of comments.
  */
 const getAllCommentsByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net:8080/api/comments/post/${postId}`;
+    const url = `${BASE_URL}/api/comments/post/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -56,7 +56,7 @@ const getAllCommentsByPostId = async (postId) => {
  * @param {number} postId - The ID of the comment to be removed.
  */
 const removeComment = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/${postId}`;
+    const url = `${BASE_URL}/comments/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -77,7 +77,7 @@ const removeComment = async (postId) => {
  * @returns {Array} - An array of deleted comments.
  */
 const removeAllCommentsByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/comments/post/${postId}`;
+    const url = `${BASE_URL}/comments/post/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'

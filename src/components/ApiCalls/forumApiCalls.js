@@ -1,15 +1,7 @@
-// This is a simple example of how to make an API call using the Fetch API. This example fetches data from an API endpoint and logs the retrieved data to the console.
-
-// This is the forum data object that will be sent to the API endpoint
-const forumObject = {
-    forumCategory: 'Shoes',
-    forumName: 'Shoe Land',
-    forumDescription: 'Land of shoes and more shoes',
-    imgUrl: 'https://images.pexels.com/photos/25394823/pexels-photo-25394823/free-photo-of-a-woman-in-a-red-jumpsuit-posing-on-a-porch.jpeg',
-};
+import BASE_URL from "./baseUrl";
 
 async function createForum(forumObject) {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/forums';
+    const url = `${BASE_URL}/forums`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -31,7 +23,7 @@ async function createForum(forumObject) {
 }
 
 async function getAllForums() {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/forums';
+    const url = `${BASE_URL}/forums`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -53,7 +45,7 @@ async function getAllForums() {
 }
 
 async function getPopularForums () {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/forums/popular';
+    const url = `${BASE_URL}/forums/popular`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -76,7 +68,7 @@ async function getPopularForums () {
 
 async function getForumById(forumId) {
     // Construct the URL with the forumId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
+    const url = `${BASE_URL}/forums/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -96,7 +88,7 @@ async function getForumById(forumId) {
 
 async function getForumByName(forumName) {
     // Construct the URL with the forumName variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/search/${forumName}`;
+    const url = `${BASE_URL}/forums/search/${forumName}`;
     try {
         const response = await fetch(url, {
         method: 'GET'
@@ -129,7 +121,7 @@ async function updateForumById(forumId, forumObject) {
         price: 40.00
     }
     // Construct the URL with the forumId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
+    const url = `${BASE_URL}/forums/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'PUT',
@@ -151,7 +143,7 @@ async function updateForumById(forumId, forumObject) {
 
 async function deleteForumById(forumId) {
     // Construct the URL with the forumId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/forums/${forumId}`;
+    const url = `${BASE_URL}/forums/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -172,7 +164,7 @@ async function deleteForumById(forumId) {
 // get the reaction score of a forum by forumid
 async function getReactionScoreByForumId(forumId) {
     // Construct the URL with the forumId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/forums/${forumId}`;
+    const url = `${BASE_URL}/reactions/score/forums/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -191,15 +183,3 @@ async function getReactionScoreByForumId(forumId) {
 
 // Export the functions to be used in other files
 export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums, getReactionScoreByForumId };
-
-
-// Usage examples
-
-//createForum(forumObject);
-//getAllForums();
-//getForumById(1);
-//getForumByName("Forum 1");
-//updateForumById(1, forumObject);
-//deleteForumById(1);
-//getForumAvailability(1, 0);
-//updateInventory(1, 1, 5);

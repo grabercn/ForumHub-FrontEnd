@@ -139,6 +139,7 @@ function GoogleLoginComponent() {
     const phoneNumber = faker.phone.number('##########'); // 10-digit phone number
     const userName = profile.name;
     const profileImgUrl = profile.picture || '';
+    const dateCreated = new Date().toISOString();
 
     CheckUniqueUser(uniqueusername, email, phoneNumber).then((isUnique) => {
     if (isUnique[0]) {
@@ -174,7 +175,8 @@ function GoogleLoginComponent() {
         phoneNumber: phoneNumber,
         password: password,
         profilePicture: profileImgUrl,
-        role: 'user' // Default role is user, is not able to be changed from the front end, so value here does not matter
+        role: 'user', // Default role is user, is not able to be changed from the front end, so value here does not matter
+        dateCreated: dateCreated // this value is generated on the server side but is required here
     };
 
     try {

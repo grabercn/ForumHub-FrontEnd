@@ -1,8 +1,10 @@
 // File: helper.js
 // This file contains helper functions for API calls
 
+import BASE_URL from "./baseUrl";
+
 async function getUserIp() {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/get-ip`;
+    const url = `${BASE_URL}/get-ip`;
     try {
       const response = await fetch(url, {
         method: 'GET',

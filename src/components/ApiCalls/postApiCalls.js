@@ -1,11 +1,12 @@
-// Fetch all posts from the API
+// Import the BASE_URL constant
+import BASE_URL from './baseUrl';
 
 /**
  * Adds a new post to the API.
  * @param {Object} postObject - The post object to be added.
  */
 const addPost = async (postObject) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts`;
+    const url = `${BASE_URL}/posts`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -32,7 +33,7 @@ const addPost = async (postObject) => {
  * @returns {Promise<Array>} - A promise that resolves to an array of posts with all related comments and reactions.
  */
 const getFullPostsByForumId = async (forumId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/full/forum/${forumId}`;
+    const url = `${BASE_URL}/posts/full/forum/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -55,7 +56,7 @@ const getFullPostsByForumId = async (forumId) => {
  * @param {number} postId - The ID of the post to be removed.
  */
 const removePost = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/${postId}`;
+    const url = `${BASE_URL}/posts/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -75,7 +76,7 @@ const removePost = async (postId) => {
  * @returns {Promise<Array>} - A promise that resolves to an array of popular posts.
  */
 async function getPopularPosts () {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/posts/popular';
+    const url = `${BASE_URL}/posts/popular`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -101,7 +102,7 @@ async function getPopularPosts () {
  * @param {number} forumId - The ID of the forum.
  */
 const removeAllPostsByForumId = async (forumId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/forum/${forumId}`;
+    const url = `${BASE_URL}/posts/forum/${forumId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -122,7 +123,7 @@ const removeAllPostsByForumId = async (forumId) => {
  * @returns {Promise<Object>} - A promise that resolves to the post object.
  */
 const getPostById = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/posts/${postId}`;
+    const url = `${BASE_URL}/posts/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -140,8 +141,13 @@ const getPostById = async (postId) => {
     }
 }
 
+/**
+ * Retrieves reactions for a specific post from the API.
+ * @param {number} postId - The ID of the post.
+ * @returns {Promise<Array>} - A promise that resolves to an array of reactions for the post.
+ */
 const getReactionsByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${postId}`;
+    const url = `${BASE_URL}/reactions/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -159,8 +165,14 @@ const getReactionsByPostId = async (postId) => {
     }
 }
 
+/**
+ * Adds a reaction to a post by a specific user.
+ * @param {number} userId - The ID of the user.
+ * @param {number} postId - The ID of the post.
+ * @param {string} reactionType - The type of reaction (e.g., 'like', 'dislike').
+ */
 const addReactionByPostId = async (userId, postId, reactionType) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${userId}/${postId}/${reactionType}`;
+    const url = `${BASE_URL}/reactions/${userId}/${postId}/${reactionType}`;
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -178,8 +190,13 @@ const addReactionByPostId = async (userId, postId, reactionType) => {
     }
 }
 
+/**
+ * Retrieves the reaction score for a specific post.
+ * @param {number} postId - The ID of the post.
+ * @returns {Promise<Object>} - A promise that resolves to the reaction score of the post.
+ */
 const getReactionScoreByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/score/posts/${postId}`;
+    const url = `${BASE_URL}/reactions/score/posts/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -197,8 +214,13 @@ const getReactionScoreByPostId = async (postId) => {
     }
 }
 
+/**
+ * Removes a reaction from a post by a specific user.
+ * @param {number} userId - The ID of the user.
+ * @param {number} postId - The ID of the post.
+ */
 const removeReactionByPostId = async (userId, postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${userId}/${postId}`;
+    const url = `${BASE_URL}/reactions/${userId}/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -213,9 +235,12 @@ const removeReactionByPostId = async (userId, postId) => {
     }
 }
 
-// remove all reactions by post id
+/**
+ * Removes all reactions for a specific post.
+ * @param {number} postId - The ID of the post.
+ */
 const removeAllReactionsByPostId = async (postId) => {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/reactions/${postId}`;
+    const url = `${BASE_URL}/reactions/${postId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -229,7 +254,6 @@ const removeAllReactionsByPostId = async (postId) => {
         console.error("Error removing reactions:", error);
     }
 }
-
 
 export { removeAllPostsByForumId, addPost, removePost, getPostById, getFullPostsByForumId, getPopularPosts, 
          getReactionsByPostId, addReactionByPostId, getReactionScoreByPostId, 

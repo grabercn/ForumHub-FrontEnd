@@ -1,18 +1,7 @@
-// This is a simple example of how to make an API call using the Fetch API. This example fetches data from an API endpoint and logs the retrieved data to the console.
-
-// This is the user data object that will be sent to the API endpoint
-const userObject = {
-    name: 'Owen',
-    email: 'owen@gmail.com',
-    phoneNumber: '123-456-7890',
-    password: 'password',
-    username: 'owen123', // Ensure this field is included
-    role: 'user', // Ensure this field is included
-    dateCreated: new Date().toISOString()
-};
+import BASE_URL from "./baseUrl";
 
 async function createUser(userObject) {
-    const url = 'https://forumhubjavaservices.azurewebsites.net/api/users';
+    const url = `${BASE_URL}/users`
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -33,11 +22,10 @@ async function createUser(userObject) {
     }
 }
 
-
 // find a user by id
 async function getUserById(userId) {
     // Construct the URL with the userId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${userId}`;
+    const url = `${BASE_URL}/users/${userId}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -57,7 +45,7 @@ async function getUserById(userId) {
 
 async function UpdateUserById(userId, userObject) {
     // Construct the URL with the userId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${userId}`;
+    const url = `${BASE_URL}/users/${userId}`;
     try {
         const response = await fetch(url, {
             method: 'PUT',
@@ -82,7 +70,7 @@ async function UpdateUserById(userId, userObject) {
 // delete a user by id
 async function deleteUserById(userId) {
     // Construct the URL with the userId variable
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/${userId}`;
+    const url = `${BASE_URL}/users/${userId}`;
     try {
         const response = await fetch(url, {
             method: 'DELETE'
@@ -101,7 +89,7 @@ async function deleteUserById(userId) {
 }
 
 async function CheckUniqueUser(username, email, phoneNumber) {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/check/${username}/${email}/${phoneNumber}`;
+    const url = `${BASE_URL}/users/check/${username}/${email}/${phoneNumber}`;
     try {
         const response = await fetch(url, {
             method: 'GET'
@@ -120,7 +108,7 @@ async function CheckUniqueUser(username, email, phoneNumber) {
 }
 
 async function getAllUserIds() {
-    const url = `https://forumhubjavaservices.azurewebsites.net/api/users/ids`;
+    const url = `${BASE_URL}/users/ids`;
     try {
         const response = await fetch(url, {
             method: 'GET'

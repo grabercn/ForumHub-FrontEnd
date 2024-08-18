@@ -24,6 +24,7 @@ import ProfileIcon from '../StyledComponents/ProfileIcon';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
 import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 import ForumHubIcon from '../StyledComponents/ForumHubIcon';
+import NewsDropdown from './NewsDropdown';
 
 function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -198,6 +199,12 @@ function ResponsiveAppBar(props) {
 
           <Box sx={{ flexGrow: 0, ml: 2 }}>
             <Searchbar />
+          </Box>
+
+          <Box sx={{ flexGrow: 0, width: '16px' }}></Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <NewsDropdown />
           </Box>
 
           <Box sx={{ flexGrow: 0, width: '16px' }}></Box>

@@ -91,25 +91,21 @@ function getAuthCookieValues() {
  */
 async function checkUserAuthCookie() {
     const { userEmail, userPassword } = getAuthCookieValues();
-    return checkUserAuth(userEmail, userPassword)
-        .then((userAuth) => {
-            if (userAuth === true) {
-                getUserByEmailAndPassword(userEmail, userPassword).then((user) => {
-                    getUserRole(user.username).then((response) => {
-                        if (response === 'admin') {
-                            //setUserDataCookieValues('admin', user.name, user.username, user.userId);
-                        } else {
-                            //setUserDataCookieValues('user', user.name, user.username, user.userId);
-                        }
-                    }
-                    )});
-                setAuthCookieValues(userEmail, userPassword);
-                return true;
-            } else {
-                //removeAuthCookieValues();
-                return false;
+    try {
+        const userAuth = await checkUserAuth(userEmail, userPassword);
+        if (userAuth === true) {
+            await getUserByEmailAndPassword(userEmail, userPassword).then((response) => {
+                setAuthCookieValues(response.email, response.password);
             }
-        });
+            );
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error checking authentication:', error);
+        return false;
+    }
 }
 
 
@@ -122,20 +118,15 @@ function checkAuthLocal(userType) {
                     if (userType === undefined) {
                         resolve(true);
                     }else{
-                        const cookieValues = getUserDataCookieValues();
-                        getUserRole(cookieValues.username).then((response) => {
-                    
-                            if (response === userType) {
+                        const data = getAuthCookieValues();
+                        getUserByEmailAndPassword(data.userEmail, data.userPassword).then((response) => {
+                            if (response.userType === userType) {
                                 resolve(true);
-                            } else if (response === undefined || response === "") {
-                                resolve('error getting user role');
                             } else {
-                                //removeUserDataCookieValues();
-                                //removeAuthCookieValues();
                                 resolve(false);
                             }
-                        
-                        });
+                        }
+                        );
                     }
                 } else {
                     removeAuthCookieValues();
