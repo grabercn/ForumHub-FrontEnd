@@ -11,10 +11,10 @@ function NewsDropdown() {
   const [anchorEl, setAnchorEl] = useState(null);
 
   // GitHub API settings
-  const githubToken = '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'; // Replace with your token
+  const githubToken = process.env.REACT_APP_GITHUB_TOKEN; // Use the environment variable
   const repoOwner = 'grabercn';
   const repoName = 'ForumHub-FrontEnd';
-  
+
   useEffect(() => {
     const fetchCommits = async () => {
       try {
@@ -41,7 +41,7 @@ function NewsDropdown() {
     };
 
     fetchCommits();
-  }, []);
+  }, [githubToken]);
 
   const handleToggle = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -85,9 +85,9 @@ function NewsDropdown() {
           {newsItems.map((item, index) => (
             <div key={index}>
               <MenuItem onClick={() => handleToggle(index)} style={{ cursor: 'pointer' }}>
-                <Box display="flex" alignItems="center" width="100%" sx={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+                <Box display="flex" alignItems="center" width="100%">
                   <Box flexGrow={1}>
-                    <Typography variant="body2" fontWeight="bold" sx={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+                    <Typography variant="body2" fontWeight="bold">
                       {item.title}
                     </Typography>
                   </Box>
