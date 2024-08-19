@@ -171,7 +171,6 @@ function ResponsiveAppBar(props) {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
