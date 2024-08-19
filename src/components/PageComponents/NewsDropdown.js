@@ -1,47 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, IconButton, MenuItem, Typography, Collapse, Popover } from '@mui/material';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import axios from 'axios';
 
 function NewsDropdown() {
-  const [newsItems, setNewsItems] = useState([]);
+  const newsItems = [
+    { title: 'A little welcome.', description: 'Welcome to ForumHub! We are constantly working to improve your experience here! Come back here to be notified of the latest updates and changes.' },
+    { title: 'We are live.', description: 'ForumHub is live!' },
+  ];
+
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-
-  // GitHub API settings
-  const githubToken = process.env.REACT_APP_GITHUB_TOKEN; // Use the environment variable
-  const repoOwner = 'grabercn';
-  const repoName = 'ForumHub-FrontEnd';
-
-  useEffect(() => {
-    const fetchCommits = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.github.com/repos/${repoOwner}/${repoName}/commits`,
-          {
-            headers: {
-              Authorization: `token ${githubToken}`
-            },
-            params: {
-              per_page: 5 // Limit the number of commits fetched
-            }
-          }
-        );
-        const commits = response.data;
-        const items = commits.map(commit => ({
-          title: commit.commit.message,
-          description: `Description: ${commit.commit.description} - Author: ${commit.commit.author.name} - Date: ${commit.commit.author.date}`
-        }));
-        setNewsItems(items);
-      } catch (error) {
-        console.error('Error fetching commits:', error);
-      }
-    };
-
-    fetchCommits();
-  }, [githubToken]);
 
   const handleToggle = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
