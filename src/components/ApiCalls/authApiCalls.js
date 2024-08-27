@@ -1,7 +1,4 @@
-// File: auth.js
-// This file contains helper functions for authentication API calls
-
-import BASE_URL from "./baseUrl";
+import { authenticatedApiCall } from './authentication';
 
 /**
  * Checks user authentication by making an API call to the server.
@@ -10,25 +7,8 @@ import BASE_URL from "./baseUrl";
  * @returns {Promise<Object|null>} - A promise that resolves to the authentication data or null if there was an error.
  */
 async function checkUserAuth(email, password) {
-  const url = `${BASE_URL}/users/auth/${email},${password}`;
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API call failed with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error authenticating:", error);
-    return null;
-  }
+  const endpoint = `/users/auth/${email},${password}`;
+  return await authenticatedApiCall(endpoint, 'GET');
 }
 
 /**
@@ -37,25 +17,8 @@ async function checkUserAuth(email, password) {
  * @returns {Promise<string|null>} - A promise that resolves to the user role or null if there was an error.
  */
 async function getUserRole(username) {
-  const url = `${BASE_URL}/users/role/${username}`;
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API call failed with status ${response.status}`);
-    }
-
-    const data = await response.text();
-    return data;
-  } catch (error) {
-    console.error("Error getting user role:", error);
-    return null;
-  }
+  const endpoint = `/users/role/${username}`;
+  return await authenticatedApiCall(endpoint, 'GET');
 }
 
 /**
@@ -65,24 +28,8 @@ async function getUserRole(username) {
  * @returns {Promise<Object|null>} - A promise that resolves to the user data or null if there was an error.
  */
 async function getUserByEmailAndPassword(email, password) {
-  const url = `${BASE_URL}/users/${email}/${password}`;
-  try {
-      const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-      });
-
-      if (!response.ok) {
-          throw new Error(`API call failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-  } catch (error) {
-      console.error("Error authenticating:", error);
-  }
+  const endpoint = `/users/${email}/${password}`;
+  return await authenticatedApiCall(endpoint, 'GET');
 }
 
-export { checkUserAuth, getUserByEmailAndPassword, getUserRole};
+export { checkUserAuth, getUserByEmailAndPassword, getUserRole };
