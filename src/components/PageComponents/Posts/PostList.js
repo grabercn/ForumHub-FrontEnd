@@ -319,12 +319,14 @@ function PostList(props) {
           <Button variant="contained" color="primary" onClick={handleOpenForm}> Add Post </Button>
           </center>
         </div>
-      ):(
-        <Alert severity="info">
-            Login to create and interact with posts.
+      ) : (
+        <div>
+          <Alert severity="info">
+            {posts.length} post{posts.length > 1 ? "s" : ""} found.
           </Alert>
+          <br />
+        </div>
       )}
-      
 
       {isLoggedin && posts.length > 0 && (
         <GlassTopBar>
