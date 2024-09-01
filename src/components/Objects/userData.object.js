@@ -111,7 +111,7 @@ async function checkUserAuthCookie() {
 
 // Function to check if the user is authenticated
 function checkAuthLocal(userType) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         Promise.all([checkUserAuthCookie()])
             .then(([userAuth]) => {
                 if (userAuth === true) {
@@ -120,7 +120,7 @@ function checkAuthLocal(userType) {
                     }else{
                         const data = getAuthCookieValues();
                         getUserByEmailAndPassword(data.userEmail, data.userPassword).then((response) => {
-                            if (response.userType === userType) {
+                            if (response.role === userType) {
                                 resolve(true);
                             } else {
                                 resolve(false);

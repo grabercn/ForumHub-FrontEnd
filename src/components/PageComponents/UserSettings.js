@@ -4,7 +4,7 @@ import { getAuthCookieValues, getUserDataCookieValues, removeAuthCookieValues, r
 import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 import { Button, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { UpdateUserById } from '../ApiCalls/userApiCalls';
+import { updateUserById } from '../ApiCalls/userApiCalls';
 import Typography from '@mui/material/Typography';
 import { Email, Phone, SupervisedUserCircle, AlternateEmail } from '@mui/icons-material';
 import LoadingSpinner from '../StyledComponents/LoadingSpinner';
@@ -36,7 +36,7 @@ const UserSettings = () => {
             phoneNumber: userData.phoneNumber,
         };
         
-        UpdateUserById(getUserDataCookieValues().userId, {
+        updateUserById(getUserDataCookieValues().userId, {
             name: userData.name,
             email: updatedUserData.email,
             phoneNumber: updatedUserData.phoneNumber,

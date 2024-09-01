@@ -7,7 +7,7 @@ import Turnstile from "react-turnstile";
 import { setAuthCookieValues, checkAuthLocal, removeAuthCookieValues, setUserDataCookieValues } from '../Objects/userData.object';
 import { sha256 } from 'js-sha256';
 import { createUser } from '../ApiCalls/userApiCalls';
-import { CheckUniqueUser } from '../ApiCalls/userApiCalls';
+import { checkUniqueUser } from '../ApiCalls/userApiCalls';
 import { faker } from '@faker-js/faker';
 
 function GoogleLoginComponent() {
@@ -141,7 +141,7 @@ function GoogleLoginComponent() {
     const profileImgUrl = profile.picture || '';
     const dateCreated = new Date().toISOString();
 
-    CheckUniqueUser(uniqueusername, email, phoneNumber).then((isUnique) => {
+    checkUniqueUser(uniqueusername, email, phoneNumber).then((isUnique) => {
     if (isUnique[0]) {
         setErrorMessage('Username is already taken.');
         setErrorType('error');
