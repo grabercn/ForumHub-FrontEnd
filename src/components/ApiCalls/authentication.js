@@ -40,6 +40,29 @@ function getStoredJwtToken() {
   return localStorage.getItem('jwtToken');
 }
 
+// Function to call without a token
+async function apiCall(endpoint, method = 'GET', body = null) {
+  const url = `${BASE_URL}${endpoint}`;
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: body ? JSON.stringify(body) : null,
+    });
+
+    if (!response.ok) {
+      throw new Error(`API call failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error in API call:", error);
+    return null;
+  }
+}
+
 // Function to automatically get or retrieve the token, and then perform the API call
 async function authenticatedApiCall(endpoint, method = 'GET', body = null) {
   let token = getStoredJwtToken();
@@ -82,4 +105,4 @@ async function authenticatedApiCall(endpoint, method = 'GET', body = null) {
   }
 }
 
-export { getJwtToken, saveJwtToken, deleteJwtToken, authenticatedApiCall, getStoredJwtToken };  
+export { getJwtToken, saveJwtToken, deleteJwtToken, authenticatedApiCall, getStoredJwtToken, apiCall };  

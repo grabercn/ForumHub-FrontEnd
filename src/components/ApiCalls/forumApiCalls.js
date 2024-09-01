@@ -1,185 +1,83 @@
-import BASE_URL from "./baseUrl";
+import { apiCall } from './authentication';
 
+/**
+ * Creates a new forum.
+ * @param {Object} forumObject - The forum object to be created.
+ * @returns {Promise<Object|null>} - A promise that resolves to the created forum data or null if there was an error.
+ */
 async function createForum(forumObject) {
-    const url = `${BASE_URL}/forums`;
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(forumObject) // Body expects JSON string
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-    }
-    catch(error) {
-        console.error("Error creating forum:", error);
-    }
+    const endpoint = `/forums`;
+    return await apiCall(endpoint, 'POST', forumObject);
 }
 
+/**
+ * Retrieves all forums.
+ * @returns {Promise<Array|null>} - A promise that resolves to an array of forums or null if there was an error.
+ */
 async function getAllForums() {
-    const url = `${BASE_URL}/forums`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error retrieving forums:", error);
-    }
+    const endpoint = `/forums`;
+    return await apiCall(endpoint, 'GET');
 }
 
-async function getPopularForums () {
-    const url = `${BASE_URL}/forums/popular`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error retrieving popular forums:", error);
-    }
+/**
+ * Retrieves the most popular forums.
+ * @returns {Promise<Array|null>} - A promise that resolves to an array of popular forums or null if there was an error.
+ */
+async function getPopularForums() {
+    const endpoint = `/forums/popular`;
+    return await apiCall(endpoint, 'GET');
 }
 
+/**
+ * Retrieves a forum by its ID.
+ * @param {number} forumId - The ID of the forum to retrieve.
+ * @returns {Promise<Object|null>} - A promise that resolves to the forum data or null if there was an error.
+ */
 async function getForumById(forumId) {
-    // Construct the URL with the forumId variable
-    const url = `${BASE_URL}/forums/${forumId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error retrieving forum:", error);
-    }
+    const endpoint = `/forums/${forumId}`;
+    return await apiCall(endpoint, 'GET');
 }
 
+/**
+ * Retrieves a forum by its name.
+ * @param {string} forumName - The name of the forum to retrieve.
+ * @returns {Promise<Object|null>} - A promise that resolves to the forum data or null if there was an error.
+ */
 async function getForumByName(forumName) {
-    // Construct the URL with the forumName variable
-    const url = `${BASE_URL}/forums/search/${forumName}`;
-    try {
-        const response = await fetch(url, {
-        method: 'GET'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        return data;
-    }
-    catch(error) {
-        console.error("Error retrieving forum:", error);
-    }
+    const endpoint = `/forums/search/${forumName}`;
+    return await apiCall(endpoint, 'GET');
 }
 
-// Parameters on updateForum() explained:
-// forumId: the forumId we're updating with new data (via PUT request)
-// forumObject: the JavaScript object representing new data we're putting in place of the old data
+/**
+ * Updates a forum by its ID.
+ * @param {number} forumId - The ID of the forum to update.
+ * @param {Object} forumObject - The forum object with updated data.
+ * @returns {Promise<Object|null>} - A promise that resolves to the updated forum data or null if there was an error.
+ */
 async function updateForumById(forumId, forumObject) {
-    // Changing the forumObject being PUT/updated
-    forumObject = {
-        category: 'shirt',
-        forumName: 'Forum 2',
-        brand: 'Brand Y',
-        size: 'Medium',
-        description: 'This is forum 2',
-        price: 40.00
-    }
-    // Construct the URL with the forumId variable
-    const url = `${BASE_URL}/forums/${forumId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json' // Set content type to JSON
-            },
-            body: JSON.stringify(forumObject) // Body expects JSON string
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-        const data = await response.json();
-    }
-    catch(error) {
-        console.error("Error updating forum:", error);
-    }
+    const endpoint = `/forums/${forumId}`;
+    return await apiCall(endpoint, 'PUT', forumObject);
 }
 
+/**
+ * Deletes a forum by its ID.
+ * @param {number} forumId - The ID of the forum to delete.
+ * @returns {Promise<Object|null>} - A promise that resolves to the deleted forum data or null if there was an error.
+ */
 async function deleteForumById(forumId) {
-    // Construct the URL with the forumId variable
-    const url = `${BASE_URL}/forums/${forumId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    
-    catch(error) {
-        console.error("Error deleting forum:", error);
-    }
+    const endpoint = `/forums/${forumId}`;
+    return await apiCall(endpoint, 'DELETE');
 }
 
-// get the reaction score of a forum by forumid
+/**
+ * Retrieves the reaction score of a forum by its ID.
+ * @param {number} forumId - The ID of the forum.
+ * @returns {Promise<number|null>} - A promise that resolves to the reaction score or null if there was an error.
+ */
 async function getReactionScoreByForumId(forumId) {
-    // Construct the URL with the forumId variable
-    const url = `${BASE_URL}/reactions/score/forums/${forumId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error getting forum reaction score:", error);
-    }
-}  
+    const endpoint = `/reactions/score/forums/${forumId}`;
+    return await apiCall(endpoint, 'GET');
+}
 
 // Export the functions to be used in other files
 export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums, getReactionScoreByForumId };

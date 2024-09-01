@@ -1,4 +1,4 @@
-import { authenticatedApiCall } from './authentication';
+import { authenticatedApiCall, apiCall } from './authentication';
 
 /**
  * Checks user authentication by making an API call to the server.
@@ -8,7 +8,7 @@ import { authenticatedApiCall } from './authentication';
  */
 async function checkUserAuth(email, password) {
   const endpoint = `/users/auth/${email},${password}`;
-  return await authenticatedApiCall(endpoint, 'GET');
+  return await apiCall(endpoint, 'GET');
 }
 
 /**
@@ -18,7 +18,7 @@ async function checkUserAuth(email, password) {
  */
 async function getUserRole(username) {
   const endpoint = `/users/role/${username}`;
-  return await authenticatedApiCall(endpoint, 'GET');
+  return await apiCall(endpoint, 'GET');
 }
 
 /**
@@ -29,7 +29,7 @@ async function getUserRole(username) {
  */
 async function getUserByEmailAndPassword(email, password) {
   const endpoint = `/users/${email}/${password}`;
-  return await authenticatedApiCall(endpoint, 'GET');
+  return await apiCall(endpoint, 'GET');
 }
 
 export { checkUserAuth, getUserByEmailAndPassword, getUserRole };

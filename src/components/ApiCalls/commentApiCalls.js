@@ -1,97 +1,43 @@
-import BASE_URL from './baseUrl';
+import { authenticatedApiCall, apiCall } from './authentication';
 
 /**
  * Adds a comment to the API.
  * @param {Object} postObject - The comment object to be added.
+ * @returns {Promise<Object|null>} - A promise that resolves to the added comment data or null if there was an error.
  */
 const addComment = async (postObject) => {
-    const url = `${BASE_URL}/comments`;
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(postObject),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error adding post:", error);
-    }
-}
+    const endpoint = `/comments`;
+    return await apiCall(endpoint, 'POST', postObject);
+};
 
 /**
  * Retrieves all comments for a specific post from the API.
  * @param {number} postId - The ID of the post.
- * @returns {Array} - An array of comments.
+ * @returns {Promise<Array|null>} - A promise that resolves to an array of comments or null if there was an error.
  */
 const getAllCommentsByPostId = async (postId) => {
-    const url = `${BASE_URL}/api/comments/post/${postId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error retrieving comments:", error);
-    }
-}
+    const endpoint = `/api/comments/post/${postId}`;
+    return await apiCall(endpoint, 'GET');
+};
 
 /**
  * Removes a comment from the API.
  * @param {number} postId - The ID of the comment to be removed.
+ * @returns {Promise<void>} - A promise that resolves when the comment is successfully removed.
  */
 const removeComment = async (postId) => {
-    const url = `${BASE_URL}/comments/${postId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-    }
-    catch(error) {
-        console.error("Error deleting post:", error);
-    }
-}
+    const endpoint = `/comments/${postId}`;
+    await apiCall(endpoint, 'DELETE');
+};
 
 /**
  * Removes all comments for a specific post from the API.
  * @param {number} postId - The ID of the post.
- * @returns {Array} - An array of deleted comments.
+ * @returns {Promise<Array|null>} - A promise that resolves to an array of deleted comments or null if there was an error.
  */
 const removeAllCommentsByPostId = async (postId) => {
-    const url = `${BASE_URL}/comments/post/${postId}`;
-    try {
-        const response = await fetch(url, {
-            method: 'DELETE'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API call failed with status ${response.status}`);
-        }
-        const data = await response.json();
-        return data;
-    }
-    catch(error) {
-        console.error("Error deleting comments:", error);
-    }
-}
+    const endpoint = `/comments/post/${postId}`;
+    return await apiCall(endpoint, 'DELETE');
+};
 
 export { getAllCommentsByPostId, removeAllCommentsByPostId, addComment, removeComment };
