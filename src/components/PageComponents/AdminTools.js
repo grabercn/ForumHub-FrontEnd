@@ -104,7 +104,7 @@ const AdminTools = () => {
         event.preventDefault();
 
         setShowAddForumForm(false);
-        window.location.reload();
+        //window.location.reload();
     };
 
     const handleAddShowForum = () => {

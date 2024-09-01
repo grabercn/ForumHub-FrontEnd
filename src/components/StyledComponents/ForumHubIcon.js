@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isNightMode } from '../Objects/theme';
 
 /**
  * Represents the ForumHub SVG icon component.
@@ -8,7 +9,7 @@ import PropTypes from 'prop-types';
  * @param {Object} props - The component props.
  * @param {string|number} props.width - The width of the icon.
  * @param {string|number} props.height - The height of the icon.
- * @param {('normal' | 'noUnderline' | 'noText')} props.variant - Determines which SVG to show based on the variant.
+ * @param {('normal' | 'noUnderline' | 'noText)} props.variant - Determines which SVG to show based on the variant.
  * @returns {JSX.Element} The rendered SVG icon.
  */
 const ForumHubIcon = ({ width = 70, height = 70, variant = 'normal' }) => {
@@ -16,10 +17,18 @@ const ForumHubIcon = ({ width = 70, height = 70, variant = 'normal' }) => {
 
   switch (variant) {
     case 'normal':
-      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBG.svg`;
+      if (isNightMode()) {
+        iconSrc = `${process.env.PUBLIC_URL}/logos/DarkModeBandWLogoNoBG.svg`;
+      }else{
+        iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBG.svg`;
+      }
       break;
     case 'noUnderline':
-      iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoTextNoUnderline.svg`;
+      if (isNightMode()) {
+        iconSrc = `${process.env.PUBLIC_URL}/logos/DarkModeBandWLogoNoBGNoTextNoUnderline.svg`;
+      }else{
+        iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoTextNoUnderline.svg`;
+      }
       break;
     case 'noText':
       iconSrc = `${process.env.PUBLIC_URL}/logos/BandWLogoNoBGNoText.svg`;
