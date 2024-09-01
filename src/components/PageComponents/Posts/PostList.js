@@ -166,8 +166,6 @@ function PostList(props) {
   const handleSubmitComment = (event, postId) => {
     event.preventDefault();
 
-    console.log(postId);
-
     const newComment = {
       commentText: comment,
       postId: postId,

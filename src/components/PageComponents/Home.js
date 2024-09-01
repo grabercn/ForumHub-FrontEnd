@@ -66,7 +66,6 @@ const Home = () => {
       if (response === true) {
         setSettings(['Profile', 'User Settings', 'Logout']);
         checkAuthLocal("admin").then((response) => {
-          console.log("response!:"+response);
           if (response) {
             setPages(['Admin Tools', 'About']);
           } else {
