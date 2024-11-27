@@ -2,7 +2,6 @@
 import React from 'react';
 import ForumList from '../PageComponents/Forums/ForumList';
 import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
-import { getUserDataCookieValues } from '../Objects/userData.object';
 import About from '../PageComponents/About';
 import { UPDATED, VERSION } from '../../version';
 
@@ -36,7 +35,7 @@ export const availableComponents = {
     ),
     WelcomeTag: () => (
         <Box>
-            <Typography variant="h4">Welcome, {getUserDataCookieValues().userName || "guest"}!</Typography>
+            <Typography variant="h4">Welcome to CityHUB!</Typography>
         </Box>
     ),
     About: () => (

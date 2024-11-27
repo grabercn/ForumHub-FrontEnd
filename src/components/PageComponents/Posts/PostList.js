@@ -28,7 +28,6 @@ import {
   addComment,
   removeAllCommentsByPostId,
 } from "../../ApiCalls/commentApiCalls";
-import { checkAuthLocal } from "../../Objects/userData.object";
 import GlassTopBar from "../../StyledComponents/GlassTopBar";
 import { isNightMode } from "../../Objects/theme";
 import { Link } from "react-router-dom";
@@ -58,7 +57,6 @@ function PostList(props) {
   const [comments, setComments] = React.useState({});
   const [comment, setComment] = React.useState("");
   const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(null);
-  const [admin, setAdmin] = React.useState(false);
   const [sortMethod, setSortMethod] = React.useState("date");
   const [isLoadingPosts, setIsLoadingPosts] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -285,15 +283,6 @@ function PostList(props) {
   };
 
   useEffect(() => {
-    checkAuthLocal().then((response) => {
-      setIsLoggedin(response);
-    });
-    checkAuthLocal("admin").then((response) => {
-      setAdmin(response);
-    });
-  }, []);
-
-  useEffect(() => {
     if (postId && postRefs.current[postId]) {
       postRefs.current[postId].scrollIntoView({ behavior: "smooth" });
     }
@@ -416,7 +405,7 @@ function PostList(props) {
               <Typography variant="caption" sx={{ marginLeft: 1 }}>
                 {formatDateDifference(post.postDate)}
               </Typography>
-                {(admin || (userId === post.userId.userId)) && (
+                {(userId === post.userId.userId) && (
                 <div style={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
                 <Button
                   variant="text"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import ForumDetail from "./Forums/ForumDetail";
 import ForumList from "./Forums/ForumList";
 import ResponsiveAppBar from "./Navbar";
@@ -10,14 +10,13 @@ import ForumIcon from '@mui/icons-material/Forum';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { forumsData as forumsData } from "../Objects/forumsData.objects";
 import PageBanner from "./PageBanner";
-import { checkAuthLocal } from "../Objects/userData.object";
-import GoogleAd from "../GoogleAd";
+import LocationSetter from "./LocationSetter";
+import { checkCookie } from "../Objects/userData.object";
 import { useMediaQuery } from '@mui/material';
 import HomeSettings from "./HomeSettings";
 import HomeFeed from "./HomeFeed";
 import { isNightMode, setPrimaryColor } from "../Objects/theme";
 import LoadingSpinner from "../StyledComponents/LoadingSpinner";
-import { getReactionScoreByForumId } from "../ApiCalls/forumApiCalls";
 import AnimationTag from "../StyledComponents/AnimationTag";
 
 // Create the theme instance (not in use here but need for breakpoints)
@@ -38,14 +37,13 @@ var PRIMARY_COLOR = null; // Variable to store the primary color
 const Home = () => {
   const [selectedForum, setSelectedForum] = useState(null);
   const [forums, setForums] = useState([]);
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [settings, setSettings] = useState([]);
   const [pages, setPages] = useState([]);
   const [rgb, setRgb] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0); // For list item selection
   const [isLoadingForums, setIsLoadingForums] = useState(true);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isProcessingImage, setIsProcessingImage] = useState(true);
+  const [openLocationSetter, setOpenLocationSetter] = useState(false)
   const [sortBy, setSortBy] = useState('reactions'); // State for sorting option
   const bannerImgUrl = useRef(getRandomImageUrl()); // Use useRef to store the image URL
 
@@ -62,25 +60,15 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    checkAuthLocal().then((response) => {
-      if (response === true) {
-        setSettings(['Profile', 'User Settings', 'Logout']);
-        checkAuthLocal("admin").then((response) => {
-          if (response) {
-            setPages(['Admin Tools', 'About']);
-          } else {
-            setPages(['About']);
-          }
-        });
-        setIsAuthChecked(true);
-      } else {
-        setSettings(['Login']);
+    const response = checkCookie('user_city')
+      if (response !== false) {
         setPages(['About']);
-        setIsAuthChecked(true);
+        setOpenLocationSetter(false)
+      } else {
+        setPages(['About']);
+        setOpenLocationSetter(true);
       }
-      setIsCheckingAuth(false);
-    });
-  }, []);
+    }, []);
 
   useEffect(() => {
     if (!imageProcessed.current) {
@@ -136,9 +124,6 @@ const Home = () => {
   // Sorting function
   const sortForums = (sortBy) => {
     switch (sortBy) {
-      case 'reactions':
-        setForums([...forums].sort((a, b) => getReactionScoreByForumId(b.forumId) - getReactionScoreByForumId(a.forumId)));
-        break;
       case 'name':
         setForums([...forums].sort((a, b) => a.forumName.localeCompare(b.forumName)));
         break;
@@ -170,11 +155,11 @@ const Home = () => {
   return (
     <>
       <div>
-        {isCheckingAuth || isLoadingForums || isProcessingImage ? (
+        { isLoadingForums || isProcessingImage ? (
           <LoadingSpinner isLoading={true} />
         ) : (
           <>
-            {isAuthChecked && <ResponsiveAppBar settings={settings} pages={pages} />}
+            {<ResponsiveAppBar settings={settings} pages={pages} />}
 
             {rgb && (
               <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
@@ -240,6 +225,10 @@ const Home = () => {
             </Box>
             </AnimationTag>
 
+            <Box>
+              <LocationSetter />
+            </Box>
+
             <Box sx={{ mt: 4 }}>
               {selectedIndex === 0 && (
                 <Container maxWidth="xl">
@@ -260,7 +249,6 @@ const Home = () => {
                         onChange={handleSortChange}
                         label="Sort by"
                       >
-                        <MenuItem value="reactions">Reactions</MenuItem>
                         <MenuItem value="name">Name</MenuItem>
                         <MenuItem value="category">Category</MenuItem>
                       </Select>
@@ -294,9 +282,6 @@ const Home = () => {
             </Box>
           </>
         )}
-      </div>
-      <div>
-        <GoogleAd />
       </div>
     </>
   );

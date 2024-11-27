@@ -7,7 +7,6 @@ import LoadingSpinner from "../StyledComponents/LoadingSpinner"; // Import the L
 import {
   AlternateEmail,
   CalendarMonth,
-  SupervisedUserCircle,
 } from "@mui/icons-material";
 import ProfileIcon from "../StyledComponents/ProfileIcon"; // Import the ProfileIcon component
 
@@ -74,13 +73,6 @@ const UserProfile = ({ userId }) => {
       >
         <AlternateEmail style={{ marginRight: "5px" }} />
         {userData.username}
-      </Typography>
-      <Typography
-        variant="h6"
-        style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
-      >
-        <SupervisedUserCircle style={{ marginRight: "5px" }} />
-        {userData.role}
       </Typography>
       <Typography
         variant="h6"

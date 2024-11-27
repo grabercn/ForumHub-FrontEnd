@@ -11,18 +11,11 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
-import Login from '../Auth/Login';
-import Logout from '../Auth/Logout';
 import Searchbar from './Searchbar';
-import AdminTools from './AdminTools';
-import UserSettings from './UserSettings';
 import UserProfile from './UserProfile';
 import About from './About';
-import { checkAuthLocal, getAuthCookieValues } from '../Objects/userData.object';
 import ProfileIcon from '../StyledComponents/ProfileIcon';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
-import { getUserByEmailAndPassword } from '../ApiCalls/authApiCalls';
 import ForumHubIcon from '../StyledComponents/ForumHubIcon';
 import NewsDropdown from './NewsDropdown';
 
@@ -37,10 +30,6 @@ function ResponsiveAppBar(props) {
     userProfile: false,
     settings: false,
   });
-  const [isLoggedin, setIsLoggedin] = useState(false);
-
-  // Default profile photo for users when they are not logged in (in navbar)
-  const defaultProfilePhoto = "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -63,17 +52,6 @@ function ResponsiveAppBar(props) {
     if (dialogName === 'auth') window.location.reload();
   };
 
-
-  useEffect(() => {
-    getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
-      if (data) {
-        setUserData(data);
-      }else {
-        setUserData(null);
-      }
-    });
-  }, []);
-
   const pages = props.pages || [];
   const settings = props.settings || [];
 
@@ -91,12 +69,6 @@ function ResponsiveAppBar(props) {
       setShowDialog({ ...showDialog, settings: true });
     }
   };
-
-  useEffect(() => {
-    checkAuthLocal().then((response) => {
-      setIsLoggedin(response);
-    });
-  }, []);
 
   const handleSettingsClick = (button) => {
     const selectedButton = button.target.innerText;
@@ -205,63 +177,12 @@ function ResponsiveAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <NewsDropdown />
           </Box>
-
-          <Box sx={{ flexGrow: 0, width: '16px' }}></Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {userData ? (
-                  <ProfileIcon username={userData.username} imgUrl={userData.profilePicture} size={40} outline={false}/>
-                ): (
-                  <ProfileIcon imgUrl={defaultProfilePhoto} size={40} outline={false} />
-                )}
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleNavClick}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          
         </Toolbar>
       </Container>
-
-      {showDialog.login && (
-        <ResponsiveDialog open={showDialog.login} onClose={() => handleCloseDialog('login')} title={isLoggedin ? "Logout" : "Login"}>
-          {isLoggedin ? <Logout /> : <Login />}
-        </ResponsiveDialog>
-      )}
-      {showDialog.auth && (
-        <ResponsiveDialog open={showDialog.auth} onClose={() => handleCloseDialog('auth')} title="Admin Tools">
-          <AdminTools />
-        </ResponsiveDialog>
-      )}
       {showDialog.about && (
         <ResponsiveDialog open={showDialog.about} onClose={() => handleCloseDialog('about')} title="About">
           <About />
-        </ResponsiveDialog>
-      )}
-      {showDialog.settings && (
-        <ResponsiveDialog open={showDialog.settings} onClose={() => handleCloseDialog('settings')} title="User Settings">
-          <UserSettings />
         </ResponsiveDialog>
       )}
       {showDialog.userProfile && (

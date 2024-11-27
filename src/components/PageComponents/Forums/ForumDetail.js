@@ -3,12 +3,10 @@ import PostList from '../Posts/PostList';
 import ForumBanner from './ForumBanner';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { getAuthCookieValues } from '../../Objects/userData.object';
 import { getForumById } from '../../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
-import { getUserByEmailAndPassword } from '../../ApiCalls/authApiCalls';
 
 /**
  * Renders the details of a forum, including the forum banner, category, and posts.
@@ -37,18 +35,6 @@ const ForumDetail = ({ forum, postId }) => {
       });
     }
   }, [forumIdUrl]);
-
-  // get the current user id
-  useEffect(() => {
-    getUserByEmailAndPassword(getAuthCookieValues().userEmail, getAuthCookieValues().userPassword).then((data) => {
-      if (data) {
-        setUserData(data);
-      }else {
-        setUserData(null);
-      }
-    });
-  }, []);
-
 
     // Return the forum details component
     return (

@@ -1,7 +1,7 @@
 {
   "name": "forum-hub",
   "version": "0.1.0",
-  "homepage": "https://forumhub.free.nf",
+  "homepage": "https://theforumhub.com/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -13,9 +13,11 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.8",
     "bulma": "^0.9.4",
+    "cheerio": "^1.0.0",
     "cors": "^2.8.5",
+    "forum-hub": "file:",
     "helmet": "^7.1.0",
     "install": "^0.13.0",
     "jdenticon": "^3.3.0",
@@ -39,8 +41,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
     "generate-version": "node generateVersion.js",
+    "start": "react-scripts start",
     "prebuild": "npm run generate-version",
     "build": "react-scripts build",
     "test": "react-scripts test",

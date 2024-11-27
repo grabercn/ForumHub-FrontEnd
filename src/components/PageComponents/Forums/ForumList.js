@@ -5,6 +5,10 @@ import ResponsiveDialog from "../../StyledComponents/ResponsiveDialog";
 import DialogContent from "@mui/material/DialogContent";
 import ForumDetail from "./ForumDetail";
 import AnimationTag from "../../StyledComponents/AnimationTag";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import { getCookie } from "../../Objects/userData.object";
+import { isNightMode } from "../../Objects/theme";
 
 /**
  * Renders a list of forums with clickable cards that display forum details in a dialog.
@@ -17,6 +21,9 @@ import AnimationTag from "../../StyledComponents/AnimationTag";
 const ForumList = ({ forums, onForumClick, isCompact }) => {
   const [open, setOpen] = React.useState(false);
   const [selectedForum, setSelectedForum] = React.useState(null);
+
+  // Get the current forum from cookie or set to null if not present
+  const currentForum = getCookie('user_city');
 
   /**
    * Handles the opening of the dialog and sets the selected forum.
@@ -35,19 +42,50 @@ const ForumList = ({ forums, onForumClick, isCompact }) => {
     setOpen(false);
   };
 
+  // Filter the forums to separate the current forum from others
+  const currentForumData = forums.find(forum => forum.forumName === currentForum);
+  const otherForums = forums.filter(forum => forum.forumName !== currentForum);
+
   return (
     <AnimationTag variant="slide-up">
       <div>
-        <Stack spacing={2} direction="row">
-          {forums.map((forum) => (
-            <ForumCard
-              key={forum.id} // Use a unique identifier as the key (assuming 'id' exists on forum)
-              forum={forum}
-              onClick={() => handleOpen(forum)}
-              isCompact={isCompact}
-            />
-          ))}
-        </Stack>
+        {/* Display the current city's forum if it exists */}
+        {currentForumData && (
+          <div>
+            <Typography variant="h6" sx={{ mb: 2, color: isNightMode() ? 'black' : 'white' }}>
+              Your Current City
+            </Typography>
+            <Stack spacing={2} direction="row">
+              <ForumCard
+                key={currentForumData.id}
+                forum={currentForumData}
+                onClick={() => handleOpen(currentForumData)}
+                isCompact={isCompact}
+              />
+            </Stack>
+            <Divider sx={{ mt: 2, mb: 2 }} />
+          </div>
+        )}
+
+        {/* Only display the "Other Cities" header once */}
+        {otherForums.length > 0 && (
+          <div>
+            <Typography variant="h6" sx={{ mb: 2, color: isNightMode() ? 'black' : 'white' }}>
+              Other Cities:
+            </Typography>
+            <Stack spacing={2} direction="row">
+              {otherForums.map((forum) => (
+                <ForumCard
+                  key={forum.id} // Use a unique identifier as the key (assuming 'id' exists on forum)
+                  forum={forum}
+                  onClick={() => handleOpen(forum)}
+                  isCompact={isCompact}
+                />
+              ))}
+            </Stack>
+          </div>
+        )}
+
         {selectedForum && (
           <ResponsiveDialog
             open={open}

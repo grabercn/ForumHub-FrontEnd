@@ -48,36 +48,5 @@ async function getForumByName(forumName) {
     return await apiCall(endpoint, 'GET');
 }
 
-/**
- * Updates a forum by its ID.
- * @param {number} forumId - The ID of the forum to update.
- * @param {Object} forumObject - The forum object with updated data.
- * @returns {Promise<Object|null>} - A promise that resolves to the updated forum data or null if there was an error.
- */
-async function updateForumById(forumId, forumObject) {
-    const endpoint = `/forums/${forumId}`;
-    return await apiCall(endpoint, 'PUT', forumObject);
-}
-
-/**
- * Deletes a forum by its ID.
- * @param {number} forumId - The ID of the forum to delete.
- * @returns {Promise<Object|null>} - A promise that resolves to the deleted forum data or null if there was an error.
- */
-async function deleteForumById(forumId) {
-    const endpoint = `/forums/${forumId}`;
-    return await apiCall(endpoint, 'DELETE');
-}
-
-/**
- * Retrieves the reaction score of a forum by its ID.
- * @param {number} forumId - The ID of the forum.
- * @returns {Promise<number|null>} - A promise that resolves to the reaction score or null if there was an error.
- */
-async function getReactionScoreByForumId(forumId) {
-    const endpoint = `/reactions/score/forums/${forumId}`;
-    return await apiCall(endpoint, 'GET');
-}
-
 // Export the functions to be used in other files
-export { createForum, getAllForums, getForumById, getForumByName, updateForumById, deleteForumById, getPopularForums, getReactionScoreByForumId };
+export { createForum, getAllForums, getForumById, getForumByName, getPopularForums };

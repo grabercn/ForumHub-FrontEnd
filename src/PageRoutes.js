@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/PageComponents/Home";
-import Login from "./components/Auth/Login";
 import ForumDetail from "./components/PageComponents/Forums/ForumDetail";
 import ResponsiveDialog from "./components/StyledComponents/ResponsiveDialog";
 import UserProfile from "./components/PageComponents/UserProfile";
@@ -18,15 +17,6 @@ const PageRoutes = () => {
           element={
             <ResponsiveDialog open={true} sx={{ backgroundColor: "light-gray" }}>
               <ForumDetail />
-            </ResponsiveDialog>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/users/:userIdUrl"
-          element={
-            <ResponsiveDialog open={true} sx={{ backgroundColor: "light-gray" }}>
-              <UserProfile />
             </ResponsiveDialog>
           }
         />
