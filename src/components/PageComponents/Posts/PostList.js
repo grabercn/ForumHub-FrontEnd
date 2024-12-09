@@ -34,6 +34,8 @@ import { Link } from "react-router-dom";
 import ProfileIcon from "../../StyledComponents/ProfileIcon";
 import LoadingSpinner from "../../StyledComponents/LoadingSpinner";
 import { getReactionsByPostId } from "../../ApiCalls/postApiCalls";
+import { getCookie } from "../../Objects/userData.object";
+import { getUserBySessionToken } from "../../ApiCalls/userApiCalls";
 
 /**
  * Component for displaying a list of posts in a forum.
@@ -41,7 +43,6 @@ import { getReactionsByPostId } from "../../ApiCalls/postApiCalls";
  * @component
  * @param {Object} props - The component props.
  * @param {Object} props.forum - The forum object.
- * @param {string} props.userId - The user ID.
  * @param {string} props.postId - The post ID.
  * @returns {JSX.Element} The rendered component.
  */
@@ -54,6 +55,7 @@ function PostList(props) {
   const [posts, setPosts] = React.useState([]);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [isLoggedin, setIsLoggedin] = React.useState(false);
+  const [userData, setUserData] = React.useState(null)
   const [comments, setComments] = React.useState({});
   const [comment, setComment] = React.useState("");
   const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(null);
@@ -167,7 +169,7 @@ function PostList(props) {
     const newComment = {
       commentText: comment,
       postId: postId,
-      userId: userId,
+      userId: userData.userId,
       commentDate: new Date().toISOString(),
     };
 
@@ -183,22 +185,28 @@ function PostList(props) {
   };
 
   const handleSubmit = (event) => {
+    if(!isLoggedin){
+      return
+    }
+    
     event.preventDefault();
 
     const newPost = {
       postSubject: title,
       postText: content,
       forumId: forumId,
-      userId: userId,
+      userId: userData.userId,
       postDate: new Date().toISOString(),
     };
-
-    addPost(newPost).then(() => {
+      
+    // create the post and after set local post data
+    addPost(newPost, userData.sessionToken).then(() => {
       setPosts([...posts, newPost]);
       setSortMethod("date");
       window.scrollTo(0, 0);
     });
-
+      
+    // clean up and refresh content
     setTitle("");
     setContent("");
     refreshPosts();
@@ -272,7 +280,7 @@ function PostList(props) {
         }, {})
       );
       // Set posts, comments, and liked users
-      setPosts(data);
+      setPosts(data);      
       setComments(commentsMap);
       setLikedUsers(likedUsersMap); // Set liked users
     } catch (error) { // Catch any errors
@@ -292,6 +300,18 @@ function PostList(props) {
     refreshPosts();
   }, [forumId]);
 
+  useEffect(() => {
+    const token = getCookie('user_token');
+    getUserBySessionToken(token).then((userData) => {
+      if(userData){
+        setIsLoggedin(true);
+        setUserData(userData);
+      }else{
+        setIsLoggedin(false)
+      }
+    })
+  }, []);
+  
   return (
     <div style={{marginBottom: "20px", marginTop: "20px"}}>
        <Helmet>
@@ -390,32 +410,20 @@ function PostList(props) {
                 <meta name="description" content={post.postText.substring(0, 150)} />
               </Helmet>
             <Box display="flex" alignItems="center" marginBottom={1}>
-              <ProfileIcon size={25} username={post.userId.username} imgUrl={post.userId.profilePicture} />
+            <ProfileIcon size={25} username={post.user?.userId ?? post.userId} />
               <div style={{ width: "10px" }} />
               <Typography
                 component={Link}
-                to={`/users/${post.userId.userId}`}
                 sx={{
                   color: isNightMode() ? "grey.200" : "text.primary",
                   textDecoration: "none",
                 }}
               >
-                {post.userId.username}
+                {'Anonymous'}
               </Typography>
               <Typography variant="caption" sx={{ marginLeft: 1 }}>
                 {formatDateDifference(post.postDate)}
               </Typography>
-                {(userId === post.userId.userId) && (
-                <div style={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
-                <Button
-                  variant="text"
-                  color="error"
-                  onClick={() => handleRemovePost(post.postId)}
-                >
-                  Remove
-                </Button>
-              </div>
-              )}
             </Box>
             
             <Typography variant="h6">{post.postSubject}</Typography>
@@ -444,11 +452,9 @@ function PostList(props) {
                 {likedUsers[post.postId]?.slice(0, 5).map((user) => (
                   <ProfileIcon
                     key={user.userId}
-                    username={user.username}
-                    imgUrl={user.profilePicture}
+                    username={user.userId}
                     size={15}
                     sx={{ marginLeft: 0.5 }}
-                    component={Link}
                   />
                 ))}
                 {likedUsers[post.postId]?.length > 5 && (
@@ -482,19 +488,17 @@ function PostList(props) {
                     <Box display="flex" alignItems="center" marginBottom={1}>
                       <ProfileIcon
                         size={20}
-                        username={comment.userId.username}
-                        imgUrl={comment.userId.profilePicture}
+                        username={comment.user?.userId ?? comment.userId}
                       />
                       <div style={{ width: "10px" }} />
                       <Typography
                         component={Link}
-                        to={`/users/${comment.userId.userId}`}
                         sx={{
                           color: isNightMode() ? "grey.200" : "text.primary",
                           textDecoration: "none",
                         }}
                       >
-                        {comment.userId.username}
+                        {'Anon'}
                       </Typography>
                       <Typography variant="caption" sx={{ marginLeft: 1 }}>
                         {formatDateDifference(comment.commentDate)}

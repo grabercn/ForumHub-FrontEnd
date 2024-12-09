@@ -19,10 +19,12 @@ import LoadingSpinner from "../StyledComponents/LoadingSpinner";
 import AnimationTag from "../StyledComponents/AnimationTag";
 import ForumHubIcon from "../StyledComponents/ForumHubIcon";
 
-/**
- * Renders the home feed component.
- * Displays popular forums and posts.
- */
+// Define default layout
+const DEFAULT_LAYOUT = [
+    { name: "WelcomeTag" },
+    { name: "MyCity" },
+];
+
 const HomeFeed = () => {
     const [popularForums, setPopularForums] = useState([]);
     const [popularPosts, setPopularPosts] = useState([]);
@@ -31,10 +33,12 @@ const HomeFeed = () => {
     const [layout, setLayout] = useState([]); // State to track the layout
 
     useEffect(() => {
-        // Fetch layout from localStorage
+        // Fetch layout from localStorage or set default layout
         const savedLayout = JSON.parse(localStorage.getItem("homeFeedLayout"));
         if (savedLayout) {
             setLayout(savedLayout);
+        } else {
+            setLayout(DEFAULT_LAYOUT); // Use default layout if no saved layout exists
         }
 
         // Fetch popular forums from the API and updates the state.
@@ -100,14 +104,14 @@ const HomeFeed = () => {
                         <ForumHubIcon width={200} height={200} variant="normal" />
                         <Typography
                             variant="h6"
-                            color={isNightMode() ? 'white' : 'black'}
+                            color={isNightMode() ? "white" : "black"}
                             sx={{ marginTop: 2 }}
                         >
                             Welcome to your customizable homepage.
                         </Typography>
                         <Typography
                             variant="body1"
-                            color={isNightMode() ? 'lightblue' : 'black'}
+                            color={isNightMode() ? "lightblue" : "black"}
                         >
                             Click "Customize" to add components.
                         </Typography>

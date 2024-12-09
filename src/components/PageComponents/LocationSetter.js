@@ -13,6 +13,8 @@ import {
 import { setCookie, getCookie, deleteCookie } from "../Objects/userData.object";
 import { createForum, getForumByName } from "../ApiCalls/forumApiCalls";
 import { isNightMode } from "../Objects/theme";
+import { LocationOnOutlined } from "@mui/icons-material";
+import { createUser } from "../ApiCalls/userApiCalls";
 
 // Function to create the forum object
 const createForumObject = async (city, isLocked = false) => {
@@ -20,7 +22,6 @@ const createForumObject = async (city, isLocked = false) => {
     const forumDescription = city;
     const imageUrl = "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
 
-    // Construct the forum object
     const forumObject = {
       forumCategory: 'Cities',
       forumName: city,
@@ -29,20 +30,19 @@ const createForumObject = async (city, isLocked = false) => {
       isLocked: isLocked,
     };
 
-    // Call createForum and handle its response
     const forumResponse = await createForum(forumObject);
 
     if (forumResponse && forumResponse.success) {
       console.log("Forum created successfully:", forumResponse);
       setCookie('user_city', city, 7)
-      return true; // Forum was successfully created
+      return true;
     } else {
       console.error("Forum creation failed:", forumResponse);
-      return false; // Forum creation failed
+      return false;
     }
   } catch (error) {
     console.error("Error creating forum:", error);
-    return false; // Return false in case of an error
+    return false;
   }
 };
 
@@ -50,10 +50,12 @@ const LocationSetter = () => {
   const [location, setLocation] = useState(null);
   const [city, setCity] = useState(getCookie("user_city") || null);
   const [error, setError] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(!city);  // Show dialog if no city is set
+  const [isDialogOpen, setIsDialogOpen] = useState(!city);
+  const [loading, setLoading] = useState(false);
 
   const getUserLocation = () => {
     if ("geolocation" in navigator) {
+      setLoading(true);  // Set loading to true when starting to get user location
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
@@ -61,77 +63,166 @@ const LocationSetter = () => {
           await determineCity(latitude, longitude);
         },
         (err) => {
+          setLoading(false);  // Set loading to false if geolocation fails
           setError(err.message);
         }
       );
     } else {
+      setLoading(false);  // Set loading to false if geolocation is not supported
       setError("Geolocation is not supported by your browser.");
     }
   };
 
   const determineCity = async (latitude, longitude) => {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`;
+    const setCityData = (data) => {
+      const cityData = data.address;
+      if (cityData.city) {
+        return `${cityData.city}, ${cityData.state || cityData.region || cityData.municipality}, ${cityData.country}`;
+      }
+      return null;
+    };
+
+    const directions = [
+      [1, 0],  // right (east)
+      [-1, 0], // left (west)
+      [0, 1],  // up (north)
+      [0, -1], // down (south)
+    ];
+
     try {
+      // First, try to find the city directly
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`;
       const response = await fetch(url);
       const data = await response.json();
-      const cityData = data.address;
-      const nearestCity = `${cityData.city || cityData.town || cityData.village}, ${cityData.state || cityData.region}, ${cityData.country}`;
-      setCity(nearestCity);
+      const nearestCity = setCityData(data);
+
+      if (nearestCity) {
+        setLoading(false);  // Hide loading spinner
+        setError(null);
+        setCity(nearestCity);
+      } else {
+        // No city found, start searching farther
+        setError("No city found near, searching farther...");
+        setLoading(true);  // Keep loading state while searching for farther locations
+
+        let cityFound = false;
+        const maxRadius = 10;  // Max radius to search
+        const step = 0.1;      // Step size to increment the search radius
+
+        for (let radius = step; radius <= maxRadius; radius += step) {
+          for (let [dx, dy] of directions) {
+            const lat = latitude + dx * radius;
+            const lon = longitude + dy * radius;
+            const expandedUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+
+            const expandedResponse = await fetch(expandedUrl);
+            const expandedData = await expandedResponse.json();
+            const expandedCity = setCityData(expandedData);
+
+            if (expandedCity) {
+              setLoading(false);  // Hide loading spinner
+              setError(null);
+              setCity(expandedCity);
+              cityFound = true;
+              break;  // Exit loop once a city is found
+            }
+          }
+          if (cityFound) break;  // Exit outer loop if city is found
+        }
+
+        if (!cityFound) {
+          setLoading(false);  // Hide loading spinner
+          setError("Sorry, the city is not supported at the moment.");
+        }
+      }
     } catch (error) {
+      setLoading(false);  // Hide loading spinner
       setError("Failed to determine the nearest city.");
     }
   };
 
   const confirmCity = () => {
     if (city) {
+      setLoading(true);  // Disable buttons while confirming city
       try {
         // Reset the location by deleting the cookie and setting city to null
         resetLocation();
-  
-        // Call getForumByName and handle the response with .then()
+
+        // Check if the forum already exists or needs to be created
         getForumByName(city)
           .then(forumResponse => {
-            console.log(forumResponse)
-            if (forumResponse.length !== 0) {              // Forum exists, use it and set the cookie
-              setCookie("user_city", city, 7);
+            if (forumResponse.length !== 0) {  
+              
+              // delete then create a user token 
+              deleteCookie("user_token")
+              createUser().then(token => {
+                console.log(token)
+                if (token !== null){
+                  setCookie("user_token", token.sessionToken, 30)
+                }else{
+                  alert("Failed to create a user session. Please try again later...");
+                  setIsDialogOpen(true);  
+                  setLoading(false); 
+                }
+              })
+              
+              // Forum exists, use it and set the cookie
+              setCookie("user_city", city, 30);
               setIsDialogOpen(false); // Close dialog if forum already exists
+              setLoading(false);  // Re-enable buttons after the process is complete
             } else {
               // Forum doesn't exist, create a new forum
               createForumObject(city, false)
                 .then(forumCreated => {
                   if (forumCreated != null) {
-                    setCookie("user_city", city, 7);  // Set the cookie only if the forum is successfully created
+                    
+                    // create a user token 
+                    createUser().then(token => {
+                      if (token !== null){
+                        deleteCookie("user_token")
+                        setCookie("user_token", token.sessionToken, 30)
+                      }else{
+                        deleteCookie("user_token")
+                        alert("Failed to create a user session. Please try again later...");
+                        setIsDialogOpen(true);  
+                        setLoading(false); 
+                      }
+                    })
+                    
+                    setCookie("user_city", city, 30);  // Set the cookie only if the forum is successfully created
                     setIsDialogOpen(false); // Close dialog after successful creation
+                    setLoading(false);  // Re-enable buttons after the process is complete
                   } else {
-                    // Show error message only if forum creation fails
+                    // Show error message if forum creation fails
                     alert("Failed to create a forum for your city. Please try again later...");
                     setIsDialogOpen(true);  // Keep the dialog open if forum creation fails
+                    setLoading(false);  // Re-enable buttons after the process is complete
                   }
                 });
             }
           })
           .catch(error => {
-            // Show error message only if there was an error while fetching the forum
+            // Show error message if there was an error while fetching the forum
             alert("Failed to check if the forum exists. Please try again later...");
             setIsDialogOpen(true);  // Keep the dialog open if there was an error checking the forum
+            setLoading(false);  // Re-enable buttons after the process is complete
           });
       } catch (error) {
         // Show generic error message in case something unexpected happens
         alert("An error occurred. Please try again later...");
         setIsDialogOpen(true);  // Keep the dialog open if forum creation fails
+        setLoading(false);  // Re-enable buttons after the process is complete
       }
     }
-  };  
+  };
 
   const resetLocation = () => {
-    // Remove city cookie and reset state
     deleteCookie("user_city");
     setCity(null);
-    setIsDialogOpen(true);
+    setError(null);
     getUserLocation();
   };
 
-  // Only call getUserLocation if there is no city from the cookie or if city is null
   useEffect(() => {
     if (!city) {
       getUserLocation();
@@ -165,10 +256,20 @@ const LocationSetter = () => {
               <Typography variant="body1">
                 Your nearest city is: <strong>{city}</strong>
               </Typography>
-              <Button variant="contained" color="primary" onClick={confirmCity}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={confirmCity}
+                disabled={loading}
+              >
                 Confirm
               </Button>
-              <Button variant="outlined" color="secondary" onClick={() => getUserLocation()}>
+              <Button
+                variant=""
+                color="secondary"
+                onClick={getUserLocation}
+                disabled={loading}
+              >
                 Retry Detection
               </Button>
             </Stack>
@@ -186,16 +287,18 @@ const LocationSetter = () => {
       {city && (
         <Box sx={{ textAlign: "center", mt: 2 }}>
           <Typography
-            variant="body2"  // Small text style
+            variant="body2"
             sx={{
-              fontWeight: 'bold', 
-              cursor: 'pointer', 
-              color: isNightMode() ? 'white' : 'black',
-              textDecoration: 'underline', // Makes it look clickable
+              fontWeight: "bold",
+              cursor: "pointer",
+              color: isNightMode() ? "white" : "black",
+              display: "flex",
+              alignItems: "center",
             }}
-            onClick={() => setIsDialogOpen(true)}  // Reopens the location selector
+            onClick={() => setIsDialogOpen(true)}
           >
-            Change Location: {city || "No city selected"}
+            <LocationOnOutlined sx={{ mr: 1 }} />
+            {city || "No city selected"}
           </Typography>
         </Box>
       )}

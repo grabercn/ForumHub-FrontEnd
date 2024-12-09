@@ -1,13 +1,13 @@
-import { apiCall } from './authentication';
+import { apiCall, apiCallWithAuth } from './authentication';
 
 /**
  * Adds a new post to the API.
  * @param {Object} postObject - The post object to be added.
  * @returns {Promise<Object|null>} - A promise that resolves to the added post data or null if there was an error.
  */
-const addPost = async (postObject) => {
+const addPost = async (postObject, token) => {
     const endpoint = `/posts`;
-    return await apiCall(endpoint, 'POST', postObject);
+    return await apiCallWithAuth(endpoint, token, 'POST', postObject);
 };
 
 /**

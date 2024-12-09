@@ -7,6 +7,7 @@ import { getForumById } from '../../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
+import { getCookie } from '../../Objects/userData.object';
 
 /**
  * Renders the details of a forum, including the forum banner, category, and posts.
@@ -19,7 +20,6 @@ import { Link } from 'react-router-dom';
 const ForumDetail = ({ forum, postId }) => {
   
   const [forumDataFromUrl, setForumDataFromUrl] = React.useState({});
-  const [userData, setUserData] = React.useState(null);
 
   let { forumIdUrl, postIdUrl } = useParams();
 
@@ -69,23 +69,11 @@ const ForumDetail = ({ forum, postId }) => {
             </Grid>
             <Grid item xs={12}>
                 {/* Add any details you want to display in the popup*/}
-                <div>
-                    <p>Category: <i>{forumDetail.forumCategory}</i></p>
-                </div>
-
                 {/* Display the posts in the forum */}
-                {userData ? (
-                <PostList
-                    forum={forumDetail}
-                    userId={userData.userId}
-                    postId={postId} // Pass postId to PostList
-                />
-                ):(
                 <PostList
                     forum={forumDetail}
                     postId={postId} // Pass postId to PostList
                 />
-                )}
             </Grid>
         </Grid>
     );

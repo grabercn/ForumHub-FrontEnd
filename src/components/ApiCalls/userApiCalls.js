@@ -5,9 +5,19 @@ import { apiCall } from './authentication';
  * @param {Object} userObject - The user object to be created.
  * @returns {Promise<Object|null>} - A promise that resolves to the created user data or null if there was an error.
  */
-const createUser = async (userObject) => {
-    const endpoint = `/users`;
-    return await apiCall(endpoint, 'POST', userObject);
+const createUser = async () => {
+    const endpoint = `/users/create-session`;
+    return await apiCall(endpoint, 'POST');
+};
+
+/**
+ * Retrieves a user by their session token.
+ * @param {number} userId - The ID of the user.
+ * @returns {Promise<Object|null>} - A promise that resolves to the user data or null if there was an error.
+ */
+const getUserBySessionToken = async (token) => {
+    const endpoint = `/users/session/${token}`;
+    return await apiCall(endpoint, 'GET');
 };
 
 /**
@@ -32,6 +42,7 @@ const getAllUserIds = async () => {
 // Export the functions to be used in other files
 export {
     createUser,
+    getUserBySessionToken,
     getUserById,
     getAllUserIds
 };

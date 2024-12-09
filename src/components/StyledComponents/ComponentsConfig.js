@@ -4,6 +4,10 @@ import ForumList from '../PageComponents/Forums/ForumList';
 import { Typography, Box, Card, CardContent, Link, Grid } from '@mui/material';
 import About from '../PageComponents/About';
 import { UPDATED, VERSION } from '../../version';
+import { getCookie } from '../Objects/userData.object';
+import ForumDetail from '../PageComponents/Forums/ForumDetail';
+import { getForumByName } from '../ApiCalls/forumApiCalls';
+import { useState, useEffect } from 'react';
 
 export const availableComponents = {
     PopularForums: (props) => (
@@ -35,7 +39,7 @@ export const availableComponents = {
     ),
     WelcomeTag: () => (
         <Box>
-            <Typography variant="h4">Welcome to CityHUB!</Typography>
+            <Typography variant="h4">Welcome to ForumHub!</Typography>
         </Box>
     ),
     About: () => (
@@ -50,6 +54,53 @@ export const availableComponents = {
             </Typography>
         </Box>
     ),
+    
+    MyCity: () => {
+        const [forum, setForum] = useState(null); // State for forum data
+        const [error, setError] = useState(false); // State to track errors
+        const city = getCookie("user_city"); // Get the city from the cookie
+
+        useEffect(() => {
+            // Fetch forum by city name
+            if (city) {
+                getForumByName(city)
+                    .then((forumData) => {
+                        if (forumData) {
+                            setForum(forumData);
+                        } else {
+                            setError(true); // Set error if forumData is null
+                        }
+                    })
+                    .catch(() => {
+                        setError(true); // Handle any API call errors
+                    });
+            } else {
+                setError(true); // Handle case where city cookie is not set
+            }
+        }, [city]);
+
+        if (error) {
+            return (
+                <Box>
+                    <Typography>Error fetching your city.</Typography>
+                </Box>
+            );
+        }
+
+        if (!forum) {
+            return (
+                <Box>
+                    <Typography>Loading your city...</Typography>
+                </Box>
+            );
+        }
+
+        return (
+            <Box>
+                <ForumDetail forum={forum.forumId} />
+            </Box>
+        );
+    },
 
     // Add more components as needed
 };
