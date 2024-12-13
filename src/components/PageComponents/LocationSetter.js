@@ -15,6 +15,7 @@ import { createForum, getForumByName } from "../ApiCalls/forumApiCalls";
 import { isNightMode } from "../Objects/theme";
 import { LocationOnOutlined } from "@mui/icons-material";
 import { createUser } from "../ApiCalls/userApiCalls";
+import Turnstile from "react-turnstile";
 
 // Function to create the forum object
 const createForumObject = async (city, isLocked = false) => {
@@ -34,7 +35,7 @@ const createForumObject = async (city, isLocked = false) => {
 
     if (forumResponse && forumResponse.success) {
       console.log("Forum created successfully:", forumResponse);
-      setCookie('user_city', city, 7)
+      setCookie('user_city', city, 7);
       return true;
     } else {
       console.error("Forum creation failed:", forumResponse);
@@ -52,6 +53,7 @@ const LocationSetter = () => {
   const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(!city);
   const [loading, setLoading] = useState(false);
+  const [turnstileResponse, setTurnstileResponse] = useState(null);
 
   const getUserLocation = () => {
     if ("geolocation" in navigator) {
@@ -142,7 +144,7 @@ const LocationSetter = () => {
   };
 
   const confirmCity = () => {
-    if (city) {
+    if (city && turnstileResponse) {
       setLoading(true);  // Disable buttons while confirming city
       try {
         // Reset the location by deleting the cookie and setting city to null
@@ -152,20 +154,18 @@ const LocationSetter = () => {
         getForumByName(city)
           .then(forumResponse => {
             if (forumResponse.length !== 0) {  
-              
               // delete then create a user token 
-              deleteCookie("user_token")
+              deleteCookie("user_token");
               createUser().then(token => {
-                console.log(token)
                 if (token !== null){
-                  setCookie("user_token", token.sessionToken, 30)
-                }else{
-                  alert("Failed to create a user session. Please try again later...");
+                  setCookie("user_token", token.sessionToken, 30);
+                } else {
+                  setError("Failed to create a user session. Please try again later...");
                   setIsDialogOpen(true);  
                   setLoading(false); 
                 }
-              })
-              
+              });
+
               // Forum exists, use it and set the cookie
               setCookie("user_city", city, 30);
               setIsDialogOpen(false); // Close dialog if forum already exists
@@ -175,26 +175,25 @@ const LocationSetter = () => {
               createForumObject(city, false)
                 .then(forumCreated => {
                   if (forumCreated != null) {
-                    
                     // create a user token 
                     createUser().then(token => {
                       if (token !== null){
-                        deleteCookie("user_token")
-                        setCookie("user_token", token.sessionToken, 30)
-                      }else{
-                        deleteCookie("user_token")
-                        alert("Failed to create a user session. Please try again later...");
+                        deleteCookie("user_token");
+                        setCookie("user_token", token.sessionToken, 30);
+                      } else {
+                        deleteCookie("user_token");
+                        setError("Failed to create a user session. Please try again later...");
                         setIsDialogOpen(true);  
                         setLoading(false); 
                       }
-                    })
-                    
+                    });
+
                     setCookie("user_city", city, 30);  // Set the cookie only if the forum is successfully created
                     setIsDialogOpen(false); // Close dialog after successful creation
                     setLoading(false);  // Re-enable buttons after the process is complete
                   } else {
                     // Show error message if forum creation fails
-                    alert("Failed to create a forum for your city. Please try again later...");
+                    setError("Failed to create a forum for your city. Please try again later...");
                     setIsDialogOpen(true);  // Keep the dialog open if forum creation fails
                     setLoading(false);  // Re-enable buttons after the process is complete
                   }
@@ -203,16 +202,18 @@ const LocationSetter = () => {
           })
           .catch(error => {
             // Show error message if there was an error while fetching the forum
-            alert("Failed to check if the forum exists. Please try again later...");
+            setError("Failed to check if the forum exists. Please try again later...");
             setIsDialogOpen(true);  // Keep the dialog open if there was an error checking the forum
             setLoading(false);  // Re-enable buttons after the process is complete
           });
       } catch (error) {
         // Show generic error message in case something unexpected happens
-        alert("An error occurred. Please try again later...");
+        setError("An error occurred. Please try again later...");
         setIsDialogOpen(true);  // Keep the dialog open if forum creation fails
         setLoading(false);  // Re-enable buttons after the process is complete
       }
+    } else {
+      setError("Please complete the CAPTCHA verification.");
     }
   };
 
@@ -221,6 +222,10 @@ const LocationSetter = () => {
     setCity(null);
     setError(null);
     getUserLocation();
+  };
+
+  const handleTurnstileVerify = (response) => {
+    setTurnstileResponse(response);
   };
 
   useEffect(() => {
@@ -256,6 +261,11 @@ const LocationSetter = () => {
               <Typography variant="body1">
                 Your nearest city is: <strong>{city}</strong>
               </Typography>
+              <Turnstile
+                sitekey="0x4AAAAAAAe9bHH_A0xJsKVx"
+                onVerify={handleTurnstileVerify}
+                theme="auto"
+              />
               <Button
                 variant="contained"
                 color="primary"
