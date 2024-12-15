@@ -162,7 +162,7 @@ const Home = () => {
             {<ResponsiveAppBar settings={settings} pages={pages} />}
 
             {rgb && (
-              <PageBanner text="Welcome to ForumHub" subtext="Your Hub for All Things Forum!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
+              <PageBanner text="Welcome to ForumHub" subtext="Connect Locally, Share Globally!" imgUrl={bannerImgUrl.current} waveColor={rgb} />
             )}
 
             <AnimationTag animation="grow">

@@ -8,7 +8,7 @@
         #root {
             opacity: 0;
             transition: opacity 1s ease-in-out; /* Fade-in duration */
-            animation: fadeIn 1s ease-in-out 1s forwards; /* 2s fade-in after 10s delay */
+            animation: fadeIn 1s ease-in-out 2s forwards; /* 2s fade-in after 10s delay */
         }
 
         @keyframes fadeIn {
@@ -20,15 +20,16 @@
 </head>
 <body>
     <div id="root">
-        <center>
-            <h1>Welcome to ForumHub</h1>
-        <img src="./logos/BandWLogoNoBG.png" alt="ForumHub Logo" width="200" height="200" /> <br />
-        <span style="font-size: 1.5em;">
-            Services are starting. <br />
-            <b>This will only take a moment.</b> <br/>
-            You will be redirected automatically.
-        </span> <br />
-        </center>
+        <center style="font-family: Arial, sans-serif; color: #333;">
+            <h1 style="margin-bottom: 10px;">Welcome to ForumHub</h1>
+            <img src="./logos/BandWLogoNoBG.png" alt="ForumHub Logo" width="200" height="200" style="margin-bottom: 20px;" /> 
+            <div style="font-size: 1.2em; line-height: 1.8; max-width: 600px; margin: 0 auto; text-align: center;">
+                <p>Connecting you with the conversations that matter in your city.</p>
+                <p style="font-weight: bold; font-size: 1.3em;">Your local forum is just moments away!</p>
+                <p style="font-style: italic; color: #555;">Discover new ideas, share your voice, and connect with neighbors like never before.</p>
+                <p style="font-weight: bold;">Please hold tight, we’re setting up your personalized experience.</p>
+            </div>
+        </center>             
     </div>
 </body>
 </html>

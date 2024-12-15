@@ -17,33 +17,74 @@ import { LocationOnOutlined } from "@mui/icons-material";
 import { createUser } from "../ApiCalls/userApiCalls";
 import Turnstile from "react-turnstile";
 
-// Function to create the forum object
+// Function to fetch a map image of a city
+const fetchCityMapImage = async (city) => {
+  try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json`);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+          const { lat, lon } = data[0];
+          return `https://static-maps.yandex.ru/1.x/?lang=en-US&ll=${lon},${lat}&z=10&l=map&size=650,450`;
+      }
+
+      throw new Error("City not found in OpenStreetMap data.");
+  } catch (error) {
+      console.error("Error fetching city map image:", error);
+      // Fallback to a default image
+      return "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
+  }
+};
+
+const fetchCityDescription = async (city) => {
+  try {
+      const cityName = city.split(',')[0].trim();
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+      const data = await response.json();
+
+      if (data && data.extract) {
+        // Split the description into sentences and return the first two
+        const sentences = data.extract.split('.'); 
+        const firstTwoSentences = sentences.slice(0, 2).join('.') + (sentences.length > 2 ? '.' : ''); // Rejoin the sentences with a period
+        return firstTwoSentences.trim();
+      }
+      
+      throw new Error("City description not found.");
+  } catch (error) {
+      console.error("Error fetching city description:", error);
+      // Fallback to a default description
+      return "Discover the unique history and culture of this city.";
+  }
+};
+
 const createForumObject = async (city, isLocked = false) => {
   try {
-    const forumDescription = city;
-    const imageUrl = "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
+      const [forumDescription, imageUrl] = await Promise.all([
+          fetchCityDescription(city),
+          fetchCityMapImage(city)
+      ]);
 
-    const forumObject = {
-      forumCategory: 'Cities',
-      forumName: city,
-      forumDescription: forumDescription,
-      imgUrl: imageUrl,
-      isLocked: isLocked,
-    };
+      const forumObject = {
+          forumCategory: 'Cities',
+          forumName: city,
+          forumDescription: forumDescription,
+          imgUrl: imageUrl,
+          isLocked: isLocked,
+      };
 
-    const forumResponse = await createForum(forumObject);
+      const forumResponse = await createForum(forumObject);
 
-    if (forumResponse && forumResponse.success) {
-      console.log("Forum created successfully:", forumResponse);
-      setCookie('user_city', city, 7);
-      return true;
-    } else {
-      console.error("Forum creation failed:", forumResponse);
-      return false;
-    }
+      if (forumResponse && forumResponse.success) {
+          console.log("Forum created successfully:", forumResponse);
+          setCookie('user_city', city, 7);
+          return true;
+      } else {
+          console.error("Forum creation failed:", forumResponse);
+          return false;
+      }
   } catch (error) {
-    console.error("Error creating forum:", error);
-    return false;
+      console.error("Error creating forum:", error);
+      return false;
   }
 };
 

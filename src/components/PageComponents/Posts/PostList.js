@@ -30,7 +30,6 @@ import {
 } from "../../ApiCalls/commentApiCalls";
 import GlassTopBar from "../../StyledComponents/GlassTopBar";
 import { isNightMode } from "../../Objects/theme";
-import { Link } from "react-router-dom";
 import ProfileIcon from "../../StyledComponents/ProfileIcon";
 import LoadingSpinner from "../../StyledComponents/LoadingSpinner";
 import { getReactionsByPostId } from "../../ApiCalls/postApiCalls";
@@ -298,19 +297,18 @@ function PostList(props) {
 
   useEffect(() => {
     refreshPosts();
-  }, [forumId]);
-
+  }, [forumId] /* eslint-disable-line react-hooks/exhaustive-deps */);
+  
   useEffect(() => {
     const token = getCookie('user_token');
+    const city = getCookie('user_city');
+
     getUserBySessionToken(token).then((userData) => {
-      if(userData){
-        setIsLoggedin(true);
-        setUserData(userData);
-      }else{
-        setIsLoggedin(false)
-      }
-    })
-  }, []);
+        const isLoggedIn = userData && forum.forumName === city; 
+        setIsLoggedin(isLoggedIn);
+        if (isLoggedIn) setUserData(userData);
+    });
+  }, [] /* eslint-disable-line react-hooks/exhaustive-deps */ ); 
   
   return (
     <div style={{marginBottom: "20px", marginTop: "20px"}}>
@@ -413,7 +411,6 @@ function PostList(props) {
             <ProfileIcon size={25} username={post.user?.userId ?? post.userId} />
               <div style={{ width: "10px" }} />
               <Typography
-                component={Link}
                 sx={{
                   color: isNightMode() ? "grey.200" : "text.primary",
                   textDecoration: "none",
@@ -492,7 +489,6 @@ function PostList(props) {
                       />
                       <div style={{ width: "10px" }} />
                       <Typography
-                        component={Link}
                         sx={{
                           color: isNightMode() ? "grey.200" : "text.primary",
                           textDecoration: "none",
