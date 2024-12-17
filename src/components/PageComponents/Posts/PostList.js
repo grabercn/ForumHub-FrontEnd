@@ -172,7 +172,7 @@ function PostList(props) {
       commentDate: new Date().toISOString(),
     };
 
-    addComment(newComment).then(() => {
+    addComment(newComment, userData.sessionToken).then(() => {
       setComments((prevComments) => ({
         ...prevComments,
         [postId]: [...(prevComments[postId] || []), newComment],
@@ -291,9 +291,18 @@ function PostList(props) {
 
   useEffect(() => {
     if (postId && postRefs.current[postId]) {
-      postRefs.current[postId].scrollIntoView({ behavior: "smooth" });
+      // Avoid repeated scrolls by checking if the post is already in view
+      const targetPost = postRefs.current[postId];
+      const rect = targetPost.getBoundingClientRect();
+      const isInView =
+          rect.top >= 0 &&
+          rect.bottom <=
+              (window.innerHeight || document.documentElement.clientHeight);
+      if (!isInView) {
+          targetPost.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
-  }, [posts, postId]);
+  }, [postId]); // Only run this when postId changes
 
   useEffect(() => {
     refreshPosts();
@@ -311,28 +320,46 @@ function PostList(props) {
   }, [] /* eslint-disable-line react-hooks/exhaustive-deps */ ); 
   
   return (
-    <div style={{marginBottom: "20px", marginTop: "20px"}}>
-       <Helmet>
-        <title>{`Posts in ${forum.name}`}</title>
+    <div style={{ marginBottom: "20px", marginTop: "20px" }}>
+      <Helmet>
+        <title>{`Posts in ${forum.forumName}`}</title>
         <meta name="description" content={`Browse posts in ${forum.forumName}.`} />
       </Helmet>
-      {posts.length === 0 && isLoggedin ? (
-        <div>
-          <Alert severity="info">
+    {posts.length === 0 && isLoggedin ? (
+      <div>
+        <center>
+          <Alert 
+            severity="info" 
+            style={{
+              maxWidth: "90%", // Maximum width is 90% of the viewport
+              width: "100%", // Ensures it takes full available width
+              margin: "0 auto", // Centers the alert horizontally
+              boxSizing: "border-box" // Ensures padding doesn't affect width
+            }}
+          >
             No posts found. Be the first! Click the "Add Post" button to create one.
           </Alert>
           <br />
-          <center>
-          <Button variant="contained" color="primary" onClick={handleOpenForm}> Add Post </Button>
-          </center>
-        </div>
+          <Button variant="contained" color="primary" onClick={handleOpenForm}>
+            Add Post
+          </Button>
+        </center>
+      </div>
       ) : (
-        <div>
-          <Alert severity="info">
-            {posts.length} post{posts.length > 1 ? "s" : ""} found.
+      <div>
+        <Alert 
+          severity="info" 
+          style={{
+            maxWidth: "90%", 
+            width: "100%", 
+            margin: "0 auto", 
+            boxSizing: "border-box"
+      }}
+        >
+          {posts.length} post{posts.length > 1 ? "s" : ""} found.
           </Alert>
-          <br />
-        </div>
+        <br />
+      </div>
       )}
 
       {isLoggedin && posts.length > 0 && (
@@ -340,7 +367,6 @@ function PostList(props) {
           <Button variant="contained" color="primary" onClick={handleOpenForm}>
             Add Post
           </Button>
-
           <FormControl sx={{ marginBottom: 2, minWidth: 120 }}>
             <InputLabel>Sort By</InputLabel>
             <Select native value={sortMethod} onChange={handleSortChange}>
@@ -404,7 +430,6 @@ function PostList(props) {
             }}
           >
              <Helmet>
-                <title>{post.postSubject}</title>
                 <meta name="description" content={post.postText.substring(0, 150)} />
               </Helmet>
             <Box display="flex" alignItems="center" marginBottom={1}>
@@ -423,8 +448,10 @@ function PostList(props) {
               </Typography>
             </Box>
             
-            <Typography variant="h6">{post.postSubject}</Typography>
-            <Typography variant="body1">{post.postText}</Typography>
+            <Box sx={{ textAlign: 'left'}}>
+              <Typography variant="h6">{post.postSubject}</Typography>
+              <Typography variant="body1">{post.postText}</Typography>
+            </Box>
 
             <Box display="flex" alignItems="center" marginBottom={1}>
               <IconButton
@@ -477,7 +504,9 @@ function PostList(props) {
               </Typography>
 
               {comments[post.postId] &&
-                comments[post.postId].map((comment) => (
+              [...comments[post.postId]]
+                .sort((a, b) => new Date(b.commentDate) - new Date(a.commentDate)) // Sort by date, latest first
+                .map((comment) => (
                   <Paper
                     key={comment.commentId}
                     sx={{ padding: 1, marginBottom: 1 }}
@@ -494,14 +523,16 @@ function PostList(props) {
                           textDecoration: "none",
                         }}
                       >
-                        {'Anon'}
+                        {'Anonymous'}
                       </Typography>
                       <Typography variant="caption" sx={{ marginLeft: 1 }}>
                         {formatDateDifference(comment.commentDate)}
                       </Typography>
                     </Box>
-                    <Typography variant="body1">
-                      {comment.commentText}
+                    <Typography variant="body1" component={"div"}>
+                      <Box sx={{ textAlign: 'left'}}>
+                        {comment.commentText}
+                      </Box>
                     </Typography>
                   </Paper>
                 ))}

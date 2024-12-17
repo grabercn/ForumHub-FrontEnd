@@ -7,7 +7,6 @@ import { getForumById } from '../../ApiCalls/forumApiCalls';
 import { useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
-import { getCookie } from '../../Objects/userData.object';
 
 /**
  * Renders the details of a forum, including the forum banner, category, and posts.
@@ -38,43 +37,63 @@ const ForumDetail = ({ forum, postId }) => {
 
     // Return the forum details component
     return (
-        <Grid container spacing={2} id='forumDetails' p={1} >
+        <Grid container id='forumDetails'>
           <Grid item xs={12}>
             {/* Display the alert button if forumIdUrl is defined */}
               {forumIdUrl && (
-              <Link to='/'>
-                <div
-                style={{
-                  position: 'fixed',
-                  top: '10px',
-                  right: '10px',
-                  zIndex: '1000',
-                  color: 'black', // Change the color of the close button
-                  borderRadius: '50%', // Add a circle around the close button
-                  backgroundColor: 'white', // Add a background color
-                  padding: '5px' // Add padding to the close button
-                }}
-                >
-                <CloseIcon />
-                </div>
-              </Link>
+                <Link to="/">
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: '16px', // Slightly more space for better alignment
+                      right: '16px',
+                      zIndex: '1000',
+                      display: 'flex', // Center the icon
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '40px', // Fixed dimensions for consistency
+                      height: '40px',
+                      color: '#000', // Slightly darker black for modern look
+                      borderRadius: '50%',
+                      backgroundColor: '#f5f5f5', // Subtle background color for a softer look
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Light shadow for depth
+                      transition: 'transform 0.2s, background-color 0.2s', // Smooth hover effect
+                      cursor: 'pointer',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#e0e0e0'; // Subtle hover color
+                      e.currentTarget.style.transform = 'scale(1.1)'; // Slight zoom on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f5f5f5'; // Revert hover color
+                      e.currentTarget.style.transform = 'scale(1)'; // Revert zoom
+                    }}
+                  >
+                    <CloseIcon style={{ fontSize: '24px' }} /> {/* Icon size for consistency */}
+                  </div>
+                </Link>
               )}
-                <Paper elevation={3} >
+              <center>
+                <Paper elevation={3}>
                     <ForumBanner
                         heading={forumDetail.forumName}
                         subheading={forumDetail.forumDescription}
                         imgUrl={forumDetail.imgUrl}
                     />
                 </Paper>
+              </center>
             </Grid>
             <Grid item xs={12}>
                 {/* Add any details you want to display in the popup*/}
                 {/* Display the posts in the forum */}
-                <PostList
-                    forum={forumDetail}
-                    postId={postId} // Pass postId to PostList
-                />
+                <center>
+                  <PostList
+                      forum={forumDetail}
+                      postId={postId} // Pass postId to PostList
+                  />
+                </center>
             </Grid>
+            
         </Grid>
     );
 };

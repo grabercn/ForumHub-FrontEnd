@@ -8,6 +8,7 @@ import { getCookie } from '../Objects/userData.object';
 import ForumDetail from '../PageComponents/Forums/ForumDetail';
 import { getForumByName } from '../ApiCalls/forumApiCalls';
 import { useState, useEffect } from 'react';
+import ForumDetailCompact from '../PageComponents/Forums/ForumDetailCompact';
 
 export const availableComponents = {
     PopularForums: (props) => (
@@ -66,7 +67,7 @@ export const availableComponents = {
                 getForumByName(city)
                     .then((forumData) => {
                         if (forumData) {
-                            setForum(forumData);
+                            setForum(forumData[0]);
                         } else {
                             setError(true); // Set error if forumData is null
                         }
@@ -97,7 +98,7 @@ export const availableComponents = {
 
         return (
             <Box>
-                <ForumDetail forum={forum.forumId} />
+                <ForumDetailCompact forum={forum} />
             </Box>
         );
     },

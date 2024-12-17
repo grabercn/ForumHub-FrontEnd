@@ -9,12 +9,10 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Searchbar from './Searchbar';
 import UserProfile from './UserProfile';
 import About from './About';
-import ProfileIcon from '../StyledComponents/ProfileIcon';
 import ResponsiveDialog from '../StyledComponents/ResponsiveDialog'; // Import the new dialog component
 import ForumHubIcon from '../StyledComponents/ForumHubIcon';
 import NewsDropdown from './NewsDropdown';

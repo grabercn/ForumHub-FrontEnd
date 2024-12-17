@@ -1,13 +1,13 @@
-import { authenticatedApiCall, apiCall } from './authentication';
+import { apiCall, apiCallWithAuth } from './authentication';
 
 /**
  * Adds a comment to the API.
  * @param {Object} postObject - The comment object to be added.
  * @returns {Promise<Object|null>} - A promise that resolves to the added comment data or null if there was an error.
  */
-const addComment = async (postObject) => {
+const addComment = async (postObject, token) => {
     const endpoint = `/comments`;
-    return await apiCall(endpoint, 'POST', postObject);
+    return await apiCallWithAuth(endpoint, token, 'POST', postObject);
 };
 
 /**

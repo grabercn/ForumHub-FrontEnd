@@ -45,7 +45,8 @@ const StyledDialog = styled(Dialog)(({ theme, animate }) => ({
       borderRadius: 0,
     },
     [theme.breakpoints.up('md')]: {
-      width: 'auto',
+      width: '80%',
+      maxWidth: '900px',
       height: 'auto',
     },
   },
@@ -63,7 +64,49 @@ const CloseButton = styled(IconButton)(({ theme }) => ({
   },
 }));
 
-const ResponsiveDialog = ({ open, onClose, title, children, actions }) => {
+const SidebarContainer = styled('div')(({ theme, side }) => ({
+  width: '20%',
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.background.default,
+  display: side === 'hidden' ? 'none' : 'block',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
+}));
+
+const ContentContainer = styled('div')(({ alignment }) => {
+  let justifyContent;
+  switch (alignment) {
+    case 'center':
+      justifyContent = 'center';
+      break;
+    case 'right':
+      justifyContent = 'flex-end';
+      break;
+    case 'left':
+    default:
+      justifyContent = 'flex-start';
+  }
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent,
+    alignItems: 'center',
+    height: '100%',
+    padding: '1rem',
+  };
+});
+
+const ResponsiveDialog = ({
+  open,
+  onClose,
+  title,
+  children,
+  actions,
+  leftSidebar = null,
+  rightSidebar = null,
+  contentAlignment = 'center',
+}) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [animate, setAnimate] = useState('open');
@@ -82,7 +125,9 @@ const ResponsiveDialog = ({ open, onClose, title, children, actions }) => {
   return (
     <StyledDialog
       open={open || animate === 'close'}
-      onClose={() => { if (animate === 'open') onClose(); }}
+      onClose={() => {
+        if (animate === 'open') onClose();
+      }}
       fullScreen={fullScreen}
       aria-labelledby="responsive-dialog-title"
       animate={animate}
@@ -95,7 +140,17 @@ const ResponsiveDialog = ({ open, onClose, title, children, actions }) => {
           </CloseButton>
         )}
       </DialogTitle>
-      <DialogContent>{children}</DialogContent>
+
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        {leftSidebar && <SidebarContainer side="left">{leftSidebar}</SidebarContainer>}
+
+        <DialogContent style={{ flex: 1 }}>
+          <ContentContainer alignment={contentAlignment}>{children}</ContentContainer>
+        </DialogContent>
+
+        {rightSidebar && <SidebarContainer side="right">{rightSidebar}</SidebarContainer>}
+      </div>
+
       {actions && (
         <DialogActions>
           {actions.map((action, index) => (

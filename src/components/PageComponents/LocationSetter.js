@@ -48,7 +48,7 @@ const fetchCityDescription = async (city) => {
         const firstTwoSentences = sentences.slice(0, 2).join('.') + (sentences.length > 2 ? '.' : ''); // Rejoin the sentences with a period
         return firstTwoSentences.trim();
       }
-      
+
       throw new Error("City description not found.");
   } catch (error) {
       console.error("Error fetching city description:", error);
@@ -284,9 +284,9 @@ const LocationSetter = () => {
               Welcome to ForumHub!
             </Typography>
             <Typography variant="body2" sx={{ mb: 2 }}>
-              Set your location to interact with others in your area. This data is private, locally stored, and only used to determine your community.{" "}
-              <Link href="/privacy-policy" target="_blank" rel="noopener">
-                Read our Privacy Policy
+              Set your location to interact with others in your area. This data is locally stored, and only used to determine your community. By clicking confirm you agree to our{" "}
+              <Link href="/privacy-policy" rel="noopener">
+                Privacy Policy.
               </Link>
             </Typography>
           </Box>

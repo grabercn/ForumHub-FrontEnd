@@ -43,7 +43,7 @@ const ForumList = ({ forums, onForumClick, isCompact }) => {
           <Stack spacing={2} direction="row">
             {forums.map((forum) => (
               <ForumCard
-                key={forum.id} // Use a unique identifier for each forum
+                key={forum.forumId} // Use a unique identifier for each forum
                 forum={forum}
                 onClick={() => handleOpen(forum)} // Handle click on the forum card
                 isCompact={isCompact}
@@ -54,7 +54,7 @@ const ForumList = ({ forums, onForumClick, isCompact }) => {
             <ResponsiveDialog
               open={open}
               onClose={handleClose}
-              slotProps={{ backdrop: { style: { backdropFilter: "blur(10px)" } } }}
+              contentAlignment="center"
             >
               <DialogContent>
                 <ForumDetail forum={selectedForum} /> {/* Display the selected forum's details */}

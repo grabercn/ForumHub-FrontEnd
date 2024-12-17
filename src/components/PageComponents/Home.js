@@ -259,7 +259,7 @@ const Home = () => {
                       <Alert severity="info"><strong>No forums available.</strong></Alert>
                     ) : (
                       Object.values(forums).map((forum) => (
-                        <Grid item xs={12} md={2} key={forum.id}>
+                        <Grid item xs={12} md={2} key={forum.forumId}>
                           <div className="forum-list-wrapper" style={{ overflowWrap: 'break-word', fontFamily: 'Roboto, sans-serif' }}>
                             <ForumList forums={[forum]} onForumClick={handleForumClick} />
                           </div>
