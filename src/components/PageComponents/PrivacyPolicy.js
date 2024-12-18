@@ -1,24 +1,12 @@
 import React from 'react';
 import { Container, Typography } from '@mui/material';
+import ForumBanner from './Forums/ForumBanner';
 
 const PrivacyPolicy = () => {
     return (
         <Container maxWidth="md" sx={{ padding: { xs: 2, sm: 3 }, }}>
-            <Typography
-                variant="h6"
-                color="primary"
-                paragraph
-                sx={{
-                    fontSize: { xs: '1rem', sm: '1.2rem' },
-                    textAlign: 'center'
-                }}
-            >
-                🚨 TL;DR: We take your privacy seriously! We collect just enough info to keep ForumHub running smoothly and provide awesome service. No funny business. Your data stays safe, and if you need us to delete it, just ask! Oh, and we don’t sell or trade your info—promise!
-            </Typography>
-            <a href="/">Go back</a>
-            <Typography variant="h1" sx={{ fontSize: { xs: '2rem', sm: '3rem' }, textAlign: 'center' }}>
-                Privacy Policy for ForumHub
-            </Typography>
+            <ForumBanner imgUrl='/images/image10.jpg' heading='Privacy Policy for ForumHub'subheading='🚨 TL;DR: We take your privacy seriously! We collect just enough info to keep ForumHub running smoothly and provide awesome service. No funny business. Your data stays safe, and if you need us to delete it, just ask! Oh, and we don’t sell or trade your info—promise!'/>
+        
             <Typography variant="body1" paragraph sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                 Last updated: 8/2/2024
             </Typography>
