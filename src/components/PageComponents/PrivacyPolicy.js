@@ -5,7 +5,7 @@ import ForumBanner from './Forums/ForumBanner';
 const PrivacyPolicy = () => {
     return (
         <Container maxWidth="md" sx={{ padding: { xs: 2, sm: 3 }, }}>
-            <ForumBanner imgUrl='/images/image10.jpg' heading='Privacy Policy for ForumHub'subheading='🚨 TL;DR: We take your privacy seriously! We collect just enough info to keep ForumHub running smoothly and provide awesome service. No funny business. Your data stays safe, and if you need us to delete it, just ask! Oh, and we don’t sell or trade your info—promise!'/>
+            <ForumBanner imgUrl='/images/image1.jpg' heading='Privacy Policy for ForumHub'subheading='🚨 TL;DR: We take your privacy seriously! We collect just enough info to keep ForumHub running smoothly and provide awesome service. No funny business. Your data stays safe, and if you need us to delete it, just ask! Oh, and we don’t sell or trade your info—promise!'/>
         
             <Typography variant="body1" paragraph sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                 Last updated: 8/2/2024
