@@ -290,21 +290,6 @@ function PostList(props) {
   };
 
   useEffect(() => {
-    if (postId && postRefs.current[postId]) {
-      // Avoid repeated scrolls by checking if the post is already in view
-      const targetPost = postRefs.current[postId];
-      const rect = targetPost.getBoundingClientRect();
-      const isInView =
-          rect.top >= 0 &&
-          rect.bottom <=
-              (window.innerHeight || document.documentElement.clientHeight);
-      if (!isInView) {
-          targetPost.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }
-  }, [postId]); // Only run this when postId changes
-
-  useEffect(() => {
     refreshPosts();
   }, [forumId] /* eslint-disable-line react-hooks/exhaustive-deps */);
   
@@ -346,20 +331,22 @@ function PostList(props) {
         </center>
       </div>
       ) : (
-      <div>
-        <Alert 
-          severity="info" 
-          style={{
-            maxWidth: "90%", 
-            width: "100%", 
-            margin: "0 auto", 
-            boxSizing: "border-box"
-      }}
+        <div>
+        <Typography 
+            variant="body2" 
+            style={{
+                maxWidth: "90%", 
+                width: "100%", 
+                margin: "0 auto", 
+                boxSizing: "border-box", 
+                textAlign: "center", 
+                color: "gray"
+            }}
         >
-          {posts.length} post{posts.length > 1 ? "s" : ""} found.
-          </Alert>
+            {posts.length} post{posts.length > 1 ? "s" : ""} found.
+        </Typography>
         <br />
-      </div>
+      </div>    
       )}
 
       {isLoggedin && posts.length > 0 && (

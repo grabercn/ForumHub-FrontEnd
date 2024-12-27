@@ -54,13 +54,6 @@ function Searchbar() {
     setSearchResults([]); // Clear search results when closing
   };
 
-  // Use effect to focus input on search result change
-  React.useEffect(() => {
-    if (searchResults.length > 0 && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [searchResults]);
-
   // Search bar styling
   const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -121,6 +114,8 @@ function Searchbar() {
       >
         <SearchIcon />
       </IconButton>
+
+      {/* Main Search Popover */}
       <Popover
         id="search-appbar"
         open={Boolean(anchorEl)}
@@ -133,6 +128,9 @@ function Searchbar() {
         transformOrigin={{
           vertical: 'top',
           horizontal: 'left',
+        }}
+        sx={{
+          zIndex: 2000, // Ensure this is above the background blur
         }}
       >
         <Box sx={{ p: 2 }}>
@@ -149,6 +147,31 @@ function Searchbar() {
             />
           </Search>
         </Box>
+
+        {/* Search Results Popover inside the main popover */}
+        {searchResults.length > 0 && (
+          <Paper
+            elevation={3}
+            sx={{
+              position: 'absolute',
+              top: '48px', // Ensure it's just below the input
+              left: 0,
+              right: 0,
+              zIndex: 3000, // Ensure it is above the background blur
+              maxHeight: '300px', // Adjust the height to fit more results
+              overflowY: 'auto', // Add scroll when results exceed the height
+              width: '300px', // Set a fixed width for the results box
+            }}
+          >
+            {searchResults.map((forum) => (
+              <Link to={`/forums/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Typography variant="body1" sx={{ p: 2 }}>
+                  {forum.forumName}
+                </Typography>
+              </Link>
+            ))}
+          </Paper>
+        )}
       </Popover>
 
       {/* Desktop Search Bar */}
@@ -164,20 +187,28 @@ function Searchbar() {
             value={searchInput}
           />
         </Search>
+        {/* Desktop Search Results */}
+        {searchResults.length > 0 && (
+          <Paper
+            elevation={3}
+            sx={{
+              position: 'absolute',
+              top: '48px',
+              left: 0,
+              right: 0,
+              zIndex: 3000, // Ensure results are above background blur
+            }}
+          >
+            {searchResults.map((forum) => (
+              <Link to={`/forums/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Typography variant="body1" sx={{ p: 2 }}>
+                  {forum.forumName}
+                </Typography>
+              </Link>
+            ))}
+          </Paper>
+        )}
       </Box>
-
-      {/* Floating search results */}
-      {searchResults.length > 0 && (
-        <Paper elevation={3} style={{ position: 'absolute', top: '60px', left: 0, right: 0, zIndex: 1000 }}>
-          {searchResults.map((forum) => (
-            <Link to={`/forums/${forum.forumId}`} key={forum.forumId} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Typography variant="body1" sx={{ p: 2 }}>
-                {forum.forumName}
-              </Typography>
-            </Link>
-          ))}
-        </Paper>
-      )}
     </div>
   );
 }

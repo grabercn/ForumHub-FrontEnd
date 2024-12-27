@@ -5,21 +5,34 @@ import ForumHubIcon from '../StyledComponents/ForumHubIcon';
 
 const About = () => {
     return (
-        <Container p={2}>
+        <Container>
             <center>
-            <ForumHubIcon showText={true} width={250} height={250}/>
-            <Typography variant='h3'>About this project</Typography>
-            <br />
-            <Typography variant='p'>This project was created by Christian Graber for the purpose of fostering a community, and learning how to create a full-stack web application. </Typography>
-            <Typography variant='p'>The front-end was created using React and Material-UI. The back-end was created using Java and Springboot. The database is a Postgressql database hosted on Azure.</Typography>
-            <Typography variant='p'>Feel free to check out the source code on <a href="https://github.com/grabercn/ForumHub-FrontEnd">GitHub</a>.</Typography>
-            <br /> <br />
-            <Typography variant='h3'>Privacy Policy</Typography>
-            <br />
-            <Typography variant='p'> By using this site, you agree to the terms of our privacy policy. </Typography>
-            <Typography variant='p'>For information on our privacy policy, please visit our <a href="/privacy-policy">Privacy Policy</a>.</Typography>
-            <br /> <br />
-            <Typography variant='p' style={{color: "blue"}}>Version: {VERSION}</Typography> <Typography variant='p' style={{color: "green"}}>Updated: {UPDATED}</Typography>
+                <ForumHubIcon showText={true} width={250} height={250} />
+                <Typography variant="h3" gutterBottom>About This Project</Typography>
+                <Typography variant="body1" paragraph>
+                    This project was created by <b>Christian Graber</b> to foster a sense of community and to learn how to develop a full-stack web application.
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    The front end is built with <b>React</b> and <b>Material-UI</b>. The back end is powered by <b>Java</b> and <b>Spring Boot</b>. The database is a <b>PostgreSQL</b> instance hosted on <b>Azure</b>.
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    You can view the source code on <a href="https://github.com/grabercn/ForumHub-FrontEnd" style={{ textDecoration: 'none', color: '#1976d2' }} target="_blank" rel="noopener noreferrer">GitHub</a>.
+                </Typography>
+
+                <Typography variant="h3" gutterBottom style={{ marginTop: '32px' }}>Privacy Policy</Typography>
+                <Typography variant="body1" paragraph>
+                    By using this site, you agree to the terms outlined in our privacy policy.
+                </Typography>
+                <Typography variant="body1" paragraph>
+                    For details, please visit our <a href="/privacy-policy" style={{ textDecoration: 'none', color: '#1976d2' }}>Privacy Policy</a> page.
+                </Typography>
+
+                <Typography variant="body2" style={{ marginTop: '32px', color: 'blue' }}>
+                    Version: {VERSION}
+                </Typography>
+                <Typography variant="body2" style={{ color: 'green' }}>
+                    Updated: {UPDATED}
+                </Typography>
             </center>
         </Container>
     );

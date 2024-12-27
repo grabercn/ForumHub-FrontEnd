@@ -4,7 +4,7 @@ import ForumDetail from "./Forums/ForumDetail";
 import ForumList from "./Forums/ForumList";
 import ResponsiveAppBar from "./Navbar";
 import Container from '@mui/material/Container';
-import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem, Menu } from '@mui/material';
+import { Alert, Grid, Box, List, ListItem, ListItemIcon, ListItemText, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ForumIcon from '@mui/icons-material/Forum';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -62,10 +62,10 @@ const Home = () => {
   useEffect(() => {
     const response = checkCookie('user_city')
       if (response !== false) {
-        setPages(['About']);
+        setPages([]);
         setOpenLocationSetter(false)
       } else {
-        setPages(['About']);
+        setPages([]);
         setOpenLocationSetter(true);
       }
     }, []);
