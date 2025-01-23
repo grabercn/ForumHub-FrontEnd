@@ -4,7 +4,6 @@ import { createCustomTheme } from './components/Objects/theme'; // Correct impor
 import { ThemeProvider } from '@mui/material/styles';
 import PageRoutes from './PageRoutes';
 import LoadingSpinner from './components/StyledComponents/LoadingSpinner';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const themeInstance = createCustomTheme();
 

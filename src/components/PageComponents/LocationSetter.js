@@ -32,7 +32,7 @@ const fetchCityMapImage = async (city) => {
   } catch (error) {
       console.error("Error fetching city map image:", error);
       // Fallback to a default image
-      return "https://images.pexels.com/photos/4368897/pexels-photo-4368897.jpeg";
+      return "public/images/image1.jpg";
   }
 };
 
@@ -181,6 +181,7 @@ const LocationSetter = () => {
     } catch (error) {
       setLoading(false);  // Hide loading spinner
       setError("Failed to determine the nearest city.");
+      setCity("Vagabonds")
     }
   };
 
