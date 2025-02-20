@@ -38,57 +38,31 @@ const fetchCityMapImage = async (city) => {
 
 const fetchCityDescription = async (city) => {
   try {
-    // Ensure proper formatting: add spaces after commas
-    const formattedCity = city.replace(/,/g, ', ').trim();
-    const cityName = formattedCity.split(',')[0]; // Extract just the city name
-    const stateOrCountry = formattedCity.split(',').slice(1).map(s => s.trim()).join(', '); // Get state/country
+    // Ensure proper formatting: add a space after each comma and trim
+    const formattedCity = city.replace(/,\s*/g, ', ').trim();
+    const parts = formattedCity.split(',').map(part => part.trim());
+    const cityName = parts[0] || "";
+    const state = parts[1] || "";
+    const country = parts[2] || "";
 
-    // Fetch Wikipedia summary
-    const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
-    const data = await response.json();
-
-    // If it's a valid description, return the first two sentences
-    if (data && data.extract && !data.extract.includes("may refer to")) {
-      return data.extract.split('. ').slice(0, 2).join('. ') + '.';
+    // Build the queries in order:
+    const queries = [cityName];
+    if (state) {
+      queries.push(`${cityName}, ${state}`);
+    }
+    if (state && country) {
+      queries.push(`${cityName}, ${state}, ${country}`);
     }
 
-    // Handle disambiguation
-    if (data.extract && data.extract.includes("may refer to")) {
-      console.warn(`Disambiguation detected for: ${cityName}`);
+    // Try each query in order until a valid description is found
+    for (const query of queries) {
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+      const data = await response.json();
 
-      // Fetch the disambiguation page links
-      const disambigResponse = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=links&titles=${encodeURIComponent(cityName)}&format=json&pllimit=max&origin=*`);
-      const disambigData = await disambigResponse.json();
-
-      if (disambigData.query) {
-        const page = Object.values(disambigData.query.pages)[0];
-        if (page.links) {
-          let bestMatch = null;
-
-          // Look for a title that matches "City, State" or "City, Country"
-          for (const link of page.links) {
-            const title = link.title;
-            if (stateOrCountry && title.includes(stateOrCountry)) {
-              bestMatch = title;
-              break;
-            }
-          }
-
-          // If no match, default to the first disambiguation result
-          if (!bestMatch && page.links.length > 0) {
-            bestMatch = page.links[0].title;
-          }
-
-          // Fetch the best match summary
-          if (bestMatch) {
-            const bestMatchResponse = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bestMatch)}`);
-            const bestMatchData = await bestMatchResponse.json();
-
-            if (bestMatchData && bestMatchData.extract) {
-              return bestMatchData.extract.split('. ').slice(0, 2).join('. ') + '.';
-            }
-          }
-        }
+      // If a valid extract is found and it doesn't contain disambiguation text, return its first two sentences.
+      if (data && data.extract && !data.extract.includes("may refer to")) {
+        const sentences = data.extract.split('. ');
+        return sentences.slice(0, 2).join('. ') + '.';
       }
     }
 
