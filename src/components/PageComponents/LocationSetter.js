@@ -38,24 +38,67 @@ const fetchCityMapImage = async (city) => {
 
 const fetchCityDescription = async (city) => {
   try {
-      const cityName = city.split(',')[0].trim();
-      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
-      const data = await response.json();
+    // Ensure proper formatting: add spaces after commas
+    const formattedCity = city.replace(/,/g, ', ').trim();
+    const cityName = formattedCity.split(',')[0]; // Extract just the city name
+    const stateOrCountry = formattedCity.split(',').slice(1).map(s => s.trim()).join(', '); // Get state/country
 
-      if (data && data.extract) {
-        // Split the description into sentences and return the first two
-        const sentences = data.extract.split('.'); 
-        const firstTwoSentences = sentences.slice(0, 2).join('.') + (sentences.length > 2 ? '.' : ''); // Rejoin the sentences with a period
-        return firstTwoSentences.trim();
+    // Fetch Wikipedia summary
+    const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cityName)}`);
+    const data = await response.json();
+
+    // If it's a valid description, return the first two sentences
+    if (data && data.extract && !data.extract.includes("may refer to")) {
+      return data.extract.split('. ').slice(0, 2).join('. ') + '.';
+    }
+
+    // Handle disambiguation
+    if (data.extract && data.extract.includes("may refer to")) {
+      console.warn(`Disambiguation detected for: ${cityName}`);
+
+      // Fetch the disambiguation page links
+      const disambigResponse = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=links&titles=${encodeURIComponent(cityName)}&format=json&pllimit=max&origin=*`);
+      const disambigData = await disambigResponse.json();
+
+      if (disambigData.query) {
+        const page = Object.values(disambigData.query.pages)[0];
+        if (page.links) {
+          let bestMatch = null;
+
+          // Look for a title that matches "City, State" or "City, Country"
+          for (const link of page.links) {
+            const title = link.title;
+            if (stateOrCountry && title.includes(stateOrCountry)) {
+              bestMatch = title;
+              break;
+            }
+          }
+
+          // If no match, default to the first disambiguation result
+          if (!bestMatch && page.links.length > 0) {
+            bestMatch = page.links[0].title;
+          }
+
+          // Fetch the best match summary
+          if (bestMatch) {
+            const bestMatchResponse = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bestMatch)}`);
+            const bestMatchData = await bestMatchResponse.json();
+
+            if (bestMatchData && bestMatchData.extract) {
+              return bestMatchData.extract.split('. ').slice(0, 2).join('. ') + '.';
+            }
+          }
+        }
       }
+    }
 
-      throw new Error("City description not found.");
+    throw new Error("City description not found.");
   } catch (error) {
-      console.error("Error fetching city description:", error);
-      // Fallback to a default description
-      return "Discover the unique history and culture of this city.";
+    console.error("Error fetching city description:", error);
+    return "Discover the unique history and culture of this city.";
   }
 };
+
 
 const createForumObject = async (city, isLocked = false) => {
   try {
@@ -120,7 +163,7 @@ const LocationSetter = () => {
     const setCityData = (data) => {
       const cityData = data.address;
       if (cityData.city) {
-        return `${cityData.city}, ${cityData.state || cityData.region || cityData.municipality}, ${cityData.country}`;
+        return `${cityData.city},${cityData.state || cityData.region || cityData.municipality},${cityData.country}`;
       }
       return null;
     };

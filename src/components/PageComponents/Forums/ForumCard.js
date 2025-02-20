@@ -103,9 +103,11 @@ const ForumCard = ({ forum, onClick, isCompact }) => {
           </CardHeader>
         )}
         <CardContent>
-          <ForumName variant="h6" component="div">
-            {forum.forumName}
-          </ForumName>
+        <ForumName variant="h6" component="div">
+          {forum.forumName.split(',').map((part, index) => (
+            <div key={index}>{part}</div>
+          ))}
+        </ForumName>
           <Description variant="body2">
             {truncateText(forum.forumDescription, 20)}
           </Description>
