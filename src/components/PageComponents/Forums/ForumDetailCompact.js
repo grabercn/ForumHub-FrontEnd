@@ -1,7 +1,6 @@
 import React from 'react';
 import PostList from '../Posts/PostList';
 import Box from '@mui/material/Box';
-import { useParams } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 
 /**
@@ -34,7 +33,7 @@ const ForumDetailCompact = ({ forum }) => {
               sx={{ fontWeight: 'bold' }}
               component="div" // Prevents invalid <p> tag wrapping by using <div> instead
             >
-              Latest from {forumDetail.forumName}.
+              Latest from {forumDetail.forumName.split(",")[0]}
             </Typography>
           </center>
         </Grid>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PostList from '../Posts/PostList';
 import ForumBanner from './ForumBanner';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import { getForumById } from '../../ApiCalls/forumApiCalls';
 import { useParams, Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
@@ -81,13 +80,11 @@ const ForumDetail = ({ forum, postId }) => {
           </Link>
         )}
         <center>
-          <Paper elevation={3}>
             <ForumBanner
               heading={forumName}
               subheading={forumDescription}
               imgUrl={imgUrl}
             />
-          </Paper>
         </center>
       </Grid>
       <Grid item xs={12}>

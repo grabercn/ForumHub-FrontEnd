@@ -1,9 +1,8 @@
 import React from 'react';
-import { useMediaQuery } from '@mui/material';
 import AnimationTag from '../../StyledComponents/AnimationTag';
 
 /**
- * Renders a forum banner component.
+ * Renders a modern forum banner component.
  * @param {Object} props - The component props.
  * @param {string} props.imgUrl - The URL of the banner image.
  * @param {string} props.heading - The heading text for the banner in "Name,State,Country" format.
@@ -11,19 +10,19 @@ import AnimationTag from '../../StyledComponents/AnimationTag';
  * @returns {JSX.Element} The rendered forum banner component.
  */
 const ForumBanner = ({ imgUrl, heading, subheading }) => {
-  const isMobile = useMediaQuery('(max-width: 600px)');
-
-  // Split the heading by commas, take only the first part
-  const headingParts = heading.split(',').slice(0, 1);
+  // Extract the title before the first comma
+  const title = heading.split(',')[0];
 
   return (
     <AnimationTag variant="slide">
       <div
-        className="forum-banner"
         style={{
-          position: "relative",
-          textAlign: "center",
-          borderRadius: "10px",
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: '16px',
+          margin: '20px auto',
+          maxWidth: '1000px',
+          width: '100%',
         }}
       >
         <img
@@ -32,70 +31,48 @@ const ForumBanner = ({ imgUrl, heading, subheading }) => {
             "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg"
           }
           alt="Forum Banner"
-          className="banner-image"
           style={{
-            width: "100%",
-            height: isMobile ? "auto" : "100%",
-            objectFit: "contain",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            opacity: "0.8",
+            width: '100%',
+            height: '300px',
+            objectFit: 'cover',
+            display: 'block',
           }}
         />
         <div
-          className="banner-text"
           style={{
-            position: isMobile ? "relative" : "absolute",
-            top: isMobile ? "auto" : "50%",
-            left: isMobile ? "0%" : "50%",
-            transform: isMobile ? "translate(0, 0)" : "translate(-50%, -50%)",
-            marginTop: isMobile ? "10px" : "0",
-            paddingBottom: isMobile ? "10px" : "0",
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '16px', // Ensures the overlay follows the curved corners
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
           }}
         >
-          {!isMobile && (
-            <div
-              className="banner-text-background"
-              style={{
-                position: "absolute",
-                top: "-10px",
-                left: "-10px",
-                right: "-10px",
-                bottom: "-10px",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                backdropFilter: "blur(10px)",
-                zIndex: "-1",
-                borderRadius: "10px",
-              }}
-            ></div>
-          )}
           <h1
-            className="banner-heading"
             style={{
-              fontFamily: "Arial, sans-serif",
-              fontSize: isMobile ? "32px" : "2vw",
-              fontWeight: "bold",
-              textShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
-              color: isMobile ? "black" : "white",
+              fontFamily: '"Roboto", sans-serif',
+              fontSize: 'clamp(1.5rem, 2.5vw, 2.5rem)',
+              fontWeight: 'bold',
+              margin: '0 0 10px',
+              textShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
             }}
           >
-            {headingParts.map((part, index) => (
-              <React.Fragment key={index}>
-                {part.trim()}
-                {index < headingParts.length - 1 && <br />}
-              </React.Fragment>
-            ))}
+            {title}
           </h1>
-          <h2
-            className="banner-sub"
+          <p
             style={{
-              fontStyle: "italic",
-              fontSize: isMobile ? "20px" : "1.5vw",
-              textShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
-              color: isMobile ? "black" : "white",
+              fontFamily: '"Roboto", sans-serif',
+              fontSize: 'clamp(1rem, 1.5vw, 1.5rem)',
+              maxWidth: '80%',
+              margin: 0,
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
             }}
           >
             {subheading}
-          </h2>
+          </p>
         </div>
       </div>
     </AnimationTag>
